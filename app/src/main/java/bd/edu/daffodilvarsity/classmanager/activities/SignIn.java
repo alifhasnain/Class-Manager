@@ -1,8 +1,5 @@
 package bd.edu.daffodilvarsity.classmanager.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
@@ -12,6 +9,9 @@ import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

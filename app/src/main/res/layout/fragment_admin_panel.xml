@@ -1,83 +1,423 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:layout_margin="50dp"
+    android:layout_margin="12dp"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context=".fragments.AdminPanel">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:text="Select Campus"
+        android:textColor="@color/semi_transparent_black"
+        android:textSize="18sp" />
+
+    <Spinner
+        android:id="@+id/spinner_1"
+        android:layout_marginStart="13dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:text="Select Shift"
+        android:textColor="@color/semi_transparent_black"
+        android:textSize="18sp" />
+
+    <Spinner
+        android:id="@+id/spinner_2"
+        android:layout_marginStart="13dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="12dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/custom_rectangle_border"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:weightSum="10">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/select_file"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:text="Select Campus"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="7"
+            android:text="select a file"
             android:textColor="@color/semi_transparent_black"
             android:textSize="18sp" />
-
-        <Spinner
-            android:id="@+id/spinner_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:text="Select Shift"
-            android:textColor="@color/semi_transparent_black"
-            android:textSize="18sp" />
-
-        <Spinner
-            android:id="@+id/spinner_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:padding="4dp"
-            android:background="@drawable/custom_rectangle_border">
-
-            <TextView
-                android:id="@+id/select_file"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="select a file"
-                android:layout_marginEnd="4dp"
-                android:textColor="@color/semi_transparent_black"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/btn_select_file"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select" />
-        </LinearLayout>
 
         <Button
-            android:id="@+id/upload"
+            android:id="@+id/btn_select_file"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Upload" />
-
+            android:layout_weight="3"
+            android:text="Select" />
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/parse_file"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:text="Parse File" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/semi_transparent_grey" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="9">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:textColor="@color/semi_transparent_black"
+                        android:text="Saturday" />
+
+                    <TextView
+                        android:id="@+id/classes_1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3" />
+
+                    <Button
+                        android:id="@+id/upload_1"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:enabled="false"
+                        android:text="Upload" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_1"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="false"
+                    android:visibility="gone" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/semi_transparent_grey" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="9">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:textColor="@color/semi_transparent_black"
+                        android:text="Sunday" />
+
+                    <TextView
+                        android:id="@+id/classes_2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3" />
+
+                    <Button
+                        android:id="@+id/upload_2"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:enabled="false"
+                        android:text="Upload" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_2"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="false"
+                    android:visibility="gone" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/semi_transparent_grey" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="9">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:textColor="@color/semi_transparent_black"
+                        android:text="Monday" />
+
+                    <TextView
+                        android:id="@+id/classes_3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3" />
+
+                    <Button
+                        android:id="@+id/upload_3"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:enabled="false"
+                        android:text="Upload" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_3"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="false"
+                    android:visibility="gone" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/semi_transparent_grey" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="9">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:textColor="@color/semi_transparent_black"
+                        android:text="Tuesday" />
+
+                    <TextView
+                        android:id="@+id/classes_4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3" />
+
+                    <Button
+                        android:id="@+id/upload_4"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:enabled="false"
+                        android:text="Upload" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_4"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="false"
+                    android:visibility="gone" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/semi_transparent_grey" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="9">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:textColor="@color/semi_transparent_black"
+                        android:text="Wednesday" />
+
+                    <TextView
+                        android:id="@+id/classes_5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3" />
+
+                    <Button
+                        android:id="@+id/upload_5"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:enabled="false"
+                        android:text="Upload" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_5"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="false"
+                    android:visibility="gone" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/semi_transparent_grey" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="9">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:textColor="@color/semi_transparent_black"
+                        android:text="Thursday" />
+
+                    <TextView
+                        android:id="@+id/classes_6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3" />
+
+                    <Button
+                        android:id="@+id/upload_6"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:enabled="false"
+                        android:text="Upload" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_6"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="false"
+                    android:visibility="gone" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/semi_transparent_grey" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="9">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:textColor="@color/semi_transparent_black"
+                        android:text="Friday" />
+
+                    <TextView
+                        android:id="@+id/classes_7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3" />
+
+                    <Button
+                        android:id="@+id/upload_7"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:enabled="false"
+                        android:text="Upload" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_7"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="false"
+                    android:visibility="gone" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/semi_transparent_grey" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

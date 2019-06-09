@@ -32,8 +32,8 @@ dependencies {
     implementation 'pub.devrel:easypermissions:3.0.0'
     //Fast CSV
     implementation 'de.siegmar:fastcsv:1.0.3'
-    //Material Dialogs core
-    implementation 'com.afollestad.material-dialogs:core:3.0.0-rc3'
+    //File Selector
+    implementation 'com.github.TutorialsAndroid:FilePicker:v1.0.19'
     //Firebase authentication
     implementation 'com.google.firebase:firebase-auth:17.0.0'
     //Cloud Firestore
