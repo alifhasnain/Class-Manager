@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/profile"
+            android:icon="@drawable/ic_menu_profile"
+            android:title="Profile" />
+        <item
+            android:id="@+id/classes"
+            android:icon="@drawable/ic_menu_schedule"
+            android:title="Classes" />
+        <item
+            android:id="@+id/book_classes"
+            android:icon="@drawable/ic_menu_book_class"
+            android:title="Book Classroom" />
+        <item
+            android:id="@+id/booked_classroom"
+            android:icon="@drawable/ic_menu_booked_classes"
+            android:title="Booked Classrooms" />
+    </group>
+
+    <group
+        android:id="@+id/bellow_group"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/sign_out"
+            android:icon="@drawable/ic_menu_sign_out"
+            android:title="Log Out" />
+        <item
+            android:id="@+id/report_bug"
+            android:icon="@drawable/ic_menu_bug_report"
+            android:title="Report a bug" />
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/ic_menu_about"
+            android:title="About" />
+    </group>
+
+</menu>

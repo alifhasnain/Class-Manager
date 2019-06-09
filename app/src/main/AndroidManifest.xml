@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="bd.edu.daffodilvarsity.classmanager">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name="bd.edu.daffodilvarsity.classmanager.activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="bd.edu.daffodilvarsity.classmanager.activities.ForgotPassword"
+            android:theme="@style/AppTheme.NoActionbar.FullScreen" />
+        <activity android:name="bd.edu.daffodilvarsity.classmanager.activities.SignUp"
+            android:theme="@style/AppTheme.NoActionbar.FullScreen"/>
+        <activity android:name="bd.edu.daffodilvarsity.classmanager.activities.SignIn"
+            android:theme="@style/AppTheme.NoActionbar.FullScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
