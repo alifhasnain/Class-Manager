@@ -10,6 +10,10 @@ public class ClassDetails {
 
     private String time;
 
+    private String section;
+
+    private float priority;
+
     public ClassDetails()   {
 
     }
@@ -57,5 +61,21 @@ public class ClassDetails {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getSection() {
+        return section;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
+    }
+
+    public float getPriority() {
+        return priority;
+    }
+
+    public void setPriority(float priority) {
+        this.priority = priority;
     }
 }

@@ -7,14 +7,23 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 
 import bd.edu.daffodilvarsity.classmanager.R;
+import bd.edu.daffodilvarsity.classmanager.adapters.ClassListPagerAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class Classes extends Fragment {
 
+    private View mView;
+
+    private ClassListPagerAdapter classListPagerAdapter;
+
+    private ViewPager mViewPager;
 
     public Classes() {
         // Required empty public constructor
@@ -25,9 +34,49 @@ public class Classes extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_classes, container, false);
+        mView = inflater.inflate(R.layout.fragment_classes, container, false);
 
-        return view;
+        initializeVariables();
+
+        initializeViewPager();
+        initializeTabLayout();
+        
+        return mView;
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    private void initializeVariables() {
+        mViewPager = mView.findViewById(R.id.tab_holder);
+    }
+
+    private void initializeTabLayout() {
+
+        TabLayout tabLayout = mView.findViewById(R.id.tabs);
+
+        tabLayout.setupWithViewPager(mViewPager);
+
+    }
+
+
+    private void initializeViewPager() {
+
+        classListPagerAdapter = new ClassListPagerAdapter(getChildFragmentManager());
+
+        classListPagerAdapter.addFragment(new SaturdayClasses(),"Saturday");
+        classListPagerAdapter.addFragment(new SundayClasses(),"Sunday");
+        classListPagerAdapter.addFragment(new MondayClasses(),"Monday");
+        classListPagerAdapter.addFragment(new TuesdayCLasses(),"Tuesday");
+        classListPagerAdapter.addFragment(new WednesdayClasses(),"Wednesday");
+        classListPagerAdapter.addFragment(new ThursdayClasses(),"Thursday");
+        classListPagerAdapter.addFragment(new FridayClasses(),"Friday");
+
+        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setAdapter(classListPagerAdapter);
 
     }
 

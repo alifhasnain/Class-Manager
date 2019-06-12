@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setUpHomeFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
+                .addToBackStack("classes")
                 .replace(R.id.fragment_container,new Classes(),"classes")
                 .commit();
 

@@ -22,7 +22,6 @@ import com.github.tutorialsandroid.filepicker.model.DialogProperties;
 import com.github.tutorialsandroid.filepicker.view.FilePickerDialog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -33,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.activities.MainActivity;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
 import de.siegmar.fastcsv.reader.CsvParser;
 import de.siegmar.fastcsv.reader.CsvReader;
@@ -286,32 +284,80 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
                 ClassDetails cd6 = new ClassDetails(row.getField(15).trim(), row.getField(16).trim(), row.getField(17).trim());
 
                 if (!cd1.getRoom().isEmpty()) {
-                    cd1.setTime("08:30-10:00");
+                    cd1.setTime("08:30AM-10:00AM");
+                    if (!cd1.getCourseCode().isEmpty()) {
+                        cd1.setSection(getModifiedSection(cd1.getCourseCode()));
+                        cd1.setCourseCode(getModifiedCourseCode(cd1.getCourseCode()));
+                    }
+                    else {
+                        cd1.setSection("");
+                    }
+                    cd1.setPriority(1f);
                     classes.add(cd1);
                 }
 
                 if (!cd2.getRoom().isEmpty()) {
-                    cd2.setTime("10:00-11:30");
+                    cd2.setTime("10:00AM-11:30AM");
+                    if (!cd2.getCourseCode().isEmpty()) {
+                        cd2.setSection(getModifiedSection(cd2.getCourseCode()));
+                        cd2.setCourseCode(getModifiedCourseCode(cd2.getCourseCode()));
+                    }
+                    else {
+                        cd2.setSection("");
+                    }
+                    cd2.setPriority(2f);
                     classes.add(cd2);
                 }
 
                 if (!cd3.getRoom().isEmpty()) {
-                    cd3.setTime("11.30-01:00");
+                    cd3.setTime("11.30AM-01:00PM");
+                    if (!cd3.getCourseCode().isEmpty()) {
+                        cd3.setSection(getModifiedSection(cd3.getCourseCode()));
+                        cd3.setCourseCode(getModifiedCourseCode(cd3.getCourseCode()));
+                    }
+                    else {
+                        cd3.setSection("");
+                    }
+                    cd3.setPriority(3f);
                     classes.add(cd3);
                 }
 
                 if (!cd4.getRoom().isEmpty()) {
-                    cd4.setTime("01:00-02:30");
+                    cd4.setTime("01:00PM-02:30PM");
+                    if (!cd4.getCourseCode().isEmpty()) {
+                        cd4.setSection(getModifiedSection(cd4.getCourseCode()));
+                        cd4.setCourseCode(getModifiedCourseCode(cd4.getCourseCode()));
+                    }
+                    else {
+                        cd4.setSection("");
+                    }
+                    cd4.setPriority(4f);
                     classes.add(cd4);
                 }
 
                 if (!cd5.getRoom().isEmpty()) {
-                    cd5.setTime("02:30-04:00");
+                    cd5.setTime("02:30PM-04:00PM");
+                    if (!cd5.getCourseCode().isEmpty()) {
+                        cd5.setSection(getModifiedSection(cd5.getCourseCode()));
+                        cd5.setCourseCode(getModifiedCourseCode(cd5.getCourseCode()));
+                    }
+                    else {
+                        cd5.setSection("");
+                    }
+                    cd5.setPriority(5f);
                     classes.add(cd5);
                 }
 
                 if (!cd6.getRoom().isEmpty()) {
-                    cd6.setTime("04:00-05:30");
+                    cd6.setTime("04:00PM-05:30PM");
+                    if (!cd6.getCourseCode().isEmpty()) {
+                        cd6.setSection(getModifiedSection(cd6.getCourseCode()));
+                        cd6.setCourseCode(getModifiedCourseCode(cd6.getCourseCode()));
+                    }
+                    else {
+                        cd6.setSection("");
+                    }
+                    cd6.setPriority(6f);
                     classes.add(cd6);
                 }
             }
@@ -329,21 +375,53 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
 
                 if (!e1.getRoom().isEmpty()) {
                     e1.setTime("09:00-11:00");
+                    if (!e1.getCourseCode().isEmpty()) {
+                        e1.setSection(getModifiedSection(e1.getCourseCode()));
+                        e1.setCourseCode(getModifiedCourseCode(e1.getCourseCode()));
+                    }
+                    else {
+                        e1.setSection("");
+                    }
+                    e1.setPriority(1.5f);
                     classes.add(e1);
                 }
 
                 if (!e2.getRoom().isEmpty()) {
                     e2.setTime("11:00-01:00");
+                    if (!e2.getCourseCode().isEmpty()) {
+                        e2.setSection(getModifiedSection(e2.getCourseCode()));
+                        e2.setCourseCode(getModifiedCourseCode(e2.getCourseCode()));
+                    }
+                    else {
+                        e2.setSection("");
+                    }
+                    e2.setPriority(2.5f);
                     classes.add(e2);
                 }
 
                 if (!e3.getRoom().isEmpty()) {
                     e3.setTime("01:00-03:00");
+                    if (!e3.getCourseCode().isEmpty()) {
+                        e3.setSection(getModifiedSection(e3.getCourseCode()));
+                        e3.setCourseCode(getModifiedCourseCode(e3.getCourseCode()));
+                    }
+                    else {
+                        e3.setSection("");
+                    }
+                    e3.setPriority(4.5f);
                     classes.add(e3);
                 }
 
                 if (!e4.getRoom().isEmpty()) {
                     e4.setTime("03:00-05:00");
+                    if (!e4.getCourseCode().isEmpty()) {
+                        e4.setSection(getModifiedSection(e4.getCourseCode()));
+                        e4.setCourseCode(getModifiedCourseCode(e4.getCourseCode()));
+                    }
+                    else {
+                        e4.setSection("");
+                    }
+                    e4.setPriority(5.5f);
                     classes.add(e4);
                 }
 
@@ -362,7 +440,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
     private void up1(String shift) {
 
         if(saturdayClasses.size()<1)  {
-            Toast.makeText(getContext(), "No classes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "No mClasses", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -405,7 +483,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
     private void up2(String shift) {
 
         if(sundayClasses.size()<1)  {
-            Toast.makeText(getContext(), "No classes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "No mClasses", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -450,7 +528,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
     private void up3(String shift) {
 
         if(mondayClasses.size()<1)  {
-            Toast.makeText(getContext(), "No classes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "No mClasses", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -494,7 +572,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
     private void up4(String shift) {
 
         if(tuesdayClasses.size()<1)  {
-            Toast.makeText(getContext(), "No classes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "No mClasses", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -539,12 +617,12 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
     private void up5(String shift) {
 
         if(wednesdayClasses.size()<1)  {
-            Toast.makeText(getContext(), "No classes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "No mClasses", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if(sundayClasses.size()<1)  {
-            Toast.makeText(getContext(), "No classes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "No mClasses", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -589,7 +667,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
     private void up6(String shift) {
 
         if(thursdayClasses.size()<1)  {
-            Toast.makeText(getContext(), "No classes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "No mClasses", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -634,7 +712,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
     private void up7(String shift) {
 
         if(fridayClasses.size()<1)  {
-            Toast.makeText(getContext(), "No classes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "No mClasses", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -672,6 +750,16 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
         } else if (shift.equals("Evening")) {
 
         }
+    }
+
+    private String getModifiedCourseCode(String str) {
+        int length = str.length();
+        return str.substring(0,length-3);
+    }
+
+    private String getModifiedSection(String str)   {
+        int length = str.length();
+        return String.valueOf(str.charAt(length-2));
     }
 
     private void enableUploadButtons(boolean enabled) {

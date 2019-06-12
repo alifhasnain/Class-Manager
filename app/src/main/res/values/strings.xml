@@ -4,6 +4,65 @@
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--Course list -->
+    <string name="CSE112">Computer Fundamentals</string>
+    <string name="MAT111">Mathematics-I: Differential and Integral Calculus</string>
+    <string name="ENG113">Basic Functional English and English Spoken</string>
+    <string name="PHY113">Physics-I: Mechanics, Heat and Thermodynamics,Waves and Oscillation, Optics</string>
+    <string name="MAT121">Mathematics -II: Complex Variable, inear Algebra and Coordinate Geometry</string>
+    <string name="CSE122">Programming and Problem Solving</string>
+    <string name="CSE123">Problem Solving Lab	</string>
+    <string name="PHY123">Physics-II: Electricity, Magnetism and Modern Physics</string>
+    <string name="PHY124">Physics-II Lab</string>
+    <string name="ENG123">Writing and Comprehension	</string>
+    <string name="CSE131">Discrete Mathematics</string>
+    <string name="CSE132">Electrical Circuits</string>
+    <string name="CSE133">Electrical Circuits Lab</string>
+    <string name="CSE134">Data Structure</string>
+    <string name="CSE135">Data Structure Lab</string>
+    <string name="MAT131">Ordinary and Partial Differential Equations</string>
+    <string name="MAT211">Engineering Mathematics</string>
+    <string name="CSE212">Digital Electronics</string>
+    <string name="CSE213">Digital Electronics Lab</string>
+    <string name="CSE214">Object Oriented Programming</string>
+    <string name="CSE215">Object Oriented Programming Lab</string>
+    <string name="GED201">Bangladesh Studies</string>
+    <string name="CSE221">Algorithms</string>
+    <string name="CSE222">Algorithms Lab</string>
+    <string name="STA133">Statistics and Probability</string>
+    <string name="CSE224">Electronic Devices and Circuits</string>
+    <string name="CSE225">Electronic Devices and Circuits Lab</string>
+    <string name="CSE231">Microprocessor and Assembly Language</string>
+    <string name="CSE232">Microprocessor and Assembly Language Lab</string>
+    <string name="CSE233">Data Communication</string>
+    <string name="CSE234">Numerical Methods</string>
+    <string name="CSE235">Introduction to Bio-Informatics</string>
+    <string name="CSE311">Database Management System</string>
+    <string name="CSE312">Database Management System Lab	</string>
+    <string name="CSE313">Computer Networks	</string>
+    <string name="CSE314">Computer Networks Lab	</string>
+    <string name="ECO314">Economics</string>
+    <string name="CSE321">System Analysis and Design</string>
+    <string name="CSE322">Computer Architecture and Organization</string>
+    <string name="CSE323">Operating Systems</string>
+    <string name="CSE324">Operating Systems Lab</string>
+    <string name="GED321">Art of Living</string>
+    <string name="CSE331">Compiler Design</string>
+    <string name="CSE332">Compiler Design Lab</string>
+    <string name="CSE333">Software Engineering</string>
+    <string name="CSE334">Wireless Programming</string>
+    <string name="ACT301">Financial and Managerial Accounting 2	</string>
+    <string name="CSE412">Artificial Intelligence</string>
+    <string name="CSE413">Artificial Intelligence Lab</string>
+    <string name="CSE414">Simulation and Modelling</string>
+    <string name="CSE415">Simulation and Modelling Lab</string>
+    <string name="CSE417">Web Engineering</string>
+    <string name="CSE418">Web Engineering Lab</string>
+    <string name="CSE421">Computer Graphics</string>
+    <string name="CSE422">Computer Graphics Lab</string>
+    <string name="CSE423">Embedded Systems</string>
+    <string name="CSE499">Project / Internship (Phase I, to be completed in Level-4 Term-3</string>
+    <string name="CSE498">Social and Professional Issues in Computing	</string>
 </resources>
