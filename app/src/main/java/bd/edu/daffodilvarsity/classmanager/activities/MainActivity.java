@@ -1,6 +1,7 @@
 package bd.edu.daffodilvarsity.classmanager.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -19,8 +21,9 @@ import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.fragments.AdminPanel;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookedClasses;
-import bd.edu.daffodilvarsity.classmanager.fragments.Classes;
+import bd.edu.daffodilvarsity.classmanager.fragments.ClassesList;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileTeacher;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.CourseCodeHelper;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     DrawerLayout mDrawerLayout;
 
+    Toolbar mToolBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initializeVariables();
 
-        if(mAuth.getCurrentUser()==null && !isEmailVerified() ) {
+        if(mAuth.getCurrentUser()!=null && !isEmailVerified() ) {
             mAuth.signOut();
         }
         
@@ -50,10 +55,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setUpHomeFragment() {
+        /*getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container,new ClassesList(),"classes")
+                .commit();*/
         getSupportFragmentManager()
                 .beginTransaction()
-                .addToBackStack("classes")
-                .replace(R.id.fragment_container,new Classes(),"classes")
+                .replace(R.id.fragment_container,new ProfileTeacher(),"classes")
                 .commit();
 
     }
@@ -94,14 +102,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         };
         mDrawerLayout = findViewById(R.id.drawer_layout);
+        mToolBar = findViewById(R.id.toolbar);
     }
 
     private void setUpNavigationDrawer() {
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolBar);
 
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolBar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
 
         mDrawerLayout.addDrawerListener(drawerToggle);
 
@@ -109,11 +117,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
 
-        navigationView.inflateMenu(R.menu.drawer_menu_admin);
+        switch (getUserType())  {
+            case CourseCodeHelper.USER_TYPE_ADMIN:
+                navigationView.inflateMenu(R.menu.drawer_menu_admin);
+                break;
+            case CourseCodeHelper.USER_TYPE_TEACHER:
+                navigationView.inflateMenu(R.menu.drawer_menu_admin);
+                break;
+            case CourseCodeHelper.USER_TYPE_STUDENT:
+                navigationView.inflateMenu(R.menu.drawer_menu_student);
+                break;
+        }
 
         navigationView.setNavigationItemSelectedListener(this);
 
         navigationView.setCheckedItem(R.id.classes);
+    }
+
+    private String getUserType()    {
+        SharedPreferences sharedPreferences = getSharedPreferences("shared_preferences",MODE_PRIVATE);
+        String userType = sharedPreferences.getString(CourseCodeHelper.USER_TYPE,null);
+        return userType;
+    }
+
+    private void enableToolbarScrolling(boolean b) {
+        AppBarLayout.LayoutParams parms = (AppBarLayout.LayoutParams) mToolBar.getLayoutParams();
+        if(b)   {
+            parms.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+        }
+        else    {
+            parms.setScrollFlags(0);
+        }
+        mToolBar.setLayoutParams(parms);
     }
 
     @Override
@@ -121,30 +156,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId())
         {
             case R.id.admin:
+                enableToolbarScrolling(false);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container,new AdminPanel(),"admin_panel")
                         .commit();
                 break;
             case R.id.profile:
+                enableToolbarScrolling(false);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container,new ProfileTeacher(),"teacher_profile")
                         .commit();
                 break;
             case R.id.classes:
+                enableToolbarScrolling(true);
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment_container,new Classes(),"classes")
+                        .replace(R.id.fragment_container,new ClassesList(),"classes")
                         .commit();
                 break;
             case R.id.book_classes:
+                enableToolbarScrolling(true);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container,new BookClasses(),"book_classes")
                         .commit();
                 break;
             case R.id.booked_classroom:
+                enableToolbarScrolling(true);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container,new BookedClasses(),"booked_classes")

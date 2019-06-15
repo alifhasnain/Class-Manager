@@ -25,7 +25,6 @@
                 android:background="@color/colorPrimary"
                 android:gravity="center"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         </com.google.android.material.appbar.AppBarLayout>

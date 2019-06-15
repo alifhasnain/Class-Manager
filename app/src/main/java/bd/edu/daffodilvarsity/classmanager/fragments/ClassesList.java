@@ -17,7 +17,7 @@ import bd.edu.daffodilvarsity.classmanager.adapters.ClassListPagerAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Classes extends Fragment {
+public class ClassesList extends Fragment {
 
     private View mView;
 
@@ -25,7 +25,7 @@ public class Classes extends Fragment {
 
     private ViewPager mViewPager;
 
-    public Classes() {
+    public ClassesList() {
         // Required empty public constructor
     }
 
@@ -75,7 +75,7 @@ public class Classes extends Fragment {
         classListPagerAdapter.addFragment(new ThursdayClasses(),"Thursday");
         classListPagerAdapter.addFragment(new FridayClasses(),"Friday");
 
-        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setOffscreenPageLimit(7);
         mViewPager.setAdapter(classListPagerAdapter);
 
     }

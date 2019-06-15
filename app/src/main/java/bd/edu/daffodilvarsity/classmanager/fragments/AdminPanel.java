@@ -63,7 +63,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
     private Button mUpload6;
     private Button mUpload7;
 
-    //No Of Classes
+    //No Of ClassesList
     private TextView classes1;
     private TextView classes2;
     private TextView classes3;
@@ -808,13 +808,13 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
     }
 
     private void updateClassSize() {
-        classes1.setText(saturdayClasses.size() + " Classes");
-        classes2.setText(sundayClasses.size() + " Classes");
-        classes3.setText(mondayClasses.size() + " Classes");
-        classes4.setText(tuesdayClasses.size() + " Classes");
-        classes5.setText(wednesdayClasses.size() + " Classes");
-        classes6.setText(thursdayClasses.size() + " Classes");
-        classes7.setText(fridayClasses.size() + " Classes");
+        classes1.setText(saturdayClasses.size() + " ClassesList");
+        classes2.setText(sundayClasses.size() + " ClassesList");
+        classes3.setText(mondayClasses.size() + " ClassesList");
+        classes4.setText(tuesdayClasses.size() + " ClassesList");
+        classes5.setText(wednesdayClasses.size() + " ClassesList");
+        classes6.setText(thursdayClasses.size() + " ClassesList");
+        classes7.setText(fridayClasses.size() + " ClassesList");
     }
 
     private boolean hasStoragePermission() {

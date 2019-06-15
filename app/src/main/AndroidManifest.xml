@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bd.edu.daffodilvarsity.classmanager">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -11,13 +12,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="bd.edu.daffodilvarsity.classmanager.activities.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name="bd.edu.daffodilvarsity.classmanager.activities.ForgotPassword"
+        <activity android:name=".activities.CompleteNewProfileStudent"
+            android:theme="@style/AppTheme2"/>
+        <activity
+            android:name=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.ForgotPassword"
             android:theme="@style/AppTheme.NoActionbar.FullScreen" />
-        <activity android:name="bd.edu.daffodilvarsity.classmanager.activities.SignUp"
-            android:theme="@style/AppTheme.NoActionbar.FullScreen"/>
-        <activity android:name="bd.edu.daffodilvarsity.classmanager.activities.SignIn"
+        <activity
+            android:name=".activities.SignUp"
+            android:theme="@style/AppTheme.NoActionbar.FullScreen" />
+        <activity
+            android:name=".activities.SignIn"
             android:theme="@style/AppTheme.NoActionbar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
