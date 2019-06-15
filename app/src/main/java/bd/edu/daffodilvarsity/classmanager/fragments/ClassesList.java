@@ -75,7 +75,6 @@ public class ClassesList extends Fragment {
         classListPagerAdapter.addFragment(new ThursdayClasses(),"Thursday");
         classListPagerAdapter.addFragment(new FridayClasses(),"Friday");
 
-        mViewPager.setOffscreenPageLimit(7);
         mViewPager.setAdapter(classListPagerAdapter);
 
     }

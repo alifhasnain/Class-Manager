@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.CourseCodeHelper;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
@@ -220,9 +220,9 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     private void saveCoursesWithSharedPreference(String level, String term,String section) {
 
-        CourseCodeHelper courseCodeHelper = new CourseCodeHelper();
+        HelperClass helperClass = new HelperClass();
 
-        ArrayList<String> coursesList = courseCodeHelper.getCourseList(level,term);
+        ArrayList<String> coursesList = helperClass.getCourseList(level,term);
 
         HashMap<String,String> coursesMap = new HashMap<>();
         
@@ -230,7 +230,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
             coursesMap.put(courseCode,section);
         }
 
-        SharedPreferences sharedPreferences = getSharedPreferences("shared_preferences",MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -238,18 +238,18 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
         String courseMapInJson = gson.toJson(coursesMap);
 
-        editor.putString(CourseCodeHelper.COURSES_HASH_MAP,courseMapInJson).apply();
+        editor.putString(HelperClass.COURSES_HASH_MAP,courseMapInJson).apply();
     }
 
     private HashMap<String,String> getCoursesFromSharedPreferences()  {
 
         HashMap<String,String> courseHashMap;
 
-        SharedPreferences sharedPreferences = getSharedPreferences("shared_preferences",MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
 
         Gson gson = new Gson();
 
-        String coursesInJson = sharedPreferences.getString(CourseCodeHelper.COURSES_HASH_MAP,null);
+        String coursesInJson = sharedPreferences.getString(HelperClass.COURSES_HASH_MAP,null);
 
         Type type = new TypeToken<HashMap<String,String>>() {}.getType();
 
@@ -259,29 +259,30 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void completeProfileStudent() {
-        setUserType(CourseCodeHelper.USER_TYPE_STUDENT);
+        setUserType(HelperClass.USER_TYPE_STUDENT);
         makeToast("Please complete your profile information");
         startActivity(new Intent(this,CompleteNewProfileStudent.class));
     }
 
     private void signInAsStudent() {
-        setUserType(CourseCodeHelper.USER_TYPE_STUDENT);
+        setUserType(HelperClass.USER_TYPE_STUDENT);
         startMainActivity();
     }
 
     private void signInAsTeacher() {
-        setUserType(CourseCodeHelper.USER_TYPE_TEACHER);
+        setUserType(HelperClass.USER_TYPE_TEACHER);
         startMainActivity();
     }
 
     private void startMainActivity() {
         startActivity(new Intent(this,MainActivity.class));
+        finish();
     }
 
     private void setUserType(String type) {
-        SharedPreferences sharedPreferences = getSharedPreferences("shared_preferences", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(CourseCodeHelper.USER_TYPE, type).apply();
+        editor.putString(HelperClass.USER_TYPE, type).apply();
     }
 
     private void initializeOnClickListeners() {

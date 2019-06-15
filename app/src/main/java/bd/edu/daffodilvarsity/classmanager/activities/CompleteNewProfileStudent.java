@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.CourseCodeHelper;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
 
 public class CompleteNewProfileStudent extends AppCompatActivity implements View.OnClickListener {
@@ -75,7 +75,7 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
         mCse = findViewById(R.id.cse);
         mLevel = findViewById(R.id.level);
         mTerm = findViewById(R.id.term);
-        mSection = findViewById(R.id.section);
+        mSection = findViewById(R.id.section_spinner);
     }
 
     private void initializeOnClickListeners() {
@@ -146,6 +146,8 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
         profile.setTerm(term);
 
+        profile.setSection(section);
+
         DocumentReference docRef = db.document("/student_profiles/" + mAuth.getCurrentUser().getUid());
 
         docRef.set(profile)
@@ -167,9 +169,9 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
     private void saveCourseWithSharedPreference(String level,String term,String section) {
 
-        CourseCodeHelper courseCodeHelper = new CourseCodeHelper();
+        HelperClass helperClass = new HelperClass();
 
-        ArrayList<String> coursesList = courseCodeHelper.getCourseList(level,term);
+        ArrayList<String> coursesList = helperClass.getCourseList(level,term);
 
         HashMap<String,String> coursesMap = new HashMap<>();
 
@@ -177,7 +179,7 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
             coursesMap.put(courseCode,section);
         }
 
-        SharedPreferences sharedPreferences = getSharedPreferences("shared_preferences",MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -185,7 +187,7 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
         String courseMapInJson = gson.toJson(coursesMap);
 
-        editor.putString(CourseCodeHelper.COURSES_HASH_MAP,courseMapInJson).apply();
+        editor.putString(HelperClass.COURSES_HASH_MAP,courseMapInJson).apply();
     }
 
     private boolean checkGivenInfo() {

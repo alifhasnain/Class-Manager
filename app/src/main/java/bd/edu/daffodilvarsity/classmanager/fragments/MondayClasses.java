@@ -38,7 +38,7 @@ import java.util.List;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.ClassListRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.CourseCodeHelper;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -79,9 +79,9 @@ public class MondayClasses extends Fragment {
 
         initializeVariables(view);
 
-        if (getUserType().equals(CourseCodeHelper.USER_TYPE_TEACHER)) {
+        if (getUserType().equals(HelperClass.USER_TYPE_TEACHER)) {
             loadTeacherInitialAndClasses();
-        } else if (getUserType().equals(CourseCodeHelper.USER_TYPE_STUDENT)) {
+        } else if (getUserType().equals(HelperClass.USER_TYPE_STUDENT)) {
             loadDataStudent();
         }
 
@@ -96,9 +96,9 @@ public class MondayClasses extends Fragment {
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (getUserType().equals(CourseCodeHelper.USER_TYPE_TEACHER)) {
+                if (getUserType().equals(HelperClass.USER_TYPE_TEACHER)) {
                     loadTeacherInitialAndClasses();
-                } else if (getUserType().equals(CourseCodeHelper.USER_TYPE_STUDENT)) {
+                } else if (getUserType().equals(HelperClass.USER_TYPE_STUDENT)) {
                     loadDataStudent();
                 }
             }
@@ -249,11 +249,11 @@ public class MondayClasses extends Fragment {
 
         HashMap<String, String> courseHashMap;
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("shared_preferences", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
 
         Gson gson = new Gson();
 
-        String coursesInJson = sharedPreferences.getString(CourseCodeHelper.COURSES_HASH_MAP, null);
+        String coursesInJson = sharedPreferences.getString(HelperClass.COURSES_HASH_MAP, null);
 
         Type type = new TypeToken<HashMap<String, String>>() {
         }.getType();
@@ -264,8 +264,8 @@ public class MondayClasses extends Fragment {
     }
 
     private String getUserType() {
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("shared_preferences", MODE_PRIVATE);
-        return sharedPreferences.getString(CourseCodeHelper.USER_TYPE, null);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+        return sharedPreferences.getString(HelperClass.USER_TYPE, null);
     }
 
     private void notifyRecyclerViewAdapter() {

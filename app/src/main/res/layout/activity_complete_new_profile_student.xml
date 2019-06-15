@@ -46,7 +46,7 @@
             android:weightSum="3">
 
             <Spinner
-                android:id="@+id/section"
+                android:id="@+id/section_spinner"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>

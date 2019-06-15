@@ -47,7 +47,7 @@
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Alif Hasnain"
+                    android:text="Dummy Name"
                     android:textColor="@color/semi_transparent_black"
                     android:textSize="22sp" />
 
@@ -55,7 +55,7 @@
                     android:id="@+id/designation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Professor"
+                    android:text="jlkajsdl"
                     android:textColor="@color/semi_transparent_black"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -125,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="15dp"
                     android:paddingEnd="15dp"
-                    android:text="AH"
+                    android:text="JDL"
                     android:textColor="@color/semi_transparent_black"
                     android:textSize="20sp" />
 

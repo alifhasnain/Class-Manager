@@ -22,8 +22,9 @@ import bd.edu.daffodilvarsity.classmanager.fragments.AdminPanel;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookedClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.ClassesList;
+import bd.edu.daffodilvarsity.classmanager.fragments.ProfileStudents;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileTeacher;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.CourseCodeHelper;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -55,15 +56,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setUpHomeFragment() {
-        /*getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container,new ClassesList(),"classes")
-                .commit();*/
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container,new ProfileTeacher(),"classes")
+                .replace(R.id.fragment_container,new ClassesList(),"classes")
                 .commit();
-
     }
 
     @Override
@@ -118,13 +114,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.navigation_view);
 
         switch (getUserType())  {
-            case CourseCodeHelper.USER_TYPE_ADMIN:
+            case HelperClass.USER_TYPE_ADMIN:
                 navigationView.inflateMenu(R.menu.drawer_menu_admin);
                 break;
-            case CourseCodeHelper.USER_TYPE_TEACHER:
+            case HelperClass.USER_TYPE_TEACHER:
                 navigationView.inflateMenu(R.menu.drawer_menu_admin);
                 break;
-            case CourseCodeHelper.USER_TYPE_STUDENT:
+            case HelperClass.USER_TYPE_STUDENT:
                 navigationView.inflateMenu(R.menu.drawer_menu_student);
                 break;
         }
@@ -135,9 +131,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private String getUserType()    {
-        SharedPreferences sharedPreferences = getSharedPreferences("shared_preferences",MODE_PRIVATE);
-        String userType = sharedPreferences.getString(CourseCodeHelper.USER_TYPE,null);
-        return userType;
+        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
+        return sharedPreferences.getString(HelperClass.USER_TYPE,null);
     }
 
     private void enableToolbarScrolling(boolean b) {
@@ -162,11 +157,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .replace(R.id.fragment_container,new AdminPanel(),"admin_panel")
                         .commit();
                 break;
-            case R.id.profile:
+            case R.id.profile_teacher:
                 enableToolbarScrolling(false);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container,new ProfileTeacher(),"teacher_profile")
+                        .commit();
+                break;
+            case R.id.profile_student:
+                enableToolbarScrolling(false);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container,new ProfileStudents(),"teacher_profile")
                         .commit();
                 break;
             case R.id.classes:

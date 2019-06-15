@@ -2,7 +2,9 @@ package bd.edu.daffodilvarsity.classmanager.otherclasses;
 
 import java.util.ArrayList;
 
-public class CourseCodeHelper {
+public class HelperClass {
+
+    public static final String SHARED_PREFERENCE_TAG = "shared_preferences";
 
     public static final String LEVEL = "level";
 
