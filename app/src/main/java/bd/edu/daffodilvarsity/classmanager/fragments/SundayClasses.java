@@ -23,7 +23,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -79,13 +78,13 @@ public class SundayClasses extends Fragment {
 
         initializeVariables(view);
 
+        initializeRecyclerView();
+
         if (getUserType().equals(HelperClass.USER_TYPE_TEACHER)) {
             loadTeacherInitialAndClasses();
         } else if (getUserType().equals(HelperClass.USER_TYPE_STUDENT)) {
             loadDataStudent();
         }
-
-        initializeRecyclerView();
 
         return view;
     }
@@ -108,10 +107,6 @@ public class SundayClasses extends Fragment {
     private void initializeVariables(View view) {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setPersistenceEnabled(true)
-                .build();
-        db.setFirestoreSettings(settings);
         mSundayRef = db.collection("main_campus/classes_day/sunday");
         progressBar = view.findViewById(R.id.progress_bar);
         loadingContent = view.findViewById(R.id.loading_content);

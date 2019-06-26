@@ -6,11 +6,15 @@ public class ClassDetails {
 
     private String courseCode;
 
+    private String courseName;
+
     private String teacherInitial;
 
     private String time;
 
     private String section;
+
+    private String batch = "";
 
     private float priority;
 
@@ -24,11 +28,11 @@ public class ClassDetails {
         this.teacherInitial = teacherInitial;
     }
 
-    public ClassDetails(String room, String courseCode, String teacherInitial, String time) {
+    public ClassDetails(String room, String courseCode, String courseName, String teacherInitial) {
         this.room = room;
         this.courseCode = courseCode;
+        this.courseName = courseName;
         this.teacherInitial = teacherInitial;
-        this.time = time;
     }
 
     public String getRoom() {
@@ -69,6 +73,14 @@ public class ClassDetails {
 
     public void setSection(String section) {
         this.section = section;
+    }
+
+    public String getBatch() {
+        return batch;
+    }
+
+    public void setBatch(String batch) {
+        this.batch = batch;
     }
 
     public float getPriority() {

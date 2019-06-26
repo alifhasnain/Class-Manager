@@ -4,6 +4,8 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,11 +17,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 public class ForgotPassword extends AppCompatActivity {
-
-    SmoothProgressBar mSmoothProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +26,6 @@ public class ForgotPassword extends AppCompatActivity {
         setContentView(R.layout.activity_forgot_password);
 
         startGradientAnimation();
-
-        mSmoothProgressBar = findViewById(R.id.smooth_progress_bar);
 
         findViewById(R.id.send_password_reset_email).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +46,7 @@ public class ForgotPassword extends AppCompatActivity {
             return;
         }
 
-        mSmoothProgressBar.setVisibility(View.VISIBLE);
+        showCircularProgressBar(true);
         FirebaseAuth.getInstance().sendPasswordResetEmail(sEmail)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -57,15 +54,28 @@ public class ForgotPassword extends AppCompatActivity {
                         if(task.isSuccessful()) {
                             email.getEditText().setText("");
                             Toast.makeText(ForgotPassword.this, "Password reset email has been sent\nPlease check your inbox.", Toast.LENGTH_SHORT).show();
-                            mSmoothProgressBar.setVisibility(View.INVISIBLE);
+                            showCircularProgressBar(false);
 
                         }
                         else {
                             Toast.makeText(ForgotPassword.this, "Failed to send verification email\nPlease check your Email or Internet connection.", Toast.LENGTH_SHORT).show();
-                            mSmoothProgressBar.setVisibility(View.INVISIBLE);
+                            showCircularProgressBar(false);
                         }
                     }
                 });
+    }
+
+    private void showCircularProgressBar(boolean visible) {
+        LinearLayout progressBarHolder = findViewById(R.id.progress_bar_holder);
+        ProgressBar progressBar = findViewById(R.id.circular_progress_bar);
+
+        if (visible) {
+            progressBarHolder.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBarHolder.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     private void startGradientAnimation() {

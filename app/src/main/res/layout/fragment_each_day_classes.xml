@@ -23,6 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp"
+                android:visibility="gone"
                 android:text="Loading content"
                 android:textSize="18sp" />
 

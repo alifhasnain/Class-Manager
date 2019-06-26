@@ -11,7 +11,7 @@
     <string name="MAT111">Mathematics-I: Differential and Integral Calculus</string>
     <string name="ENG113">Basic Functional English and English Spoken</string>
     <string name="PHY113">Physics-I: Mechanics, Heat and Thermodynamics,Waves and Oscillation, Optics</string>
-    <string name="MAT121">Mathematics -II: Complex Variable, inear Algebra and Coordinate Geometry</string>
+    <string name="MAT121">Mathematics -II: Complex Variable, linear Algebra and Coordinate Geometry</string>
     <string name="CSE122">Programming and Problem Solving</string>
     <string name="CSE123">Problem Solving Lab	</string>
     <string name="PHY123">Physics-II: Electricity, Magnetism and Modern Physics</string>
@@ -64,5 +64,5 @@
     <string name="CSE422">Computer Graphics Lab</string>
     <string name="CSE423">Embedded Systems</string>
     <string name="CSE499">Project / Internship (Phase I, to be completed in Level-4 Term-3</string>
-    <string name="CSE498">Social and Professional Issues in Computing	</string>
+    <string name="CSE498">Social and Professional Issues in Computing</string>
 </resources>

@@ -111,6 +111,7 @@
                         android:id="@+id/classes_1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_weight="3" />
 
                     <Button
@@ -158,6 +159,7 @@
                         android:id="@+id/classes_2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_weight="3" />
 
                     <Button
@@ -205,6 +207,7 @@
                         android:id="@+id/classes_3"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_weight="3" />
 
                     <Button
@@ -252,6 +255,7 @@
                         android:id="@+id/classes_4"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_weight="3" />
 
                     <Button
@@ -299,6 +303,7 @@
                         android:id="@+id/classes_5"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_weight="3" />
 
                     <Button
@@ -346,6 +351,7 @@
                         android:id="@+id/classes_6"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_weight="3" />
 
                     <Button
@@ -393,6 +399,7 @@
                         android:id="@+id/classes_7"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_weight="3" />
 
                     <Button

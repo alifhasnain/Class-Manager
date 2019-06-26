@@ -6,6 +6,8 @@ import android.transition.Fade;
 import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,15 +25,12 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 public class SignUp extends AppCompatActivity implements View.OnClickListener {
 
     FirebaseAuth mAuth;
 
     FirebaseAuth.AuthStateListener mAuthStateListener;
-
-    SmoothProgressBar mSmoothProgressBar;
 
     TextInputLayout mEmailEditText;
 
@@ -53,8 +52,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void initializeVariables() {
-
-        mSmoothProgressBar = findViewById(R.id.smooth_progress_bar);
 
         mEmailEditText = findViewById(R.id.email);
 
@@ -146,7 +143,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
             return;
         }
 
-        mSmoothProgressBar.setVisibility(View.VISIBLE);
+        showCircularProgressBar(true);
 
         mAuth.createUserWithEmailAndPassword(sEmail, sPassword).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -154,7 +151,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
 
                 if (!task.isSuccessful()) {
 
-                    mSmoothProgressBar.setVisibility(View.INVISIBLE);
+                    showCircularProgressBar(false);
 
                     if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                         makeSnackBar("User already exist.\nTry resetting password.");
@@ -196,17 +193,30 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful() && !isEmailVerified()) {
-                    mSmoothProgressBar.setVisibility(View.INVISIBLE);
+                    showCircularProgressBar(false);
                     makeToast("Verification Email is sent confirm registration and Sign In");
                     mEmailEditText.getEditText().setText("");
                     mPasswordEditText.getEditText().setText("");
                 }
                 else if(!task.isSuccessful())   {
-                    mSmoothProgressBar.setVisibility(View.INVISIBLE);
+                    showCircularProgressBar(false);
                 }
                 signOut();
             }
         });
+    }
+
+    private void showCircularProgressBar(boolean visible) {
+        LinearLayout progressBarHolder = findViewById(R.id.progress_bar_holder);
+        ProgressBar progressBar = findViewById(R.id.circular_progress_bar);
+
+        if (visible) {
+            progressBarHolder.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBarHolder.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     private void signOut() {

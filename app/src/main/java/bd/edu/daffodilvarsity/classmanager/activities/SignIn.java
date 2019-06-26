@@ -9,6 +9,8 @@ import android.util.Pair;
 import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,7 +41,6 @@ import java.util.HashMap;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
@@ -48,8 +49,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
     FirebaseAuth.AuthStateListener mAuthStateListener;
 
     FirebaseFirestore db;
-
-    SmoothProgressBar mSmoothProgressBar;
 
     TextInputLayout mEmailEditText;
 
@@ -64,44 +63,8 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
         initializeVariables();
 
-        //testMethod();
-
         initializeOnClickListeners();
 
-    }
-
-    private void testMethod() {
-        //startActivity(new Intent(this,CompleteNewProfileStudent.class));
-        //finish();
-
-
-        CollectionReference admins = db.collection("/admin_list/");
-
-        final ArrayList<String> adminList = new ArrayList<>();
-
-        admins.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (DocumentSnapshot ds : queryDocumentSnapshots) {
-                    adminList.add(ds.getString("email"));
-                }
-
-                String adminStr = "";
-
-                for (String adminEmail : adminList) {
-                    adminStr += adminEmail + "\n";
-                }
-
-                makeToast(adminStr);
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        makeToast("Error!");
-                        e.printStackTrace();
-                    }
-                });
     }
 
     @Override
@@ -119,21 +82,18 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
     private void initializeVariables() {
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null && isEmailVerified()) {
-                    checkIfNewUserIsAdminOrTeacher();
+                    ifUserIsAdmin();
                 } else if (firebaseAuth.getCurrentUser() != null) {
                     sendVerificationMail();
                 }
             }
         };
-
-        db = FirebaseFirestore.getInstance();
-
-        mSmoothProgressBar = findViewById(R.id.smooth_progress_bar);
 
         mEmailEditText = findViewById(R.id.email);
 
@@ -141,9 +101,49 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    private void checkIfNewUserIsAdminOrTeacher() {
+    private void ifUserIsAdmin() {
 
-        mSmoothProgressBar.setVisibility(View.VISIBLE);
+        showCircularProgressBar(true);
+
+        CollectionReference admins = db.collection("/admin_list/");
+
+        //Get current user email
+        String email = mAuth.getCurrentUser().getEmail();
+
+        admins.whereEqualTo("email",email)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                        boolean isAdmin = false;
+
+                        for (DocumentSnapshot ds : queryDocumentSnapshots) {
+                            isAdmin = true;
+                        }
+
+                        if(isAdmin)   {
+                            signInAsAdmin();
+                            showCircularProgressBar(false);
+                        }
+                        else {
+                            ifUserIsTeacher();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        makeToast("Error!Try again.");
+                        e.printStackTrace();
+                        showCircularProgressBar(false);
+                    }
+                });
+    }
+
+    private void ifUserIsTeacher() {
+
+        showCircularProgressBar(true);
 
         String email = mAuth.getCurrentUser().getEmail();
 
@@ -154,15 +154,15 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                        int i = 0;
+                        boolean isTeacher = false;
 
                         for (DocumentSnapshot ds : queryDocumentSnapshots) {
-                            i++;
+                            isTeacher = true;
                         }
 
-                        if (i >= 1) {
+                        if (isTeacher) {
                             signInAsTeacher();
-                            mSmoothProgressBar.setVisibility(View.INVISIBLE);
+                            showCircularProgressBar(false);
                         } else {
                             checkIfNewUserIsStudent();
                         }
@@ -172,7 +172,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         makeToast("Failed to load please check your internet connection and try again");
-                        mSmoothProgressBar.setVisibility(View.INVISIBLE);
+                        showCircularProgressBar(false);
                     }
                 });
 
@@ -180,7 +180,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     private void checkIfNewUserIsStudent() {
 
-        mSmoothProgressBar.setVisibility(View.VISIBLE);
+        showCircularProgressBar(true);
 
         String uid = mAuth.getCurrentUser().getUid();
 
@@ -195,16 +195,17 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
                             ProfileObjectStudent profile = documentSnapshot.toObject(ProfileObjectStudent.class);
 
-                            if(getCoursesFromSharedPreferences()==null) {
-                                saveCoursesWithSharedPreference(profile.getLevel(),profile.getTerm(),profile.getSection());
+                            if (getCoursesFromSharedPreferences() == null) {
+                                saveCoursesWithSharedPreference(profile.getLevel(), profile.getTerm(), profile.getSection());
                             }
 
                             signInAsStudent();
 
-                            mSmoothProgressBar.setVisibility(View.INVISIBLE);
+                            showCircularProgressBar(false);
+
                         } else {
                             completeProfileStudent();
-                            mSmoothProgressBar.setVisibility(View.INVISIBLE);
+                            showCircularProgressBar(false);
                         }
                     }
                 })
@@ -212,25 +213,25 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         makeToast("Failed to load please check your internet connection and try again");
-                        mSmoothProgressBar.setVisibility(View.INVISIBLE);
+                        showCircularProgressBar(false);
                     }
                 });
 
     }
 
-    private void saveCoursesWithSharedPreference(String level, String term,String section) {
+    private void saveCoursesWithSharedPreference(String level, String term, String section) {
 
         HelperClass helperClass = new HelperClass();
 
-        ArrayList<String> coursesList = helperClass.getCourseList(level,term);
+        ArrayList<String> coursesList = helperClass.getCourseList(level, term);
 
-        HashMap<String,String> coursesMap = new HashMap<>();
-        
-        for(String courseCode : coursesList)    {
-            coursesMap.put(courseCode,section);
+        HashMap<String, String> coursesMap = new HashMap<>();
+
+        for (String courseCode : coursesList) {
+            coursesMap.put(courseCode, section);
         }
 
-        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -238,22 +239,23 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
         String courseMapInJson = gson.toJson(coursesMap);
 
-        editor.putString(HelperClass.COURSES_HASH_MAP,courseMapInJson).apply();
+        editor.putString(HelperClass.COURSES_HASH_MAP, courseMapInJson).apply();
     }
 
-    private HashMap<String,String> getCoursesFromSharedPreferences()  {
+    private HashMap<String, String> getCoursesFromSharedPreferences() {
 
-        HashMap<String,String> courseHashMap;
+        HashMap<String, String> courseHashMap;
 
-        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
 
         Gson gson = new Gson();
 
-        String coursesInJson = sharedPreferences.getString(HelperClass.COURSES_HASH_MAP,null);
+        String coursesInJson = sharedPreferences.getString(HelperClass.COURSES_HASH_MAP, null);
 
-        Type type = new TypeToken<HashMap<String,String>>() {}.getType();
+        Type type = new TypeToken<HashMap<String, String>>() {
+        }.getType();
 
-        courseHashMap = gson.fromJson(coursesInJson,type);
+        courseHashMap = gson.fromJson(coursesInJson, type);
 
         return courseHashMap;
     }
@@ -261,7 +263,12 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
     private void completeProfileStudent() {
         setUserType(HelperClass.USER_TYPE_STUDENT);
         makeToast("Please complete your profile information");
-        startActivity(new Intent(this,CompleteNewProfileStudent.class));
+        startActivity(new Intent(this, CompleteNewProfileStudent.class));
+    }
+
+    private void signInAsAdmin()    {
+        setUserType(HelperClass.USER_TYPE_ADMIN);
+        startMainActivity();
     }
 
     private void signInAsStudent() {
@@ -275,7 +282,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void startMainActivity() {
-        startActivity(new Intent(this,MainActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
@@ -333,14 +340,14 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
             return;
         }
 
-        mSmoothProgressBar.setVisibility(View.VISIBLE);
+        showCircularProgressBar(true);
 
         mAuth.signInWithEmailAndPassword(sEmail, sPassword).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 if (!task.isSuccessful()) {
-                    mSmoothProgressBar.setVisibility(View.INVISIBLE);
+                    showCircularProgressBar(false);
                     if (task.getException() instanceof FirebaseAuthInvalidUserException) {
                         makeToast("Email does not exist in database.");
                     } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
@@ -361,17 +368,30 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful() && !isEmailVerified()) {
-                    mSmoothProgressBar.setVisibility(View.INVISIBLE);
+                    showCircularProgressBar(false);
                     makeToast("Verification Email is sent confirm registration and SignIn");
                     mEmailEditText.getEditText().setText("");
                     mPasswordEditText.getEditText().setText("");
                     signOut();
                 } else if (!task.isSuccessful()) {
-                    mSmoothProgressBar.setVisibility(View.INVISIBLE);
+                    showCircularProgressBar(true);
                 }
             }
         });
 
+    }
+
+    private void showCircularProgressBar(boolean visible) {
+        LinearLayout progressBarHolder = findViewById(R.id.progress_bar_holder);
+        ProgressBar progressBar = findViewById(R.id.circular_progress_bar);
+
+        if (visible) {
+            progressBarHolder.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBarHolder.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     private void signOut() {

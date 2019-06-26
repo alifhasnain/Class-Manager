@@ -11,6 +11,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.Calendar;
+
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.ClassListPagerAdapter;
 
@@ -56,10 +58,25 @@ public class ClassesList extends Fragment {
 
     private void initializeTabLayout() {
 
+        int selectedTabPosition = getDayOfWeekPosition() ;
+
+        if(selectedTabPosition<0 || selectedTabPosition>6)  {
+            selectedTabPosition = 0;
+        }
+
         TabLayout tabLayout = mView.findViewById(R.id.tabs);
 
         tabLayout.setupWithViewPager(mViewPager);
 
+        TabLayout.Tab tab = tabLayout.getTabAt(selectedTabPosition);
+
+        tab.select();
+
+    }
+
+    private int getDayOfWeekPosition()  {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.DAY_OF_WEEK);
     }
 
 

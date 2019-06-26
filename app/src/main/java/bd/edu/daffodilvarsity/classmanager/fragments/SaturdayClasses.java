@@ -25,7 +25,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -47,6 +46,8 @@ import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
  * A simple {@link Fragment} subclass.
  */
 public class SaturdayClasses extends Fragment {
+
+    private static final String TAG = "SaturdayClasses";
 
     private FirebaseAuth mAuth;
 
@@ -108,10 +109,6 @@ public class SaturdayClasses extends Fragment {
     private void initializeVariables(View view) {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setPersistenceEnabled(true)
-                .build();
-        db.setFirestoreSettings(settings);
         mSaturdayRef = db.collection("main_campus/classes_day/saturday");
         progressBar = view.findViewById(R.id.progress_bar);
         loadingContent = view.findViewById(R.id.loading_content);
@@ -176,17 +173,6 @@ public class SaturdayClasses extends Fragment {
                 });
     }
 
-    private void sortCollection() {
-
-        Collections.sort(mClasses, new Comparator<ClassDetails>() {
-            @Override
-            public int compare(ClassDetails o1, ClassDetails o2) {
-                return Float.compare(o1.getPriority(), o2.getPriority());
-            }
-        });
-
-    }
-
     private void loadTeacherInitialAndClasses() {
 
         showProgressbar(true);
@@ -221,7 +207,6 @@ public class SaturdayClasses extends Fragment {
     private void loadTeacherClasses(String teacherInitial) {
 
         mSaturdayRef.whereEqualTo("teacherInitial", teacherInitial)
-                .orderBy("priority")
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -229,6 +214,7 @@ public class SaturdayClasses extends Fragment {
                         for (DocumentSnapshot ds : queryDocumentSnapshots) {
                             mClasses.add(ds.toObject(ClassDetails.class));
                         }
+                        sortCollection();
                         showProgressbar(false);
                         notifyRecyclerViewAdapter();
                         mPullToRefresh.setRefreshing(false);
@@ -240,9 +226,20 @@ public class SaturdayClasses extends Fragment {
                     public void onFailure(@NonNull Exception e) {
                         showProgressbar(false);
                         mPullToRefresh.setRefreshing(false);
-                        e.printStackTrace();
+                        Log.e(TAG,"Error",e);
                     }
                 });
+    }
+
+    private void sortCollection() {
+
+        Collections.sort(mClasses, new Comparator<ClassDetails>() {
+            @Override
+            public int compare(ClassDetails o1, ClassDetails o2) {
+                return Float.compare(o1.getPriority(), o2.getPriority());
+            }
+        });
+
     }
 
     private HashMap<String, String> getCoursesFromSharedPreferences() {
