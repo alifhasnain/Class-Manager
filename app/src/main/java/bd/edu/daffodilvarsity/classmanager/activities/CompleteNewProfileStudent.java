@@ -46,6 +46,10 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
     Chip mCse;
 
+    Chip mBsc;
+
+    Chip mMsc;
+
     Spinner mLevel;
 
     Spinner mTerm;
@@ -73,6 +77,8 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
         mDay = findViewById(R.id.day);
         mEvening = findViewById(R.id.evening);
         mCse = findViewById(R.id.cse);
+        mBsc = findViewById(R.id.bsc);
+        mMsc = findViewById(R.id.msc);
         mLevel = findViewById(R.id.level);
         mTerm = findViewById(R.id.term);
         mSection = findViewById(R.id.section_spinner);
@@ -88,19 +94,20 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
         String[] term = new String[]{"Term 1", "Term 2", "Term 3"};
 
-        String[] section = new String[] {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+        String[] section = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
         ArrayAdapter<String> levelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, level);
 
         ArrayAdapter<String> termAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, term);
 
-        ArrayAdapter<String> sectionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,section);
+        ArrayAdapter<String> sectionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, section);
 
         levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         termAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         sectionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
 
         mLevel.setAdapter(levelAdapter);
 
@@ -121,12 +128,18 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
         String id = mStudentId.getEditText().getText().toString().trim();
 
-        ProfileObjectStudent profile = new ProfileObjectStudent();
+        final ProfileObjectStudent profile = new ProfileObjectStudent();
 
         profile.setName(name);
 
         profile.setId(id);
 
+        if(mBsc.isChecked())    {
+            profile.setProgram(HelperClass.PROGRAM_BSC);
+        }
+        else if(mMsc.isChecked())   {
+            profile.setProgram(HelperClass.PROGRAM_MSC);
+        }
 
         if (mDay.isChecked()) {
             profile.setShift("Day");
@@ -156,8 +169,8 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             makeToast("Information saved.");
-                            saveCourseWithSharedPreference(level,term,section);
-                            startActivity(new Intent(CompleteNewProfileStudent.this,MainActivity.class));
+                            saveCourseWithSharedPreference(profile.getProgram(), profile.getShift(), level, term, section);
+                            startActivity(new Intent(CompleteNewProfileStudent.this, MainActivity.class));
                             finish();
                         } else {
                             makeToast("Failed to save.Please check your internet connection.");
@@ -167,19 +180,19 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
     }
 
-    private void saveCourseWithSharedPreference(String level,String term,String section) {
+    private void saveCourseWithSharedPreference(String program, String shift, String level, String term, String section) {
 
         HelperClass helperClass = new HelperClass();
 
-        ArrayList<String> coursesList = helperClass.getCourseList(level,term);
+        ArrayList<String> coursesList = helperClass.getCourseList(program, shift, level, term);
 
-        HashMap<String,String> coursesMap = new HashMap<>();
+        HashMap<String, String> coursesMap = new HashMap<>();
 
-        for(String courseCode : coursesList)    {
-            coursesMap.put(courseCode,section);
+        for (String courseCode : coursesList) {
+            coursesMap.put(courseCode, section);
         }
 
-        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -187,10 +200,11 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
         String courseMapInJson = gson.toJson(coursesMap);
 
-        editor.putString(HelperClass.COURSES_HASH_MAP,courseMapInJson).apply();
+        editor.putString(HelperClass.COURSES_HASH_MAP, courseMapInJson).apply();
     }
 
     private boolean checkGivenInfo() {
+
         String name = mName.getEditText().getText().toString().trim();
         String id = mStudentId.getEditText().getText().toString().trim();
 
@@ -234,11 +248,16 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
         if (mDay.isChecked() | mEvening.isChecked()) {
             if (mCse.isChecked()) {
-                return true;
+                if (mBsc.isChecked() || mMsc.isChecked()) {
+                    return true;
+                } else {
+                    makeToast("Please select a program");
+                }
             } else {
-                makeToast("Please select shift and department");
-                return false;
+                makeToast("Please select a department");
             }
+        } else {
+            makeToast("Select your shift.");
         }
         return false;
     }

@@ -1,6 +1,5 @@
 package bd.edu.daffodilvarsity.classmanager.adapters;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +17,9 @@ import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
 
 public class ClassListRecyclerViewAdapter extends RecyclerView.Adapter<ClassListRecyclerViewAdapter.ViewHolder> {
 
-    private Context mContext;
     private ArrayList<ClassDetails> mClasses = new ArrayList<>();
 
-    public ClassListRecyclerViewAdapter(Context mContext, ArrayList<ClassDetails> mClasses) {
-        this.mContext = mContext;
+    public ClassListRecyclerViewAdapter(ArrayList<ClassDetails> mClasses) {
         this.mClasses = mClasses;
     }
 
@@ -39,9 +36,10 @@ public class ClassListRecyclerViewAdapter extends RecyclerView.Adapter<ClassList
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         try {
-            holder.courseName.setText(getStringResourceByName(mClasses.get(position).getCourseCode()));
+            holder.courseName.setText(mClasses.get(position).getCourseName());
             holder.courseCode.setText(mClasses.get(position).getCourseCode());
             holder.classTime.setText(mClasses.get(position).getTime());
+            holder.teacherInitial.setText(mClasses.get(position).getTeacherInitial());
             holder.section.setText(mClasses.get(position).getSection());
             holder.roomNo.setText(mClasses.get(position).getRoom());
         } catch (NullPointerException e) {
@@ -51,24 +49,6 @@ public class ClassListRecyclerViewAdapter extends RecyclerView.Adapter<ClassList
             e.printStackTrace();
         }
 
-    }
-
-    private String getStringResourceByName(String resName) {
-        String packageName = "bd.edu.daffodilvarsity.classmanager";
-        int resId = mContext.getResources().getIdentifier(resName,"string",packageName);
-
-        String res = null;
-
-        try {
-            res = mContext.getResources().getString(resId);
-        } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
-        }
-
-        if(res!=null)   {
-            return res;
-        }
-        return "";
     }
 
     @Override
@@ -81,6 +61,7 @@ public class ClassListRecyclerViewAdapter extends RecyclerView.Adapter<ClassList
         TextView courseName;
         TextView courseCode;
         TextView classTime;
+        TextView teacherInitial;
         TextView section;
         TextView roomNo;
         ImageView notification;
@@ -90,6 +71,7 @@ public class ClassListRecyclerViewAdapter extends RecyclerView.Adapter<ClassList
             courseName = itemView.findViewById(R.id.course_name);
             courseCode = itemView.findViewById(R.id.course_code);
             classTime = itemView.findViewById(R.id.class_time);
+            teacherInitial = itemView.findViewById(R.id.teacher_initial);
             section = itemView.findViewById(R.id.section);
             roomNo = itemView.findViewById(R.id.room_no);
             notification = itemView.findViewById(R.id.notification);

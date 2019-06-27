@@ -117,7 +117,7 @@ public class TuesdayCLasses extends Fragment {
 
     private void initializeRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ClassListRecyclerViewAdapter(getActivity(), mClasses);
+        adapter = new ClassListRecyclerViewAdapter(mClasses);
         recyclerView.setAdapter(adapter);
     }
 

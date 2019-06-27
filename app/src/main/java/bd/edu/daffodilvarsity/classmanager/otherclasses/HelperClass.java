@@ -6,6 +6,10 @@ public class HelperClass {
 
     public static final String SHARED_PREFERENCE_TAG = "shared_preferences";
 
+    public static final String PROGRAM_BSC = "B.Sc. in CSE";
+
+    public static final String PROGRAM_MSC = "M.Sc. in CSE";
+
     public static final String LEVEL = "level";
 
     public static final String TERM = "term";
@@ -20,53 +24,103 @@ public class HelperClass {
 
     public static final String USER_TYPE_ADMIN = "user_type_admin";
 
-    public ArrayList<String> getCourseList(String level, String term) {
-        switch (level) {
-            case "Level 1":
-                switch (term) {
-                    case "Term 1":
-                        return L1T1();
-                    case "Term 2":
-                        return L1T2();
-                    case "Term 3":
-                        return L1T3();
-                }
-                break;
-            case "Level 2":
-                switch (term) {
-                    case "Term 1":
-                        return L2T1();
-                    case "Term 2":
-                        return L2T2();
-                    case "Term 3":
-                        return L2T3();
-                }
-                break;
-            case "Level 3":
-                switch (term) {
-                    case "Term 1":
-                        return L3T1();
-                    case "Term 2":
-                        return L3T2();
-                    case "Term 3":
-                        return L3T3();
-                }
-                break;
-            case "Level 4":
-                switch (term) {
-                    case "Term 1":
-                        return L4T1();
-                    case "Term 2":
-                        return L4T2();
-                    case "Term 3":
-                        return L4T3();
-                }
-                break;
+
+
+    /*private Map<String,String> courcesBscDay;
+
+    private Map<String,String> courcesBscEvening;
+
+    private Map<String,String> courcesMsc;
+
+    public HelperClass() {
+
+    }*/
+
+    public ArrayList<String> getCourseList(String program, String shift, String level, String term) {
+
+        if(program.equals(PROGRAM_BSC) && shift.equals("Day"))    {
+            switch (level) {
+                case "Level 1":
+                    switch (term) {
+                        case "Term 1":
+                            return L1T1DayBsc();
+                        case "Term 2":
+                            return L1T2DayBsc();
+                        case "Term 3":
+                            return L1T3DayBsc();
+                    }
+                    break;
+                case "Level 2":
+                    switch (term) {
+                        case "Term 1":
+                            return L2T1DayBsc();
+                        case "Term 2":
+                            return L2T2DayBsc();
+                        case "Term 3":
+                            return L2T3DayBsc();
+                    }
+                    break;
+                case "Level 3":
+                    switch (term) {
+                        case "Term 1":
+                            return L3T1DayBsc();
+                        case "Term 2":
+                            return L3T2DayBsc();
+                        case "Term 3":
+                            return L3T3DayBsc();
+                    }
+                    break;
+                case "Level 4":
+                    switch (term) {
+                        case "Term 1":
+                            return L4T1DayBsc();
+                        case "Term 2":
+                            return L4T2DayBsc();
+                        case "Term 3":
+                            return L4T3DayBsc();
+                    }
+                    break;
+            }
         }
+        else if(program.equals(PROGRAM_BSC) && shift.equals("Evening"))  {
+            switch (level) {
+                case "Level 1":
+                    switch (term) {
+                        case "Term 1":
+                            return L1T1EveningBsc();
+                        case "Term 2":
+                            return L1T2DayBsc();
+                        case "Term 3":
+                            return L1T3DayBsc();
+                    }
+                    break;
+                case "Level 2":
+                    switch (term) {
+                        case "Term 1":
+                            return L2T1EveningBsc();
+                        case "Term 2":
+                            return L2T2EveningBsc();
+                        case "Term 3":
+                            return L2T3DayBsc();
+                    }
+                    break;
+                case "Level 3":
+                    switch (term) {
+                        case "Term 1":
+                            return L3T1EveningBsc();
+                        case "Term 2":
+                            return L3T2EveningBsc();
+                        case "Term 3":
+                            return L3T3EveningBsc();
+                    }
+                    break;
+            }
+        }
+
         return null;
     }
 
-    private ArrayList<String> L1T1()    {
+    private ArrayList<String> L1T1DayBsc()    {
 
         ArrayList<String> courseCodes = new ArrayList<>();
 
@@ -78,7 +132,7 @@ public class HelperClass {
         return courseCodes;
     }
 
-    private ArrayList<String> L1T2()    {
+    private ArrayList<String> L1T2DayBsc()    {
 
         ArrayList<String> courseCodes = new ArrayList<>();
 
@@ -92,7 +146,7 @@ public class HelperClass {
         return courseCodes;
     }
 
-    private ArrayList<String> L1T3()    {
+    private ArrayList<String> L1T3DayBsc()    {
 
         ArrayList<String> courseCodes = new ArrayList<>();
 
@@ -106,7 +160,7 @@ public class HelperClass {
         return courseCodes;
     }
 
-    private ArrayList<String> L2T1()    {
+    private ArrayList<String> L2T1DayBsc()    {
 
         ArrayList<String> courseCodes = new ArrayList<>();
 
@@ -120,7 +174,7 @@ public class HelperClass {
         return courseCodes;
     }
 
-    private ArrayList<String> L2T2()    {
+    private ArrayList<String> L2T2DayBsc()    {
 
         ArrayList<String> courseCodes = new ArrayList<>();
 
@@ -133,7 +187,7 @@ public class HelperClass {
         return courseCodes;
     }
 
-    private ArrayList<String> L2T3()    {
+    private ArrayList<String> L2T3DayBsc()    {
 
         ArrayList<String> courseCodes = new ArrayList<>();
 
@@ -146,7 +200,7 @@ public class HelperClass {
         return courseCodes;
     }
 
-    private ArrayList<String> L3T1()    {
+    private ArrayList<String> L3T1DayBsc()    {
 
         ArrayList<String> courseCodes = new ArrayList<>();
 
@@ -159,7 +213,7 @@ public class HelperClass {
         return courseCodes;
     }
 
-    private ArrayList<String> L3T2()    {
+    private ArrayList<String> L3T2DayBsc()    {
 
         ArrayList<String> courseCodes = new ArrayList<>();
 
@@ -172,7 +226,7 @@ public class HelperClass {
         return courseCodes;
     }
 
-    private ArrayList<String> L3T3()    {
+    private ArrayList<String> L3T3DayBsc()    {
 
         ArrayList<String> courseCodes = new ArrayList<>();
 
@@ -185,7 +239,7 @@ public class HelperClass {
         return courseCodes;
     }
 
-    private ArrayList<String> L4T1()    {
+    private ArrayList<String> L4T1DayBsc()    {
 
         ArrayList<String> courseCodes = new ArrayList<>();
 
@@ -199,7 +253,7 @@ public class HelperClass {
         return courseCodes;
     }
 
-    private ArrayList<String> L4T2()    {
+    private ArrayList<String> L4T2DayBsc()    {
 
         ArrayList<String> courseCodes = new ArrayList<>();
 
@@ -210,11 +264,133 @@ public class HelperClass {
         return courseCodes;
     }
 
-    private ArrayList<String> L4T3()    {
+    private ArrayList<String> L4T3DayBsc()    {
 
         ArrayList<String> courseCodes = new ArrayList<>();
 
         courseCodes.add("CSE498");
+
+        return courseCodes;
+    }
+
+    private ArrayList<String> L1T1EveningBsc()  {
+
+        ArrayList<String> courseCodes = new ArrayList<>();
+
+        courseCodes.add("MAT121");
+        courseCodes.add("CSE131");
+        courseCodes.add("ENG113");
+        courseCodes.add("PHY123");
+        courseCodes.add("PHY123L");
+
+        return courseCodes;
+    }
+
+    private ArrayList<String> L1T2EveningBsc()  {
+
+        ArrayList<String> courseCodes = new ArrayList<>();
+
+        courseCodes.add("CSE213");
+        courseCodes.add("CSE213L");
+        courseCodes.add("ACC214");
+        courseCodes.add("ECO314");
+        courseCodes.add("MAT134");
+
+        return courseCodes;
+    }
+
+    private ArrayList<String> L1T3EveningBsc()  {
+
+        ArrayList<String> courseCodes = new ArrayList<>();
+
+        courseCodes.add("CSE221");
+        courseCodes.add("CSE222");
+        courseCodes.add("CSE222L");
+        courseCodes.add("MAT211");
+        courseCodes.add("STA223");
+
+        return courseCodes;
+    }
+
+    private ArrayList<String> L2T1EveningBsc()  {
+
+        ArrayList<String> courseCodes = new ArrayList<>();
+
+        courseCodes.add("CSE231");
+        courseCodes.add("CSE231L");
+        courseCodes.add("CSE224");
+        courseCodes.add("CSE224L");
+        courseCodes.add("CSE232");
+        courseCodes.add("CSE233");
+
+        return courseCodes;
+    }
+
+    private ArrayList<String> L2T2EveningBsc()  {
+
+        ArrayList<String> courseCodes = new ArrayList<>();
+
+        courseCodes.add(" CSE322");
+        courseCodes.add("CSE313");
+        courseCodes.add("CSE313L");
+        courseCodes.add("CSE311");
+        courseCodes.add("CSE311L");
+        courseCodes.add("CSE312");
+
+        return courseCodes;
+    }
+
+    private ArrayList<String> L2T3EveningBsc()  {
+
+        ArrayList<String> courseCodes = new ArrayList<>();
+
+        courseCodes.add("CSE331");
+        courseCodes.add("CSE331L");
+        courseCodes.add("CSE413");
+        courseCodes.add("CSE413L");
+        courseCodes.add("CSE323");
+        courseCodes.add("CSE323L");
+
+        return courseCodes;
+    }
+
+    private ArrayList<String> L3T1EveningBsc()  {
+
+        ArrayList<String> courseCodes = new ArrayList<>();
+
+        courseCodes.add("CSE321");
+        courseCodes.add("CSE321L");
+        courseCodes.add("CSE421");
+        courseCodes.add("CSE421L");
+        courseCodes.add("CSE431");
+        courseCodes.add("MGT414");
+
+
+        return courseCodes;
+    }
+
+    private ArrayList<String> L3T2EveningBsc()  {
+
+        ArrayList<String> courseCodes = new ArrayList<>();
+
+        courseCodes.add("CSE412");
+        courseCodes.add("CSE412L");
+        courseCodes.add("CSE411");
+        courseCodes.add("CSE332");
+        courseCodes.add("CSE499");
+
+
+        return courseCodes;
+    }
+
+    private ArrayList<String> L3T3EveningBsc()  {
+
+        ArrayList<String> courseCodes = new ArrayList<>();
+
+        courseCodes.add("CSE333");
+        courseCodes.add("CSE432");
+        courseCodes.add("CSE499");
+
 
         return courseCodes;
     }

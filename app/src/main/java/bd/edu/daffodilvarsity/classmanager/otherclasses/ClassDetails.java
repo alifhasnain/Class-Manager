@@ -6,13 +6,13 @@ public class ClassDetails {
 
     private String courseCode;
 
-    private String courseName;
+    private String courseName = "";
 
     private String teacherInitial;
 
     private String time;
 
-    private String section;
+    private String section = "";
 
     private String batch = "";
 
@@ -49,6 +49,14 @@ public class ClassDetails {
 
     public void setCourseCode(String courseCode) {
         this.courseCode = courseCode;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     public String getTeacherInitial() {

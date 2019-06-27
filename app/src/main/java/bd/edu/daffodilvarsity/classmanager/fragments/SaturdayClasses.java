@@ -119,7 +119,7 @@ public class SaturdayClasses extends Fragment {
 
     private void initializeRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ClassListRecyclerViewAdapter(getActivity(), mClasses);
+        adapter = new ClassListRecyclerViewAdapter(mClasses);
         recyclerView.setAdapter(adapter);
     }
 
@@ -148,27 +148,28 @@ public class SaturdayClasses extends Fragment {
 
         Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(taskList);
 
-        allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
-            @Override
-            public void onSuccess(List<QuerySnapshot> querySnapshots) {
-                for (QuerySnapshot qs : querySnapshots) {
-                    for (DocumentSnapshot ds : qs) {
-                        mClasses.add(ds.toObject(ClassDetails.class));
-                    }
-                }
-                sortCollection();
+        allTasks
+                .addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
+                    @Override
+                    public void onSuccess(List<QuerySnapshot> querySnapshots) {
+                        for (QuerySnapshot qs : querySnapshots) {
+                            for (DocumentSnapshot ds : qs) {
+                                mClasses.add(ds.toObject(ClassDetails.class));
+                            }
+                        }
+                        sortCollection();
 
-                notifyRecyclerViewAdapter();
-                showProgressbar(false);
-                mPullToRefresh.setRefreshing(false);
-            }
-        })
+                        notifyRecyclerViewAdapter();
+                        showProgressbar(false);
+                        mPullToRefresh.setRefreshing(false);
+                    }
+                })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         showProgressbar(false);
                         mPullToRefresh.setRefreshing(false);
-                        Log.e("Error Msg",e.toString());
+                        Log.e("Error Msg", e.toString());
                     }
                 });
     }
@@ -226,7 +227,7 @@ public class SaturdayClasses extends Fragment {
                     public void onFailure(@NonNull Exception e) {
                         showProgressbar(false);
                         mPullToRefresh.setRefreshing(false);
-                        Log.e(TAG,"Error",e);
+                        Log.e(TAG, "Error", e);
                     }
                 });
     }

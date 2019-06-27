@@ -164,7 +164,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                             signInAsTeacher();
                             showCircularProgressBar(false);
                         } else {
-                            checkIfNewUserIsStudent();
+                            checkIfUserIsStudent();
                         }
                     }
                 })
@@ -178,7 +178,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    private void checkIfNewUserIsStudent() {
+    private void checkIfUserIsStudent() {
 
         showCircularProgressBar(true);
 
@@ -196,7 +196,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                             ProfileObjectStudent profile = documentSnapshot.toObject(ProfileObjectStudent.class);
 
                             if (getCoursesFromSharedPreferences() == null) {
-                                saveCoursesWithSharedPreference(profile.getLevel(), profile.getTerm(), profile.getSection());
+                                saveCoursesWithSharedPreference(profile.getProgram(),profile.getShift(),profile.getLevel(), profile.getTerm(), profile.getSection());
                             }
 
                             signInAsStudent();
@@ -219,11 +219,11 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    private void saveCoursesWithSharedPreference(String level, String term, String section) {
+    private void saveCoursesWithSharedPreference(String program,String shift,String level, String term, String section) {
 
         HelperClass helperClass = new HelperClass();
 
-        ArrayList<String> coursesList = helperClass.getCourseList(level, term);
+        ArrayList<String> coursesList = helperClass.getCourseList(program,shift,level, term);
 
         HashMap<String, String> coursesMap = new HashMap<>();
 
@@ -252,8 +252,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
         String coursesInJson = sharedPreferences.getString(HelperClass.COURSES_HASH_MAP, null);
 
-        Type type = new TypeToken<HashMap<String, String>>() {
-        }.getType();
+        Type type = new TypeToken<HashMap<String, String>>() {}.getType();
 
         courseHashMap = gson.fromJson(coursesInJson, type);
 

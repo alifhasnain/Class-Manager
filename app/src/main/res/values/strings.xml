@@ -65,4 +65,6 @@
     <string name="CSE423">Embedded Systems</string>
     <string name="CSE499">Project / Internship (Phase I, to be completed in Level-4 Term-3</string>
     <string name="CSE498">Social and Professional Issues in Computing</string>
+    <string name="b_sc_in_cse">B.Sc in CSE</string>
+    <string name="m_sc_in_cse">M.Sc. in CSE</string>
 </resources>

@@ -6,6 +6,8 @@ public class ProfileObjectStudent {
 
     private String id;
 
+    private String program;
+
     private String section;
 
     private String department;
@@ -44,6 +46,14 @@ public class ProfileObjectStudent {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getProgram() {
+        return program;
+    }
+
+    public void setProgram(String program) {
+        this.program = program;
     }
 
     public String getSection() {

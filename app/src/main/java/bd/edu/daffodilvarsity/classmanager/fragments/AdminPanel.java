@@ -2,6 +2,7 @@ package bd.edu.daffodilvarsity.classmanager.fragments;
 
 
 import android.Manifest;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -300,8 +301,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
                     if (!cd1.getCourseCode().isEmpty()) {
                         cd1.setSection(getModifiedSection(cd1.getCourseCode()));
                         cd1.setCourseCode(getModifiedCourseCode(cd1.getCourseCode()));
-                    } else {
-                        cd1.setSection("");
+                        cd1.setCourseName(getStringResourceByName(cd1.getCourseCode()));
                     }
                     cd1.setPriority(1f);
                     classes.add(cd1);
@@ -312,8 +312,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
                     if (!cd2.getCourseCode().isEmpty()) {
                         cd2.setSection(getModifiedSection(cd2.getCourseCode()));
                         cd2.setCourseCode(getModifiedCourseCode(cd2.getCourseCode()));
-                    } else {
-                        cd2.setSection("");
+                        cd2.setCourseName(getStringResourceByName(cd2.getCourseCode()));
                     }
                     cd2.setPriority(2f);
                     classes.add(cd2);
@@ -324,8 +323,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
                     if (!cd3.getCourseCode().isEmpty()) {
                         cd3.setSection(getModifiedSection(cd3.getCourseCode()));
                         cd3.setCourseCode(getModifiedCourseCode(cd3.getCourseCode()));
-                    } else {
-                        cd3.setSection("");
+                        cd3.setCourseName(getStringResourceByName(cd3.getCourseCode()));
                     }
                     cd3.setPriority(3f);
                     classes.add(cd3);
@@ -336,8 +334,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
                     if (!cd4.getCourseCode().isEmpty()) {
                         cd4.setSection(getModifiedSection(cd4.getCourseCode()));
                         cd4.setCourseCode(getModifiedCourseCode(cd4.getCourseCode()));
-                    } else {
-                        cd4.setSection("");
+                        cd4.setCourseName(getStringResourceByName(cd4.getCourseCode()));
                     }
                     cd4.setPriority(4f);
                     classes.add(cd4);
@@ -348,8 +345,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
                     if (!cd5.getCourseCode().isEmpty()) {
                         cd5.setSection(getModifiedSection(cd5.getCourseCode()));
                         cd5.setCourseCode(getModifiedCourseCode(cd5.getCourseCode()));
-                    } else {
-                        cd5.setSection("");
+                        cd5.setCourseName(getStringResourceByName(cd5.getCourseCode()));
                     }
                     cd5.setPriority(5f);
                     classes.add(cd5);
@@ -360,8 +356,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
                     if (!cd6.getCourseCode().isEmpty()) {
                         cd6.setSection(getModifiedSection(cd6.getCourseCode()));
                         cd6.setCourseCode(getModifiedCourseCode(cd6.getCourseCode()));
-                    } else {
-                        cd6.setSection("");
+                        cd6.setCourseName(getStringResourceByName(cd6.getCourseCode()));
                     }
                     cd6.setPriority(6f);
                     classes.add(cd6);
@@ -384,8 +379,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
                     if (!e1.getCourseCode().isEmpty()) {
                         e1.setSection(getModifiedSection(e1.getCourseCode()));
                         e1.setCourseCode(getModifiedCourseCode(e1.getCourseCode()));
-                    } else {
-                        e1.setSection("");
+                        e1.setCourseName(getStringResourceByName(e1.getCourseCode()));
                     }
                     e1.setPriority(1.5f);
                     classes.add(e1);
@@ -396,8 +390,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
                     if (!e2.getCourseCode().isEmpty()) {
                         e2.setSection(getModifiedSection(e2.getCourseCode()));
                         e2.setCourseCode(getModifiedCourseCode(e2.getCourseCode()));
-                    } else {
-                        e2.setSection("");
+                        e2.setCourseName(getStringResourceByName(e2.getCourseCode()));
                     }
                     e2.setPriority(2.5f);
                     classes.add(e2);
@@ -408,8 +401,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
                     if (!e3.getCourseCode().isEmpty()) {
                         e3.setSection(getModifiedSection(e3.getCourseCode()));
                         e3.setCourseCode(getModifiedCourseCode(e3.getCourseCode()));
-                    } else {
-                        e3.setSection("");
+                        e3.setCourseName(getStringResourceByName(e3.getCourseCode()));
                     }
                     e3.setPriority(4.5f);
                     classes.add(e3);
@@ -420,8 +412,7 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
                     if (!e4.getCourseCode().isEmpty()) {
                         e4.setSection(getModifiedSection(e4.getCourseCode()));
                         e4.setCourseCode(getModifiedCourseCode(e4.getCourseCode()));
-                    } else {
-                        e4.setSection("");
+                        e4.setCourseName(getStringResourceByName(e4.getCourseCode()));
                     }
                     e4.setPriority(5.5f);
                     classes.add(e4);
@@ -841,6 +832,24 @@ public class AdminPanel extends Fragment implements EasyPermissions.PermissionCa
         classes5.setText(wednesdayClasses.size() + " Classes");
         classes6.setText(thursdayClasses.size() + " Classes");
         classes7.setText(fridayClasses.size() + " Classes");
+    }
+
+    private String getStringResourceByName(String resName) {
+        String packageName = "bd.edu.daffodilvarsity.classmanager";
+        int resId = getContext().getResources().getIdentifier(resName,"string",packageName);
+
+        String res = null;
+
+        try {
+            res = getContext().getResources().getString(resId);
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if(res!=null)   {
+            return res;
+        }
+        return "";
     }
 
     private boolean hasStoragePermission() {
