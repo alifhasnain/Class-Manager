@@ -4,6 +4,8 @@ public class ProfileObjectTeacher {
 
     private String name;
 
+    private String email;
+
     private String teacherInitial;
 
     private int classesBookedThisMonth = 0;
@@ -14,11 +16,20 @@ public class ProfileObjectTeacher {
 
     }
 
-    public ProfileObjectTeacher(String name, String teacherInitial, int classesBookedThisMonth,String designation) {
+    public ProfileObjectTeacher(String name, String email, String teacherInitial, int classesBookedThisMonth, String designation) {
         this.name = name;
+        this.email = email;
         this.teacherInitial = teacherInitial;
         this.classesBookedThisMonth = classesBookedThisMonth;
         this.designation = designation;
+    }
+
+    public void createInstance(ProfileObjectTeacher profile)    {
+        this.name = profile.getName();
+        this.email = profile.getEmail();
+        this.teacherInitial = profile.getTeacherInitial();
+        this.classesBookedThisMonth = profile.getClassesBookedThisMonth();
+        this.designation = profile.getDesignation();
     }
 
     public String getName() {
@@ -27,6 +38,14 @@ public class ProfileObjectTeacher {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getTeacherInitial() {

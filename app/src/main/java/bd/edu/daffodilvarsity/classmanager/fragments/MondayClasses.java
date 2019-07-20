@@ -3,11 +3,13 @@ package bd.edu.daffodilvarsity.classmanager.fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -46,6 +48,8 @@ import static android.content.Context.MODE_PRIVATE;
  * A simple {@link Fragment} subclass.
  */
 public class MondayClasses extends Fragment {
+
+    private static final String TAG = "MondayClasses";
 
     private FirebaseAuth mAuth;
 
@@ -215,27 +219,38 @@ public class MondayClasses extends Fragment {
 
     private void loadTeacherClasses(String teacherInitial) {
 
-        mMondayRef.whereEqualTo("teacherInitial", teacherInitial)
-                .orderBy("priority")
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        CollectionReference saturdayRefDay = db.collection("/main_campus/classes_day/monday");
+
+        CollectionReference saturdayRefEvening = db.collection("/main_campus/classes_evening/monday");
+
+        Task<QuerySnapshot> task1 = saturdayRefDay.whereEqualTo("teacherInitial", teacherInitial).get();
+
+        Task<QuerySnapshot> task2 = saturdayRefEvening.whereEqualTo("teacherInitial", teacherInitial).get();
+
+        Task<List<QuerySnapshot>> tasks = Tasks.whenAllSuccess(task1, task2);
+
+        tasks
+                .addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
                     @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (DocumentSnapshot ds : queryDocumentSnapshots) {
-                            mClasses.add(ds.toObject(ClassDetails.class));
+                    public void onSuccess(List<QuerySnapshot> querySnapshots) {
+                        for (QuerySnapshot qs : querySnapshots) {
+                            for (DocumentSnapshot ds : qs) {
+                                mClasses.add(ds.toObject(ClassDetails.class));
+                            }
                         }
+                        sortCollection();
                         showProgressbar(false);
                         notifyRecyclerViewAdapter();
                         mPullToRefresh.setRefreshing(false);
-
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        makeToast("Failed to load data.Please check your internet connection.");
                         showProgressbar(false);
                         mPullToRefresh.setRefreshing(false);
-                        e.printStackTrace();
+                        Log.e(TAG, "Error", e);
                     }
                 });
     }
@@ -263,9 +278,10 @@ public class MondayClasses extends Fragment {
         return sharedPreferences.getString(HelperClass.USER_TYPE, null);
     }
 
-    private void notifyRecyclerViewAdapter() {
-        if (adapter != null) {
+    private void notifyRecyclerViewAdapter()    {
+        if(adapter!=null)   {
             adapter.notifyDataSetChanged();
+            recyclerView.scheduleLayoutAnimation();
         }
     }
 
@@ -277,6 +293,10 @@ public class MondayClasses extends Fragment {
             progressBar.setVisibility(View.GONE);
             loadingContent.setVisibility(View.GONE);
         }
+    }
+
+    private void makeToast(String text) {
+        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
     }
 
 }

@@ -47,7 +47,6 @@
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dummy Name"
                     android:textColor="@color/semi_transparent_black"
                     android:textSize="22sp" />
 
@@ -55,7 +54,6 @@
                     android:id="@+id/designation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="jlkajsdl"
                     android:textColor="@color/semi_transparent_black"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -79,12 +77,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/card_1">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="15dp"
-                android:text="Classes booked this month : 3"
-                android:textColor="@color/semi_transparent_black" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Classes Booked this month : "/>
+
+
+                <TextView
+                    android:id="@+id/classes_booked"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/semi_transparent_black" />
+
+            </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
@@ -200,7 +211,6 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="15dp"
                     android:paddingEnd="15dp"
-                    android:text="hasnain.alif20@gmail.com"
                     android:textColor="@color/semi_transparent_black"
                     android:textSize="20sp" />
 

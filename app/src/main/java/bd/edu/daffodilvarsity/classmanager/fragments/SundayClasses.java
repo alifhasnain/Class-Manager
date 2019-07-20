@@ -3,11 +3,13 @@ package bd.edu.daffodilvarsity.classmanager.fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -47,6 +49,8 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class SundayClasses extends Fragment {
 
+    private static final String TAG = "SundayClasses";
+
     private FirebaseAuth mAuth;
 
     CollectionReference mSundayRef;
@@ -83,7 +87,7 @@ public class SundayClasses extends Fragment {
         if (getUserType().equals(HelperClass.USER_TYPE_TEACHER)) {
             loadTeacherInitialAndClasses();
         } else if (getUserType().equals(HelperClass.USER_TYPE_STUDENT)) {
-            loadDataStudent();
+            loadStudentClasses();
         }
 
         return view;
@@ -98,7 +102,7 @@ public class SundayClasses extends Fragment {
                 if (getUserType().equals(HelperClass.USER_TYPE_TEACHER)) {
                     loadTeacherInitialAndClasses();
                 } else if (getUserType().equals(HelperClass.USER_TYPE_STUDENT)) {
-                    loadDataStudent();
+                    loadStudentClasses();
                 }
             }
         });
@@ -121,7 +125,7 @@ public class SundayClasses extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    private void loadDataStudent() {
+    private void loadStudentClasses() {
 
         showProgressbar(true);
         //Clear recyclerview items
@@ -215,27 +219,38 @@ public class SundayClasses extends Fragment {
 
     private void loadTeacherClasses(String teacherInitial) {
 
-        mSundayRef.whereEqualTo("teacherInitial", teacherInitial)
-                .orderBy("priority")
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        CollectionReference saturdayRefDay = db.collection("/main_campus/classes_day/sunday");
+
+        CollectionReference saturdayRefEvening = db.collection("/main_campus/classes_evening/sunday");
+
+        Task<QuerySnapshot> task1 = saturdayRefDay.whereEqualTo("teacherInitial", teacherInitial).get();
+
+        Task<QuerySnapshot> task2 = saturdayRefEvening.whereEqualTo("teacherInitial", teacherInitial).get();
+
+        Task<List<QuerySnapshot>> tasks = Tasks.whenAllSuccess(task1, task2);
+
+        tasks
+                .addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
                     @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (DocumentSnapshot ds : queryDocumentSnapshots) {
-                            mClasses.add(ds.toObject(ClassDetails.class));
+                    public void onSuccess(List<QuerySnapshot> querySnapshots) {
+                        for(QuerySnapshot qs : querySnapshots)  {
+                            for(DocumentSnapshot ds : qs)   {
+                                mClasses.add(ds.toObject(ClassDetails.class));
+                            }
                         }
+                        sortCollection();
                         showProgressbar(false);
                         notifyRecyclerViewAdapter();
                         mPullToRefresh.setRefreshing(false);
-
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        makeToast("Failed to load data.Please check your internet connection.");
                         showProgressbar(false);
                         mPullToRefresh.setRefreshing(false);
-                        e.printStackTrace();
+                        Log.e(TAG, "Error", e);
                     }
                 });
     }
@@ -266,6 +281,7 @@ public class SundayClasses extends Fragment {
     private void notifyRecyclerViewAdapter()    {
         if(adapter!=null)   {
             adapter.notifyDataSetChanged();
+            recyclerView.scheduleLayoutAnimation();
         }
     }
 
@@ -278,6 +294,10 @@ public class SundayClasses extends Fragment {
             progressBar.setVisibility(View.GONE);
             loadingContent.setVisibility(View.GONE);
         }
+    }
+
+    private void makeToast(String text) {
+        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
     }
 
 }

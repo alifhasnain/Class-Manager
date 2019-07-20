@@ -220,7 +220,7 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
             return false;
         }
 
-        if (!name.matches("[a-zA-Z ]*")) {
+        if (!name.matches("[a-zA-Z .]*")) {
             makeToast("Invalid characters in username.");
             mName.setError("Invalid characters");
             return false;

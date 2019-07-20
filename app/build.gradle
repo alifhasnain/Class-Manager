@@ -35,9 +35,11 @@ dependencies {
     //Gson
     implementation 'com.google.code.gson:gson:2.8.5'
     //Firebase authentication
-    implementation 'com.google.firebase:firebase-auth:17.0.0'
+    implementation 'com.google.firebase:firebase-auth:18.1.0'
     //Cloud Firestore
-    implementation 'com.google.firebase:firebase-firestore:19.0.2'
+    implementation 'com.google.firebase:firebase-firestore:20.1.0'
+    //Firebase Functions
+    implementation 'com.google.firebase:firebase-functions:18.0.0'
 
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'

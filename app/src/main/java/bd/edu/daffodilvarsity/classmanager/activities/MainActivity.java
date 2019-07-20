@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 navigationView.inflateMenu(R.menu.drawer_menu_admin);
                 break;
             case HelperClass.USER_TYPE_TEACHER:
-                navigationView.inflateMenu(R.menu.drawer_menu_admin);
+                navigationView.inflateMenu(R.menu.drawer_menu_teacher);
                 break;
             case HelperClass.USER_TYPE_STUDENT:
                 navigationView.inflateMenu(R.menu.drawer_menu_student);

@@ -1,14 +1,23 @@
 package bd.edu.daffodilvarsity.classmanager.otherclasses;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class HelperClass {
 
     public static final String SHARED_PREFERENCE_TAG = "shared_preferences";
 
+    public static final String PROGRAM = "program";
+
     public static final String PROGRAM_BSC = "B.Sc. in CSE";
 
     public static final String PROGRAM_MSC = "M.Sc. in CSE";
+
+    public static final String SHIFT = "shift";
+
+    public static final String SHIFT_DAY = "Day";
+
+    public static final String SHIFT_EVENING = "Evening";
 
     public static final String LEVEL = "level";
 
@@ -101,7 +110,7 @@ public class HelperClass {
                         case "Term 2":
                             return L2T2EveningBsc();
                         case "Term 3":
-                            return L2T3DayBsc();
+                            return L2T3EveningBsc();
                     }
                     break;
                 case "Level 3":
@@ -118,6 +127,13 @@ public class HelperClass {
         }
 
         return null;
+    }
+
+    public static String getRandomColor()   {
+        Random random = new Random();
+        String[] colors = new String[]{"#d81b60","#00695c","#37474f","#dd2c00","#0277bd"};
+
+        return colors[random.nextInt(5)];
     }
 
     private ArrayList<String> L1T1DayBsc()    {
@@ -393,6 +409,21 @@ public class HelperClass {
 
 
         return courseCodes;
+    }
+
+    public static ArrayList<String> getClassTimes()    {
+        ArrayList<String> classTimes = new ArrayList<>();
+
+        classTimes.add("08:30AM-10:00AM");
+        classTimes.add("10:00AM-11:30AM");
+        classTimes.add("11.30AM-01:00PM");
+        classTimes.add("01:00PM-02:30PM");
+        classTimes.add("02:30PM-04:00PM");
+        classTimes.add("04:00PM-05:30PM");
+        classTimes.add("6.00PM-7.30PM");
+        classTimes.add("7.30PM-9.00PM");
+
+        return classTimes;
     }
 
 }

@@ -41,6 +41,7 @@ import java.util.HashMap;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 
 public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
@@ -65,6 +66,42 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
         initializeOnClickListeners();
 
+    }
+
+    private void testDoc()  {
+        DocumentReference testDoc = db.document("/test/niloy");
+        ProfileObjectTeacher objectTeacher = new ProfileObjectTeacher();
+
+        objectTeacher.setName("John Doe");
+        objectTeacher.setTeacherInitial("ASDDFA");
+        objectTeacher.setEmail("pjM5Yv2Is7ROHfU4ImayTv5M3nT2");
+        objectTeacher.setDesignation("CCCC");
+        testDoc.set(objectTeacher);
+    }
+
+    private void testDocGet()   {
+        DocumentReference testDoc = db.document("/test/niloy");
+
+        testDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                makeToast("Sucessfully got data");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                makeToast("Failed to get data");
+            }
+        });
+    }
+
+    private void testMethodCreateProfile() {
+
+        ProfileObjectTeacher profile = new ProfileObjectTeacher("Alif Hasnain", "hasnain.alif20@gmail.com", "RAH", 0, "");
+
+        CollectionReference cr = db.collection("/teacher_profiles");
+
+        cr.add(profile);
     }
 
     @Override
@@ -110,7 +147,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         //Get current user email
         String email = mAuth.getCurrentUser().getEmail();
 
-        admins.whereEqualTo("email",email)
+        admins.whereEqualTo("email", email)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -122,11 +159,10 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                             isAdmin = true;
                         }
 
-                        if(isAdmin)   {
+                        if (isAdmin) {
                             signInAsAdmin();
                             showCircularProgressBar(false);
-                        }
-                        else {
+                        } else {
                             ifUserIsTeacher();
                         }
                     }
@@ -195,8 +231,12 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
                             ProfileObjectStudent profile = documentSnapshot.toObject(ProfileObjectStudent.class);
 
+                            saveShiftAndProgramWithSharedPreferences(profile.getProgram(),profile.getShift());
+
+                            Toast.makeText(SignIn.this, profile.getProgram() + profile.getShift(), Toast.LENGTH_SHORT).show();
+
                             if (getCoursesFromSharedPreferences() == null) {
-                                saveCoursesWithSharedPreference(profile.getProgram(),profile.getShift(),profile.getLevel(), profile.getTerm(), profile.getSection());
+                                saveCoursesWithSharedPreference(profile.getProgram(), profile.getShift(), profile.getLevel(), profile.getTerm(), profile.getSection());
                             }
 
                             signInAsStudent();
@@ -219,11 +259,23 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    private void saveCoursesWithSharedPreference(String program,String shift,String level, String term, String section) {
+    private void saveShiftAndProgramWithSharedPreferences(String program,String shift) {
+
+        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString(HelperClass.PROGRAM,program).apply();
+
+        editor.putString(HelperClass.SHIFT,shift).apply();
+
+    }
+
+    private void saveCoursesWithSharedPreference(String program, String shift, String level, String term, String section) {
 
         HelperClass helperClass = new HelperClass();
 
-        ArrayList<String> coursesList = helperClass.getCourseList(program,shift,level, term);
+        ArrayList<String> coursesList = helperClass.getCourseList(program, shift, level, term);
 
         HashMap<String, String> coursesMap = new HashMap<>();
 
@@ -252,7 +304,8 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
         String coursesInJson = sharedPreferences.getString(HelperClass.COURSES_HASH_MAP, null);
 
-        Type type = new TypeToken<HashMap<String, String>>() {}.getType();
+        Type type = new TypeToken<HashMap<String, String>>() {
+        }.getType();
 
         courseHashMap = gson.fromJson(coursesInJson, type);
 
@@ -265,7 +318,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         startActivity(new Intent(this, CompleteNewProfileStudent.class));
     }
 
-    private void signInAsAdmin()    {
+    private void signInAsAdmin() {
         setUserType(HelperClass.USER_TYPE_ADMIN);
         startMainActivity();
     }
