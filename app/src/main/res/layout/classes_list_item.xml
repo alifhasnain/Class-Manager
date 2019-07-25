@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="3dp"
-                android:textColor="#263238"
+                android:textColor="@color/text_color_black"
                 android:textSize="18sp" />
 
             <TextView
@@ -75,7 +75,7 @@
                         android:layout_height="wrap_content"
                         android:text="Teacher Initial"
                         android:textSize="16sp"
-                        android:textColor="#263238"/>
+                        android:textColor="@color/text_color_black"/>
                     <TextView
                         android:id="@+id/teacher_initial"
                         android:layout_width="match_parent"
@@ -96,7 +96,7 @@
                         android:layout_height="wrap_content"
                         android:text="Section"
                         android:textSize="16sp"
-                        android:textColor="#263238"/>
+                        android:textColor="@color/text_color_black"/>
                     <TextView
                         android:id="@+id/section"
                         android:layout_width="match_parent"
@@ -124,7 +124,7 @@
                     android:layout_gravity="center"
                     android:gravity="start|center"
                     android:textSize="16sp"
-                    android:textColor="#263238"
+                    android:textColor="@color/text_color_black"
                     android:drawableStart="@drawable/ic_time"
                     android:drawablePadding="2dp" />
 
@@ -138,7 +138,7 @@
                     android:textSize="16sp"
                     android:drawableStart="@drawable/ic_home"
                     android:drawablePadding="6dp"
-                    android:textColor="#263238"/>
+                    android:textColor="@color/text_color_black"/>
 
             </LinearLayout>
 

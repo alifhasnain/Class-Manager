@@ -1,12 +1,14 @@
 package bd.edu.daffodilvarsity.classmanager.fragments;
 
 
+import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,23 +23,30 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.ClassListRecyclerViewAdapter;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
@@ -47,11 +56,13 @@ import static android.content.Context.MODE_PRIVATE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SundayClasses extends Fragment {
+public class SundayClasses extends Fragment implements DatePickerDialog.OnDateSetListener {
 
     private static final String TAG = "SundayClasses";
 
     private FirebaseAuth mAuth;
+
+    private FirebaseFunctions mFunctions;
 
     CollectionReference mSundayRef;
 
@@ -84,13 +95,114 @@ public class SundayClasses extends Fragment {
 
         initializeRecyclerView();
 
-        if (getUserType().equals(HelperClass.USER_TYPE_TEACHER)) {
+        if (getUserType().equals(HelperClass.USER_TYPE_TEACHER) || getUserType().equals(HelperClass.USER_TYPE_ADMIN)) {
             loadTeacherInitialAndClasses();
         } else if (getUserType().equals(HelperClass.USER_TYPE_STUDENT)) {
             loadStudentClasses();
         }
 
+        functionCall();
+
         return view;
+    }
+
+    private void functionCall() {
+
+        BookedClassDetails bcd = new BookedClassDetails();
+
+        Calendar calendar = new GregorianCalendar(2019,Calendar.JULY,21);
+
+        Timestamp ts = new Timestamp(calendar.getTime());
+
+        bcd.setReservationTime(ts);
+
+        bcd.setRoomNo("115 DT");
+
+        bcd.setTime("8.30PM-10.00PM");
+
+        bcd.setPriority(1f);
+
+        bcd.setDayOfWeek("Monday");
+
+        bcd.setShift("Day");
+
+        bcd.setSection("E");
+
+        bcd.setCourseCode("CSE321");
+
+        Gson gson = new Gson();
+
+        String jsonString = gson.toJson(bcd);
+
+        makeToast(jsonString);
+
+        mFunctions.getHttpsCallable("bookRoom")
+                .call(jsonString)
+                .addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
+                    @Override
+                    public void onSuccess(HttpsCallableResult httpsCallableResult) {
+                        makeToast("Success");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        makeToast("Failed");
+                    }
+                });
+    }
+
+    private void testMethods()  {
+
+        CollectionReference bookedClasses = db.collection("/booked_classes/");
+
+        Calendar calendar = new GregorianCalendar(2019,Calendar.JULY,21);
+
+        Timestamp ts = new Timestamp(calendar.getTime());
+
+        bookedClasses.whereEqualTo("reserveTime",ts).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                int i = 0;
+
+                for(DocumentSnapshot ds : queryDocumentSnapshots)   {
+
+                    i++;
+
+                }
+
+                if (i>0)    {
+                    makeToast("Data exist!");
+                }
+            }
+        });
+
+    }
+
+    private void testAddTimestamp() {
+
+        CollectionReference bookedClasses = db.collection("/booked_classes/");
+
+        BookedClassDetails bcd = new BookedClassDetails();
+
+        Calendar calendar = new GregorianCalendar(2019,Calendar.JULY,21);
+
+        Timestamp ts = new Timestamp(calendar.getTime());
+
+        bcd.setReservationTime(ts);
+
+        bookedClasses.add(bcd).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                makeToast("Success");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                makeToast("Failed!");
+            }
+        });
     }
 
     @Override
@@ -99,7 +211,7 @@ public class SundayClasses extends Fragment {
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (getUserType().equals(HelperClass.USER_TYPE_TEACHER)) {
+                if (getUserType().equals(HelperClass.USER_TYPE_TEACHER) || getUserType().equals(HelperClass.USER_TYPE_ADMIN)) {
                     loadTeacherInitialAndClasses();
                 } else if (getUserType().equals(HelperClass.USER_TYPE_STUDENT)) {
                     loadStudentClasses();
@@ -111,6 +223,7 @@ public class SundayClasses extends Fragment {
     private void initializeVariables(View view) {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        mFunctions = FirebaseFunctions.getInstance();
         mSundayRef = db.collection("main_campus/classes_day/sunday");
         progressBar = view.findViewById(R.id.progress_bar);
         loadingContent = view.findViewById(R.id.loading_content);
@@ -219,40 +332,30 @@ public class SundayClasses extends Fragment {
 
     private void loadTeacherClasses(String teacherInitial) {
 
-        CollectionReference saturdayRefDay = db.collection("/main_campus/classes_day/sunday");
+        CollectionReference classesRef = db.collection("/main_campus/");
 
-        CollectionReference saturdayRefEvening = db.collection("/main_campus/classes_evening/sunday");
-
-        Task<QuerySnapshot> task1 = saturdayRefDay.whereEqualTo("teacherInitial", teacherInitial).get();
-
-        Task<QuerySnapshot> task2 = saturdayRefEvening.whereEqualTo("teacherInitial", teacherInitial).get();
-
-        Task<List<QuerySnapshot>> tasks = Tasks.whenAllSuccess(task1, task2);
-
-        tasks
-                .addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
+        classesRef.whereEqualTo("teacherInitial", teacherInitial)
+                .whereEqualTo("dayOfWeek", "Sunday").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(List<QuerySnapshot> querySnapshots) {
-                        for(QuerySnapshot qs : querySnapshots)  {
-                            for(DocumentSnapshot ds : qs)   {
-                                mClasses.add(ds.toObject(ClassDetails.class));
-                            }
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot ds : queryDocumentSnapshots) {
+                            mClasses.add(ds.toObject(ClassDetails.class));
                         }
                         sortCollection();
                         showProgressbar(false);
                         notifyRecyclerViewAdapter();
                         mPullToRefresh.setRefreshing(false);
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        makeToast("Failed to load data.Please check your internet connection.");
-                        showProgressbar(false);
-                        mPullToRefresh.setRefreshing(false);
-                        Log.e(TAG, "Error", e);
-                    }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                makeToast("Failed to load data.Please check your internet connection.");
+                showProgressbar(false);
+                mPullToRefresh.setRefreshing(false);
+                Log.e(TAG, "Error", e);
+            }
+        });
     }
 
     private HashMap<String, String> getCoursesFromSharedPreferences() {
@@ -297,7 +400,13 @@ public class SundayClasses extends Fragment {
     }
 
     private void makeToast(String text) {
-        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+        if(getContext()!=null)  {
+            Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+        }
     }
 
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+    }
 }

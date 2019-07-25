@@ -3,6 +3,7 @@ package bd.edu.daffodilvarsity.classmanager.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -22,19 +23,22 @@ import bd.edu.daffodilvarsity.classmanager.fragments.AdminPanel;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookedClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.ClassesList;
+import bd.edu.daffodilvarsity.classmanager.fragments.EmptyRooms;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileStudents;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileTeacher;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    FirebaseAuth mAuth;
+    private static final String TAG = "MainActivity";
 
-    FirebaseAuth.AuthStateListener mAuthStateListener;
+    private FirebaseAuth mAuth;
 
-    DrawerLayout mDrawerLayout;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
-    Toolbar mToolBar;
+    private DrawerLayout mDrawerLayout;
+
+    private Toolbar mToolBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,6 +190,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .replace(R.id.fragment_container,new BookClasses(),"book_classes")
                         .commit();
                 break;
+            case R.id.empty_rooms:
+                enableToolbarScrolling(true);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container,new EmptyRooms(),"empty_rooms")
+                        .commit();
+                break;
             case R.id.booked_classroom:
                 enableToolbarScrolling(true);
                 getSupportFragmentManager()
@@ -216,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mAuth.signOut();
         }
         catch (Exception e)  {
-            e.printStackTrace();
+            Log.e(TAG,"Error : ",e);
         }
     }
 

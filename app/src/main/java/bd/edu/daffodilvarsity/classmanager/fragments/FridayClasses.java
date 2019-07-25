@@ -78,13 +78,13 @@ public class FridayClasses extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_each_day_classes, container, false);
+        View view = inflater.inflate(R.layout.fragment_each_day_classes, container, false);
 
         initializeVariables(view);
 
         initializeRecyclerView();
 
-        if (getUserType().equals(HelperClass.USER_TYPE_TEACHER)) {
+        if (getUserType().equals(HelperClass.USER_TYPE_TEACHER) || getUserType().equals(HelperClass.USER_TYPE_ADMIN)) {
             loadTeacherInitialAndClasses();
         } else if (getUserType().equals(HelperClass.USER_TYPE_STUDENT)) {
             loadDataStudent();
@@ -99,7 +99,7 @@ public class FridayClasses extends Fragment {
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (getUserType().equals(HelperClass.USER_TYPE_TEACHER)) {
+                if (getUserType().equals(HelperClass.USER_TYPE_TEACHER) || getUserType().equals(HelperClass.USER_TYPE_ADMIN)) {
                     loadTeacherInitialAndClasses();
                 } else if (getUserType().equals(HelperClass.USER_TYPE_STUDENT)) {
                     loadDataStudent();
@@ -119,7 +119,7 @@ public class FridayClasses extends Fragment {
         mPullToRefresh.setDistanceToTriggerSync(450);
     }
 
-    private void initializeRecyclerView()   {
+    private void initializeRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new ClassListRecyclerViewAdapter(mClasses);
         recyclerView.setAdapter(adapter);
@@ -219,40 +219,30 @@ public class FridayClasses extends Fragment {
 
     private void loadTeacherClasses(String teacherInitial) {
 
-        CollectionReference saturdayRefDay = db.collection("/main_campus/classes_day/friday");
+        CollectionReference classesRef = db.collection("/main_campus/");
 
-        CollectionReference saturdayRefEvening = db.collection("/main_campus/classes_evening/friday");
-
-        Task<QuerySnapshot> task1 = saturdayRefDay.whereEqualTo("teacherInitial", teacherInitial).get();
-
-        Task<QuerySnapshot> task2 = saturdayRefEvening.whereEqualTo("teacherInitial", teacherInitial).get();
-
-        Task<List<QuerySnapshot>> tasks = Tasks.whenAllSuccess(task1, task2);
-
-        tasks
-                .addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
-                    @Override
-                    public void onSuccess(List<QuerySnapshot> querySnapshots) {
-                        for(QuerySnapshot qs : querySnapshots)  {
-                            for(DocumentSnapshot ds : qs)   {
-                                mClasses.add(ds.toObject(ClassDetails.class));
-                            }
-                        }
-                        sortCollection();
-                        showProgressbar(false);
-                        notifyRecyclerViewAdapter();
-                        mPullToRefresh.setRefreshing(false);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        makeToast("Failed to load data.Please check your internet connection.");
-                        showProgressbar(false);
-                        mPullToRefresh.setRefreshing(false);
-                        Log.e(TAG, "Error", e);
-                    }
-                });
+        classesRef.whereEqualTo("teacherInitial",teacherInitial)
+                .whereEqualTo("dayOfWeek","Friday").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (DocumentSnapshot ds : queryDocumentSnapshots) {
+                    mClasses.add(ds.toObject(ClassDetails.class));
+                }
+                sortCollection();
+                showProgressbar(false);
+                notifyRecyclerViewAdapter();
+                mPullToRefresh.setRefreshing(false);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                makeToast("Failed to load data.Please check your internet connection.");
+                showProgressbar(false);
+                mPullToRefresh.setRefreshing(false);
+                Log.e(TAG, "Error", e);
+            }
+        });
     }
 
     private HashMap<String, String> getCoursesFromSharedPreferences() {
@@ -278,26 +268,27 @@ public class FridayClasses extends Fragment {
         return sharedPreferences.getString(HelperClass.USER_TYPE, null);
     }
 
-    private void notifyRecyclerViewAdapter()    {
-        if(adapter!=null)   {
+    private void notifyRecyclerViewAdapter() {
+        if (adapter != null) {
             adapter.notifyDataSetChanged();
             recyclerView.scheduleLayoutAnimation();
         }
     }
 
     private void showProgressbar(boolean b) {
-        if(b)   {
+        if (b) {
             progressBar.setVisibility(View.VISIBLE);
             loadingContent.setVisibility(View.VISIBLE);
-        }
-        else    {
+        } else {
             progressBar.setVisibility(View.GONE);
             loadingContent.setVisibility(View.GONE);
         }
     }
 
     private void makeToast(String text) {
-        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+        if(getContext()!=null)  {
+            Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

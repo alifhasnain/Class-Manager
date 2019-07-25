@@ -1,7 +1,8 @@
 package bd.edu.daffodilvarsity.classmanager.otherclasses;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HelperClass {
 
@@ -127,13 +128,6 @@ public class HelperClass {
         }
 
         return null;
-    }
-
-    public static String getRandomColor()   {
-        Random random = new Random();
-        String[] colors = new String[]{"#d81b60","#00695c","#37474f","#dd2c00","#0277bd"};
-
-        return colors[random.nextInt(5)];
     }
 
     private ArrayList<String> L1T1DayBsc()    {
@@ -424,6 +418,91 @@ public class HelperClass {
         classTimes.add("7.30PM-9.00PM");
 
         return classTimes;
+    }
+
+    public static ArrayList<String> getSevenDaysOfWeek()    {
+
+        ArrayList<String> daysOfWeek = new ArrayList<>();
+
+        daysOfWeek.add("Saturday");
+        daysOfWeek.add("Sunday");
+        daysOfWeek.add("Monday");
+        daysOfWeek.add("Tuesday");
+        daysOfWeek.add("Wednesday");
+        daysOfWeek.add("Thursday");
+        daysOfWeek.add("Friday");
+
+        return daysOfWeek;
+    }
+
+    public static Map<String,String> getCoursesDay()    {
+
+        Map<String,String> coursesDay = new HashMap<>();
+
+        coursesDay.put("CSE112","Computer Fundamentals");
+        coursesDay.put("MAT111","Mathematics-I: Differential and Integral Calculus");
+        coursesDay.put("ENG113","Basic Functional English and English Spoken");
+        coursesDay.put("PHY113","Physics-I: Mechanics, Heat and Thermodynamics,Waves and Oscillation, Optics");
+        coursesDay.put("MAT121","Mathematics -II: Complex Variable, linear Algebra and Coordinate Geometry");
+        coursesDay.put("CSE122","Programming and Problem Solving");
+        coursesDay.put("CSE123","Problem Solving Lab");
+        coursesDay.put("PHY123","Physics-II: Electricity, Magnetism and Modern Physics");
+        coursesDay.put("PHY124","Physics-II Lab");
+        coursesDay.put("ENG123","Writing and Comprehension");
+        coursesDay.put("CSE131","Discrete Mathematics");
+        coursesDay.put("CSE132","Electrical Circuits");
+        coursesDay.put("CSE133","Electrical Circuits Lab");
+        coursesDay.put("CSE134","Data Structure");
+        coursesDay.put("CSE135","Data Structure Lab");
+        coursesDay.put("MAT131","Ordinary and Partial Differential Equations");
+        coursesDay.put("MAT211","Engineering Mathematics");
+        coursesDay.put("CSE212","Digital Electronics");
+        coursesDay.put("CSE213","Digital Electronics Lab");
+        coursesDay.put("CSE214","Object Oriented Programming");
+        coursesDay.put("CSE215","Object Oriented Programming Lab");
+        coursesDay.put("GED201","Bangladesh Studies");
+        coursesDay.put("CSE221","Algorithms");
+        coursesDay.put("CSE222","Algorithms Lab");
+        coursesDay.put("STA133","Statistics and Probability");
+        coursesDay.put("CSE224","Electronic Devices and Circuits");
+        coursesDay.put("CSE225","Electronic Devices and Circuits Lab");
+        coursesDay.put("CSE231","Microprocessor and Assembly Language");
+        coursesDay.put("CSE232","Microprocessor and Assembly Language Lab");
+        coursesDay.put("CSE233","Data Communication");
+        coursesDay.put("CSE234","Numerical Methods");
+        coursesDay.put("CSE235","Introduction to Bio-Informatics");
+        coursesDay.put("CSE311","Database Management System");
+        coursesDay.put("CSE312","Database Management System Lab");
+        coursesDay.put("CSE313","Computer Networks");
+        coursesDay.put("CSE314","Computer Networks Lab");
+        coursesDay.put("ECO314","Economics");
+        coursesDay.put("CSE321","System Analysis and Design");
+        coursesDay.put("CSE322","Computer Architecture and Organization");
+        coursesDay.put("CSE323","Operating Systems");
+        coursesDay.put("CSE324","Operating Systems Lab");
+        coursesDay.put("GED321","Art of Living");
+        coursesDay.put("CSE331","Compiler Design");
+        coursesDay.put("CSE332","Compiler Design Lab");
+        coursesDay.put("CSE333","Software Engineering");
+        coursesDay.put("CSE334","Wireless Programming");
+        coursesDay.put("ACT301","Financial and Managerial Accounting 2");
+        coursesDay.put("CSE412","Artificial Intelligence");
+        coursesDay.put("CSE413","Artificial Intelligence Lab");
+        coursesDay.put("CSE414","Simulation and Modelling");
+        coursesDay.put("CSE415","Simulation and Modelling Lab");
+        coursesDay.put("CSE417","Web Engineering");
+        coursesDay.put("CSE418","Web Engineering Lab");
+        coursesDay.put("CSE421","Computer Graphics");
+        coursesDay.put("CSE422","Computer Graphics Lab");
+        coursesDay.put("CSE423","Embedded Systems");
+        coursesDay.put("CSE499","Project / Internship (Phase I, to be completed in Level-4 Term-3");
+        coursesDay.put("CSE498","Social and Professional Issues in Computing");
+
+        return coursesDay;
+    }
+
+    public static Map<String,String> getCoursesEvening()    {
+        return null;
     }
 
 }

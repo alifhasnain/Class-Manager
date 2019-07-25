@@ -1,5 +1,7 @@
 package bd.edu.daffodilvarsity.classmanager.otherclasses;
 
+import com.google.firebase.Timestamp;
+
 public class ClassDetails {
 
     private String room;
@@ -12,27 +14,41 @@ public class ClassDetails {
 
     private String time;
 
+    private String shift;
+
+    private String dayOfWeek;
+
     private String section = "";
 
     private String batch = "";
 
     private float priority;
 
+    private Timestamp timestamp = null;
+
+    private String teacherUid = "";
+
+    private String documentId;
+
     public ClassDetails()   {
 
     }
 
-    public ClassDetails(String room, String courseCode, String teacherInitial) {
+    public ClassDetails(String room, String courseCode, String teacherInitial, String shift, String dayOfWeek) {
         this.room = room;
         this.courseCode = courseCode;
         this.teacherInitial = teacherInitial;
+        this.shift = shift;
+        this.dayOfWeek = dayOfWeek;
     }
 
-    public ClassDetails(String room, String courseCode, String courseName, String teacherInitial) {
+    public ClassDetails(String room, String courseCode, String courseName, String teacherInitial, String shift, String dayOfWeek) {
         this.room = room;
         this.courseCode = courseCode;
         this.courseName = courseName;
         this.teacherInitial = teacherInitial;
+        this.shift = shift;
+        this.dayOfWeek = dayOfWeek;
     }
 
     public String getRoom() {
@@ -75,6 +91,22 @@ public class ClassDetails {
         this.time = time;
     }
 
+    public String getShift() {
+        return shift;
+    }
+
+    public void setShift(String shift) {
+        this.shift = shift;
+    }
+
+    public String getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public void setDayOfWeek(String dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+    }
+
     public String getSection() {
         return section;
     }
@@ -97,5 +129,29 @@ public class ClassDetails {
 
     public void setPriority(float priority) {
         this.priority = priority;
+    }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getTeacherUid() {
+        return teacherUid;
+    }
+
+    public void setTeacherUid(String teacherUid) {
+        this.teacherUid = teacherUid;
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
     }
 }

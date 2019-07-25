@@ -16,7 +16,7 @@ import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
 
 public class AvailableClassesRecyclerViewAdapter extends RecyclerView.Adapter<AvailableClassesRecyclerViewAdapter.ViewHolder> {
 
-    private ArrayList<ClassDetails> mEmptyClasses = new ArrayList<>();
+    private ArrayList<ClassDetails> mEmptyClasses;
 
     private ItemClickListener itemClickListener;
 
@@ -33,7 +33,7 @@ public class AvailableClassesRecyclerViewAdapter extends RecyclerView.Adapter<Av
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_room_list_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.book_room_list_item,parent,false);
 
         return new ViewHolder(view);
     }

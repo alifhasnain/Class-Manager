@@ -40,7 +40,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:20.1.0'
     //Firebase Functions
     implementation 'com.google.firebase:firebase-functions:18.0.0'
-
+    //LifeCycle
+    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'

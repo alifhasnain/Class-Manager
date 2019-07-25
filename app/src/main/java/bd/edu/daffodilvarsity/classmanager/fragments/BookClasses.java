@@ -1,54 +1,46 @@
 package bd.edu.daffodilvarsity.classmanager.fragments;
 
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.text.ParseException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.AvailableClassesRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
+import bd.edu.daffodilvarsity.classmanager.viewmodels.BookClassViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BookClasses extends Fragment implements View.OnClickListener{
+public class BookClasses extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
     private static final String TAG = "BookClasses";
 
-    private FirebaseFirestore db;
+    private BookClassViewModel mViewModel;
 
     private ArrayList<ClassDetails> mEmptyClasses = new ArrayList<>();
 
@@ -56,19 +48,21 @@ public class BookClasses extends Fragment implements View.OnClickListener{
 
     private ProgressBar progressBar;
 
-    SwipeRefreshLayout mPullToRefresh;
+    private SwipeRefreshLayout mPullToRefresh;
 
-    private Spinner mDate;
+    private Spinner mTimeSpinner;
 
-    private Spinner mTime;
+    private TextView mPickedTimeText;
 
-    private Button mSearch;
+    private Button mSearchBtn;
 
     private RecyclerView mRecyclerView;
 
     private AvailableClassesRecyclerViewAdapter mAdapter;
 
-    private String mSelectedDateSrt;
+    private Calendar mSelectedDate;
+
+    private Calendar mFinalDate;
 
 
     public BookClasses() {
@@ -86,29 +80,40 @@ public class BookClasses extends Fragment implements View.OnClickListener{
 
         initializeSpinners();
 
-        mSelectedDateSrt = mDate.getSelectedItem().toString();
+        setupPrimaryDate();
 
         initializeRecyclerView();
 
         return view;
     }
 
-    private void initializeVariablesAndOnClickListeners(View view) {
-        mDate = view.findViewById(R.id.dates);
-        mTime = view.findViewById(R.id.time);
-        mSearch = view.findViewById(R.id.search);
-        mSearch.setOnClickListener(this);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-        progressBar = view.findViewById(R.id.progress_bar);
-        loadingContent = view.findViewById(R.id.loading_content);
+        mViewModel = ViewModelProviders.of(this).get(BookClassViewModel.class);
 
-        mPullToRefresh = view.findViewById(R.id.swipe_to_refresh);
-        mPullToRefresh.setDistanceToTriggerSync(450);
+        mViewModel.getData().observe(getViewLifecycleOwner(), new Observer<ArrayList<ClassDetails>>() {
+            @Override
+            public void onChanged(ArrayList<ClassDetails> availableEmptyClassList) {
 
-        mRecyclerView = view.findViewById(R.id.empty_rooms_recyclerview);
-        mAdapter = new AvailableClassesRecyclerViewAdapter(mEmptyClasses);
+                mEmptyClasses.clear();
+                mEmptyClasses.addAll(availableEmptyClassList);
+                mAdapter.notifyDataSetChanged();
 
-        db = FirebaseFirestore.getInstance();
+                showProgressbar(false);
+                mPullToRefresh.setRefreshing(false);
+            }
+        });
+
+        mViewModel.showToast().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String text) {
+                makeToast(text);
+                showProgressbar(false);
+                mPullToRefresh.setRefreshing(false);
+            }
+        });
     }
 
     @Override
@@ -122,9 +127,44 @@ public class BookClasses extends Fragment implements View.OnClickListener{
         });
     }
 
-    private void initializeRecyclerView()   {
+    private void initializeVariablesAndOnClickListeners(View view) {
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
+        mTimeSpinner = view.findViewById(R.id.time);
+        mSearchBtn = view.findViewById(R.id.search);
+        mSearchBtn.setOnClickListener(this);
+
+        progressBar = view.findViewById(R.id.progress_bar);
+        loadingContent = view.findViewById(R.id.loading_content);
+
+        mPullToRefresh = view.findViewById(R.id.swipe_to_refresh);
+        mPullToRefresh.setDistanceToTriggerSync(450);
+
+        mRecyclerView = view.findViewById(R.id.empty_rooms_recyclerview);
+        mAdapter = new AvailableClassesRecyclerViewAdapter(mEmptyClasses);
+
+        view.findViewById(R.id.pick_date).setOnClickListener(this);
+
+        mPickedTimeText = view.findViewById(R.id.date_text);
+
+    }
+
+    private void setupPrimaryDate() {
+
+        mSelectedDate = Calendar.getInstance();
+
+        mFinalDate = mSelectedDate;
+
+        DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM, yyyy");
+
+        mPickedTimeText.setText(dateFormat.format(mFinalDate.getTime()));
+
+    }
+
+    private void initializeRecyclerView() {
+
+        mRecyclerView.hasFixedSize();
+
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
         mRecyclerView.setAdapter(mAdapter);
 
@@ -137,32 +177,7 @@ public class BookClasses extends Fragment implements View.OnClickListener{
 
     }
 
-    private void initializeSpinners()   {
-
-        String[] dates = new String[7];
-
-        Calendar calendar = Calendar.getInstance();
-
-        for(int i=0 ; i < 7 ; i ++) {
-
-            Date date = calendar.getTime();
-
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
-
-            String dateStr = dateFormatter.format(date);
-
-            dates[i] = dateStr;
-
-            calendar.add(Calendar.DAY_OF_YEAR,1);
-
-        }
-
-        ArrayAdapter<String> dateSpinnerAdapter = new ArrayAdapter<>(getContext(),R.layout.spinner_items,dates);
-
-        dateSpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_items);
-
-        mDate.setAdapter(dateSpinnerAdapter);
-
+    private void initializeSpinners() {
 
         //Set Times spinner items
 
@@ -170,113 +185,83 @@ public class BookClasses extends Fragment implements View.OnClickListener{
 
         String[] classesTimes = classTimesList.toArray(new String[classTimesList.size()]);
 
-        ArrayAdapter<String> timeSpinnerAdapter = new ArrayAdapter<>(getContext(),R.layout.spinner_items,classesTimes);
+        ArrayAdapter<String> timeSpinnerAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_items, classesTimes);
 
         timeSpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_items);
 
-        mTime.setAdapter(timeSpinnerAdapter);
+        mTimeSpinner.setAdapter(timeSpinnerAdapter);
 
     }
 
     private void loadEmptyClassList() {
 
-        mSelectedDateSrt = mDate.getSelectedItem().toString();
-
-        //Clear empty room list and show progressbar and disable search btn
         mEmptyClasses.clear();
+
         mAdapter.notifyDataSetChanged();
+
         showProgressbar(true);
-        mSearch.setEnabled(false);
 
-        String dayOfWeek = getDayOfWeek();
+        mFinalDate = mSelectedDate;
 
-        String timeStr = mTime.getSelectedItem().toString();
+        String dayOfWeek = getDayOfWeek(mFinalDate);
 
-        CollectionReference collectionDay = db.collection("/main_campus/classes_day/"+dayOfWeek);
-        CollectionReference collectionEvening = db.collection("/main_campus/classes_evening/"+dayOfWeek);
-
-        Task<QuerySnapshot> task1 = collectionDay.whereEqualTo("time",timeStr).whereEqualTo("courseCode","").get();
-        Task<QuerySnapshot> task2 = collectionEvening.whereEqualTo("time",timeStr).whereEqualTo("courseCode","").get();
-
-        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(task1,task2);
-
-        allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
-            @Override
-            public void onSuccess(List<QuerySnapshot> querySnapshots) {
-                for(QuerySnapshot qs : querySnapshots)  {
-                    for(DocumentSnapshot ds : qs)   {
-                        mEmptyClasses.add(ds.toObject(ClassDetails.class));
-                    }
-                }
-                mAdapter.notifyDataSetChanged();
-                showProgressbar(false);
-                mSearch.setEnabled(true);
-                mPullToRefresh.setRefreshing(false);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                makeToast("Failed to load data.");
-                showProgressbar(false);
-                mSearch.setEnabled(true);
-                mPullToRefresh.setRefreshing(false);
-            }
-        });
+        mViewModel.loadData(dayOfWeek,mFinalDate, mTimeSpinner.getSelectedItem().toString());
 
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId())
-        {
+        switch (v.getId()) {
             case R.id.search:
                 loadEmptyClassList();
+                break;
+            case R.id.pick_date:
+                pickDate();
                 break;
         }
     }
 
-    private String getDayOfWeek()   {
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Dhaka"));
+        mSelectedDate.set(year,month,dayOfMonth);
 
-        SimpleDateFormat formattedDate = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM, yyyy");
 
-        try {
-            Date date = formattedDate.parse(mSelectedDateSrt);
-            calendar.setTime(date);
-        } catch (ParseException e) {
-            Log.e(TAG,"Error : ",e);
-        }
+        mPickedTimeText.setText(dateFormat.format(mSelectedDate.getTime()));
+    }
+
+    private String getDayOfWeek(Calendar calendar) {
 
         String day = "";
 
-        switch (calendar.get(Calendar.DAY_OF_WEEK))
-        {
+        switch (calendar.get(Calendar.DAY_OF_WEEK)) {
             case 1:
-                day = "sunday";
+                day = "Sunday";
                 break;
             case 2:
-                day = "monday";
+                day = "Monday";
                 break;
             case 3:
-                day = "tuesday";
+                day = "Tuesday";
                 break;
             case 4:
-                day = "wednesday";
+                day = "Wednesday";
                 break;
             case 5:
-                day = "thursday";
+                day = "Thursday";
                 break;
             case 6:
-                day = "friday";
+                day = "Friday";
                 break;
             case 7:
-                day = "saturday";
+                day = "Saturday";
                 break;
         }
 
         return day;
     }
+
 
     private void showProgressbar(boolean visible) {
         if (visible) {
@@ -288,7 +273,47 @@ public class BookClasses extends Fragment implements View.OnClickListener{
         }
     }
 
+    private void pickDate() {
+
+        long minDate;
+
+        long maxDate;
+
+        Calendar calendar = Calendar.getInstance();
+
+        minDate = calendar.getTimeInMillis();
+
+        //Change date of calender
+        calendar.set(2019, Calendar.AUGUST, 25);
+
+        maxDate = calendar.getTimeInMillis();
+
+        showDatePicker(minDate, maxDate);
+
+    }
+
+    private void showDatePicker(long minDate, long maxDate) {
+
+        Calendar calendar = Calendar.getInstance();
+
+        int year = calendar.get(Calendar.YEAR);
+
+        int month = calendar.get(Calendar.MONTH);
+
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePicker = new DatePickerDialog(getContext(), this, year, month, dayOfMonth);
+
+        datePicker.getDatePicker().setMinDate(minDate);
+
+        datePicker.getDatePicker().setMaxDate(maxDate);
+
+        datePicker.show();
+    }
+
     private void makeToast(String text) {
-        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+        if(getContext()!=null)  {
+            Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.util.Patterns;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -65,6 +67,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         initializeVariables();
 
         initializeOnClickListeners();
+
 
     }
 
@@ -125,6 +128,24 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null && isEmailVerified()) {
+                    firebaseAuth.getCurrentUser().getIdToken(false)
+                            .addOnSuccessListener(new OnSuccessListener<GetTokenResult>() {
+                                @Override
+                                public void onSuccess(GetTokenResult getTokenResult) {
+                                    try {
+                                        boolean isAdmin = (boolean) getTokenResult.getClaims().get("admin");
+                                        boolean isTeacher = (boolean) getTokenResult.getClaims().get("teacher");
+                                        if(isAdmin) {
+                                            makeToast("Admin");
+                                        }
+                                        if(isTeacher)   {
+                                            makeToast("Teacher");
+                                        }
+                                    } catch (Exception e) {
+                                        Log.e("SignIn","Error",e);
+                                    }
+                                }
+                            });
                     ifUserIsAdmin();
                 } else if (firebaseAuth.getCurrentUser() != null) {
                     sendVerificationMail();

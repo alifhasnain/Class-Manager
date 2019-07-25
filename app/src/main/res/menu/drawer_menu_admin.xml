@@ -10,13 +10,17 @@
             android:title="Admin" />
 
         <item
-            android:id="@+id/profile"
+            android:id="@+id/profile_teacher"
             android:icon="@drawable/ic_menu_profile"
             android:title="Profile" />
         <item
             android:id="@+id/classes"
             android:icon="@drawable/ic_menu_schedule"
             android:title="Classes" />
+        <item
+            android:id="@+id/empty_rooms"
+            android:icon="@drawable/ic_menu_empty_rooms"
+            android:title="Empty Rooms"/>
         <item
             android:id="@+id/book_classes"
             android:icon="@drawable/ic_menu_book_class"

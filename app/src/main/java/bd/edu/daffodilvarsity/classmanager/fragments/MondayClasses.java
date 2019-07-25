@@ -84,7 +84,7 @@ public class MondayClasses extends Fragment {
 
         initializeRecyclerView();
 
-        if (getUserType().equals(HelperClass.USER_TYPE_TEACHER)) {
+        if (getUserType().equals(HelperClass.USER_TYPE_TEACHER) || getUserType().equals(HelperClass.USER_TYPE_ADMIN)) {
             loadTeacherInitialAndClasses();
         } else if (getUserType().equals(HelperClass.USER_TYPE_STUDENT)) {
             loadDataStudent();
@@ -99,7 +99,7 @@ public class MondayClasses extends Fragment {
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (getUserType().equals(HelperClass.USER_TYPE_TEACHER)) {
+                if (getUserType().equals(HelperClass.USER_TYPE_TEACHER) || getUserType().equals(HelperClass.USER_TYPE_ADMIN)) {
                     loadTeacherInitialAndClasses();
                 } else if (getUserType().equals(HelperClass.USER_TYPE_STUDENT)) {
                     loadDataStudent();
@@ -219,40 +219,30 @@ public class MondayClasses extends Fragment {
 
     private void loadTeacherClasses(String teacherInitial) {
 
-        CollectionReference saturdayRefDay = db.collection("/main_campus/classes_day/monday");
+        CollectionReference classesRef = db.collection("/main_campus/");
 
-        CollectionReference saturdayRefEvening = db.collection("/main_campus/classes_evening/monday");
-
-        Task<QuerySnapshot> task1 = saturdayRefDay.whereEqualTo("teacherInitial", teacherInitial).get();
-
-        Task<QuerySnapshot> task2 = saturdayRefEvening.whereEqualTo("teacherInitial", teacherInitial).get();
-
-        Task<List<QuerySnapshot>> tasks = Tasks.whenAllSuccess(task1, task2);
-
-        tasks
-                .addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
+        classesRef.whereEqualTo("teacherInitial", teacherInitial)
+                .whereEqualTo("dayOfWeek", "Monday").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(List<QuerySnapshot> querySnapshots) {
-                        for (QuerySnapshot qs : querySnapshots) {
-                            for (DocumentSnapshot ds : qs) {
-                                mClasses.add(ds.toObject(ClassDetails.class));
-                            }
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot ds : queryDocumentSnapshots) {
+                            mClasses.add(ds.toObject(ClassDetails.class));
                         }
                         sortCollection();
                         showProgressbar(false);
                         notifyRecyclerViewAdapter();
                         mPullToRefresh.setRefreshing(false);
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        makeToast("Failed to load data.Please check your internet connection.");
-                        showProgressbar(false);
-                        mPullToRefresh.setRefreshing(false);
-                        Log.e(TAG, "Error", e);
-                    }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                makeToast("Failed to load data.Please check your internet connection.");
+                showProgressbar(false);
+                mPullToRefresh.setRefreshing(false);
+                Log.e(TAG, "Error", e);
+            }
+        });
     }
 
     private HashMap<String, String> getCoursesFromSharedPreferences() {
@@ -278,8 +268,8 @@ public class MondayClasses extends Fragment {
         return sharedPreferences.getString(HelperClass.USER_TYPE, null);
     }
 
-    private void notifyRecyclerViewAdapter()    {
-        if(adapter!=null)   {
+    private void notifyRecyclerViewAdapter() {
+        if (adapter != null) {
             adapter.notifyDataSetChanged();
             recyclerView.scheduleLayoutAnimation();
         }
@@ -296,7 +286,9 @@ public class MondayClasses extends Fragment {
     }
 
     private void makeToast(String text) {
-        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+        if(getContext()!=null)  {
+            Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

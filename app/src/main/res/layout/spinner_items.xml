@@ -3,6 +3,7 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="left"
-    android:textSize="16sp"
+    android:gravity="center"
+    android:textSize="18sp"
+    android:textColor="@color/text_color_black"
     android:paddingStart="3dp"/>
