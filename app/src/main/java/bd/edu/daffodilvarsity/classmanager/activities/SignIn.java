@@ -32,7 +32,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.functions.FirebaseFunctions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -48,6 +48,8 @@ import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     FirebaseAuth mAuth;
+
+    FirebaseFunctions mFunctions = FirebaseFunctions.getInstance();
 
     FirebaseAuth.AuthStateListener mAuthStateListener;
 
@@ -68,39 +70,11 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
         initializeOnClickListeners();
 
-
-    }
-
-    private void testDoc()  {
-        DocumentReference testDoc = db.document("/test/niloy");
-        ProfileObjectTeacher objectTeacher = new ProfileObjectTeacher();
-
-        objectTeacher.setName("John Doe");
-        objectTeacher.setTeacherInitial("ASDDFA");
-        objectTeacher.setEmail("pjM5Yv2Is7ROHfU4ImayTv5M3nT2");
-        objectTeacher.setDesignation("CCCC");
-        testDoc.set(objectTeacher);
-    }
-
-    private void testDocGet()   {
-        DocumentReference testDoc = db.document("/test/niloy");
-
-        testDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                makeToast("Sucessfully got data");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                makeToast("Failed to get data");
-            }
-        });
     }
 
     private void testMethodCreateProfile() {
 
-        ProfileObjectTeacher profile = new ProfileObjectTeacher("Alif Hasnain", "hasnain.alif20@gmail.com", "RAH", 0, "");
+        ProfileObjectTeacher profile = new ProfileObjectTeacher("Alif Hasnain", "hasnain.alif20@gmail.com", "RAH", "");
 
         CollectionReference cr = db.collection("/teacher_profiles");
 
@@ -128,25 +102,33 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null && isEmailVerified()) {
-                    firebaseAuth.getCurrentUser().getIdToken(false)
-                            .addOnSuccessListener(new OnSuccessListener<GetTokenResult>() {
-                                @Override
-                                public void onSuccess(GetTokenResult getTokenResult) {
-                                    try {
-                                        boolean isAdmin = (boolean) getTokenResult.getClaims().get("admin");
-                                        boolean isTeacher = (boolean) getTokenResult.getClaims().get("teacher");
-                                        if(isAdmin) {
-                                            makeToast("Admin");
-                                        }
-                                        if(isTeacher)   {
-                                            makeToast("Teacher");
-                                        }
-                                    } catch (Exception e) {
-                                        Log.e("SignIn","Error",e);
-                                    }
-                                }
-                            });
-                    ifUserIsAdmin();
+                    mAuth.getCurrentUser().getIdToken(false).addOnSuccessListener(new OnSuccessListener<GetTokenResult>() {
+                        @Override
+                        public void onSuccess(GetTokenResult result) {
+                            if(result.getClaims().get("admin") != null) {
+                                signInAsAdmin();
+                                showCircularProgressBar(false);
+                            }
+                            else if(result.getClaims().get("teacher") != null) {
+                                showCircularProgressBar(false);
+                                signInAsTeacher();
+                            }
+                            else if(result.getClaims().get("student") != null)  {
+                                showCircularProgressBar(false);
+                                checkIfStudentProfileExistInDatabase();
+                            }
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if(getUserType()!=null)   {
+                                checkForOfflineUserInfo();
+                            }
+                            Log.e("","Error : " , e);
+                            showCircularProgressBar(false);
+                        }
+                    });
                 } else if (firebaseAuth.getCurrentUser() != null) {
                     sendVerificationMail();
                 }
@@ -159,83 +141,21 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    private void ifUserIsAdmin() {
-
-        showCircularProgressBar(true);
-
-        CollectionReference admins = db.collection("/admin_list/");
-
-        //Get current user email
-        String email = mAuth.getCurrentUser().getEmail();
-
-        admins.whereEqualTo("email", email)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                        boolean isAdmin = false;
-
-                        for (DocumentSnapshot ds : queryDocumentSnapshots) {
-                            isAdmin = true;
-                        }
-
-                        if (isAdmin) {
-                            signInAsAdmin();
-                            showCircularProgressBar(false);
-                        } else {
-                            ifUserIsTeacher();
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        makeToast("Error!Try again.");
-                        e.printStackTrace();
-                        showCircularProgressBar(false);
-                    }
-                });
+    private void checkForOfflineUserInfo() {
+        switch (getUserType()) {
+            case HelperClass.USER_TYPE_ADMIN:
+                signInAsAdmin();
+                break;
+            case HelperClass.USER_TYPE_TEACHER:
+                signInAsTeacher();
+                break;
+            case HelperClass.USER_TYPE_STUDENT:
+                signInAsStudent();
+                break;
+        }
     }
 
-    private void ifUserIsTeacher() {
-
-        showCircularProgressBar(true);
-
-        String email = mAuth.getCurrentUser().getEmail();
-
-        CollectionReference teacherProfilesRef = db.collection("/teacher_profiles/");
-
-        teacherProfilesRef.whereEqualTo("email", email).get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                        boolean isTeacher = false;
-
-                        for (DocumentSnapshot ds : queryDocumentSnapshots) {
-                            isTeacher = true;
-                        }
-
-                        if (isTeacher) {
-                            signInAsTeacher();
-                            showCircularProgressBar(false);
-                        } else {
-                            checkIfUserIsStudent();
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        makeToast("Failed to load please check your internet connection and try again");
-                        showCircularProgressBar(false);
-                    }
-                });
-
-    }
-
-    private void checkIfUserIsStudent() {
+    private void checkIfStudentProfileExistInDatabase() {
 
         showCircularProgressBar(true);
 
@@ -253,8 +173,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                             ProfileObjectStudent profile = documentSnapshot.toObject(ProfileObjectStudent.class);
 
                             saveShiftAndProgramWithSharedPreferences(profile.getProgram(),profile.getShift());
-
-                            Toast.makeText(SignIn.this, profile.getProgram() + profile.getShift(), Toast.LENGTH_SHORT).show();
 
                             if (getCoursesFromSharedPreferences() == null) {
                                 saveCoursesWithSharedPreference(profile.getProgram(), profile.getShift(), profile.getLevel(), profile.getTerm(), profile.getSection());
@@ -280,6 +198,12 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     }
 
+    private void initializeOnClickListeners() {
+        findViewById(R.id.sign_in).setOnClickListener(this);
+        findViewById(R.id.sign_up).setOnClickListener(this);
+        findViewById(R.id.forgot_pass).setOnClickListener(this);
+    }
+
     private void saveShiftAndProgramWithSharedPreferences(String program,String shift) {
 
         SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
@@ -294,7 +218,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     private void saveCoursesWithSharedPreference(String program, String shift, String level, String term, String section) {
 
-        HelperClass helperClass = new HelperClass();
+        HelperClass helperClass = HelperClass.getInstance();
 
         ArrayList<String> coursesList = helperClass.getCourseList(program, shift, level, term);
 
@@ -363,12 +287,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(HelperClass.USER_TYPE, type).apply();
-    }
-
-    private void initializeOnClickListeners() {
-        findViewById(R.id.sign_in).setOnClickListener(this);
-        findViewById(R.id.sign_up).setOnClickListener(this);
-        findViewById(R.id.forgot_pass).setOnClickListener(this);
     }
 
     @Override
@@ -481,6 +399,11 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private String getUserType() {
+        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+        return sharedPreferences.getString(HelperClass.USER_TYPE, null);
     }
 
     private void clearFocusAndErrorMsg() {

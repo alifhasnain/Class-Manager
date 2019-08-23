@@ -64,8 +64,6 @@ public class BookedClasses extends Fragment {
 
         initializeRecyclerView();
 
-        loadBookedClasses();
-
         return view;
 
     }
@@ -85,6 +83,7 @@ public class BookedClasses extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        //Initialize ViewModel and load booked classes
         mViewModel = ViewModelProviders.of(this).get(BookedClassesViewModel.class);
 
         mViewModel.getBookedClassList().observe(getViewLifecycleOwner(), new Observer<ArrayList<BookedClassDetails>>() {
@@ -111,6 +110,9 @@ public class BookedClasses extends Fragment {
                 toggleRecyclerEmptyState();
             }
         });
+
+        loadBookedClasses();
+
     }
 
     private void initializeVariablesAndListeners(View view) {
@@ -143,6 +145,7 @@ public class BookedClasses extends Fragment {
 
         mBookedClasses.clear();
         showProgressbar(true);
+        mAdapter.notifyDataSetChanged();
 
         mViewModel.loadDataFromServer();
     }

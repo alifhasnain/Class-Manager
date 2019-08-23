@@ -4,7 +4,7 @@
     android:id="@+id/swipe_to_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.SaturdayClasses">
+    tools:context=".fragments.EachDayRoutine">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,16 +17,6 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/loading_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"
-                android:visibility="gone"
-                android:text="Loading content"
-                android:textSize="18sp" />
-
             <ProgressBar
                 android:id="@+id/progress_bar"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -35,13 +25,33 @@
                 android:indeterminate="true"
                 android:visibility="gone" />
 
+            <TextView
+                android:id="@+id/loading_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                android:text="Loading content"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/no_classes"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No Classes Today"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textSize="22sp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layoutAnimation="@anim/layout_animation_fall_down"/>
+            android:layoutAnimation="@anim/layout_animation_fall_down" />
 
     </RelativeLayout>
 

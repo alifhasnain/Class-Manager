@@ -48,8 +48,6 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
     Chip mBsc;
 
-    Chip mMsc;
-
     Spinner mLevel;
 
     Spinner mTerm;
@@ -78,7 +76,6 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
         mEvening = findViewById(R.id.evening);
         mCse = findViewById(R.id.cse);
         mBsc = findViewById(R.id.bsc);
-        mMsc = findViewById(R.id.msc);
         mLevel = findViewById(R.id.level);
         mTerm = findViewById(R.id.term);
         mSection = findViewById(R.id.section_spinner);
@@ -137,9 +134,6 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
         if(mBsc.isChecked())    {
             profile.setProgram(HelperClass.PROGRAM_BSC);
         }
-        else if(mMsc.isChecked())   {
-            profile.setProgram(HelperClass.PROGRAM_MSC);
-        }
 
         if (mDay.isChecked()) {
             profile.setShift("Day");
@@ -182,7 +176,7 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
     private void saveCourseWithSharedPreference(String program, String shift, String level, String term, String section) {
 
-        HelperClass helperClass = new HelperClass();
+        HelperClass helperClass = HelperClass.getInstance();
 
         ArrayList<String> coursesList = helperClass.getCourseList(program, shift, level, term);
 
@@ -248,7 +242,7 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
         if (mDay.isChecked() | mEvening.isChecked()) {
             if (mCse.isChecked()) {
-                if (mBsc.isChecked() || mMsc.isChecked()) {
+                if (mBsc.isChecked()) {
                     return true;
                 } else {
                     makeToast("Please select a program");
@@ -271,7 +265,7 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
         }
     }
 
-    private void makeToast(String txt) {
-        Toast.makeText(this, txt, Toast.LENGTH_SHORT).show();
+    private void makeToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

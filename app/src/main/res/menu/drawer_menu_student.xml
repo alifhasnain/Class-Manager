@@ -14,11 +14,16 @@
         <item
             android:id="@+id/extra_classes"
             android:icon="@drawable/ic_menu_extra_classes"
-            android:title="Extra Classes"/>
+            android:title="Extra Classes" />
         <item
             android:id="@+id/empty_rooms"
             android:icon="@drawable/ic_menu_empty_rooms"
-            android:title="Empty Rooms"/>
+            android:title="Empty Rooms" />
+
+        <item
+            android:id="@+id/custom_room_search"
+            android:icon="@drawable/ic_search"
+            android:title="Custom Search" />
     </group>
 
     <group

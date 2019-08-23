@@ -1,7 +1,5 @@
 package bd.edu.daffodilvarsity.classmanager.otherclasses;
 
-import com.google.firebase.Timestamp;
-
 public class ClassDetails {
 
     private String room;
@@ -23,8 +21,6 @@ public class ClassDetails {
     private String batch = "";
 
     private float priority;
-
-    private Timestamp timestamp = null;
 
     private String teacherUid = "";
 
@@ -129,14 +125,6 @@ public class ClassDetails {
 
     public void setPriority(float priority) {
         this.priority = priority;
-    }
-
-    public Timestamp getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
     }
 
     public String getTeacherUid() {

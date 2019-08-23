@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,28 +14,49 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
+import com.google.gson.Gson;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.fragments.AdminPanel;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookedClasses;
-import bd.edu.daffodilvarsity.classmanager.fragments.ClassesList;
+import bd.edu.daffodilvarsity.classmanager.fragments.CustomRoutineSearch;
 import bd.edu.daffodilvarsity.classmanager.fragments.EmptyRooms;
+import bd.edu.daffodilvarsity.classmanager.fragments.ExtraClassesStudent;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileStudents;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileTeacher;
+import bd.edu.daffodilvarsity.classmanager.fragments.RoutineTabHolder;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
 
+    FirebaseFunctions mFunctions = FirebaseFunctions.getInstance();
+
+    private int checkedNavigationItem;
+
     private FirebaseAuth mAuth;
 
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+
+    private Fragment mFragmentToLaunch;
+
+    private NavigationView mNavigationView;
 
     private DrawerLayout mDrawerLayout;
 
@@ -47,23 +69,70 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initializeVariables();
 
-        if(mAuth.getCurrentUser()!=null && !isEmailVerified() ) {
+        if (mAuth.getCurrentUser() != null && !isEmailVerified()) {
             mAuth.signOut();
         }
-        
+
         setUpNavigationDrawer();
 
-        if(savedInstanceState == null)  {
+        if (savedInstanceState == null) {
             setUpHomeFragment();
         }
+
+        //testSaveTimestamp();
+
+    }
+
+    private void testSaveTimestamp() {
+
+        Calendar calendar = Calendar.getInstance();
+
+        GregorianCalendar gCalendar = new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+        Timestamp timestamp = new Timestamp(gCalendar.getTime());
+
+        BookedClassDetails bookedClassDetails = new BookedClassDetails();
+
+        bookedClassDetails.setRoomNo("115DT");
+        bookedClassDetails.setTime("10.00AM-11.30AM");
+        bookedClassDetails.setReservationDate(timestamp);
+        bookedClassDetails.setProgram("B.Sc in CSE");
+        bookedClassDetails.setShift("Day");
+        bookedClassDetails.setSection("E");
+        bookedClassDetails.setCourseCode("CSE313");
+        bookedClassDetails.setPriority(1f);
+
+        Gson gson = new Gson();
+
+        String jsonData = gson.toJson(bookedClassDetails);
+
+        makeToast(jsonData);
+
+        mFunctions.getHttpsCallable("test").call(jsonData)
+                .addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
+                    @Override
+                    public void onSuccess(HttpsCallableResult httpsCallableResult) {
+                        makeToast("Success");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                makeToast("Failed");
+            }
+        });
 
     }
 
     private void setUpHomeFragment() {
+
+        mFragmentToLaunch = new RoutineTabHolder();
+
         enableToolbarScrolling(true);
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container,new ClassesList(),"classes")
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(R.id.fragment_container, mFragmentToLaunch, "classes")
                 .commit();
     }
 
@@ -71,6 +140,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthStateListener);
+
+        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+                switch (checkedNavigationItem) {
+                    default:
+                        if (mFragmentToLaunch != null) {
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                                    .replace(R.id.fragment_container, mFragmentToLaunch, "classes")
+                                    .commit();
+                        }
+                        break;
+                }
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
     }
 
     @Override
@@ -82,10 +183,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onBackPressed() {
 
-        if(mDrawerLayout.isDrawerOpen(GravityCompat.START))  {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
 
@@ -96,13 +196,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(mAuth.getCurrentUser() == null)  {
-                    startActivity(new Intent(MainActivity.this,SignIn.class));
+                if (mAuth.getCurrentUser() == null) {
+                    startActivity(new Intent(MainActivity.this, SignIn.class));
                     finish();
                 }
             }
         };
         mDrawerLayout = findViewById(R.id.drawer_layout);
+        mNavigationView = findViewById(R.id.navigation_view);
         mToolBar = findViewById(R.id.toolbar);
     }
 
@@ -110,42 +211,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setSupportActionBar(mToolBar);
 
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolBar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         mDrawerLayout.addDrawerListener(drawerToggle);
 
         drawerToggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-
-        switch (getUserType())  {
+        switch (getUserType()) {
             case HelperClass.USER_TYPE_ADMIN:
-                navigationView.inflateMenu(R.menu.drawer_menu_admin);
+                mNavigationView.inflateMenu(R.menu.drawer_menu_admin);
                 break;
             case HelperClass.USER_TYPE_TEACHER:
-                navigationView.inflateMenu(R.menu.drawer_menu_teacher);
+                mNavigationView.inflateMenu(R.menu.drawer_menu_teacher);
                 break;
             case HelperClass.USER_TYPE_STUDENT:
-                navigationView.inflateMenu(R.menu.drawer_menu_student);
+                mNavigationView.inflateMenu(R.menu.drawer_menu_student);
                 break;
         }
 
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
-        navigationView.setCheckedItem(R.id.classes);
+        mNavigationView.setCheckedItem(R.id.classes);
     }
 
-    private String getUserType()    {
-        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
-        return sharedPreferences.getString(HelperClass.USER_TYPE,null);
+    private String getUserType() {
+        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+        return sharedPreferences.getString(HelperClass.USER_TYPE, null);
     }
 
     private void enableToolbarScrolling(boolean b) {
         AppBarLayout.LayoutParams parms = (AppBarLayout.LayoutParams) mToolBar.getLayoutParams();
-        if(b)   {
+        if (b) {
             parms.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-        }
-        else    {
+        } else {
             parms.setScrollFlags(0);
         }
         mToolBar.setLayoutParams(parms);
@@ -153,56 +251,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.admin:
                 enableToolbarScrolling(false);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new AdminPanel(),"admin_panel")
-                        .commit();
+                checkedNavigationItem = R.id.admin;
+                mFragmentToLaunch = new AdminPanel();
                 break;
             case R.id.profile_teacher:
+                checkedNavigationItem = R.id.profile_teacher;
                 enableToolbarScrolling(false);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new ProfileTeacher(),"teacher_profile")
-                        .commit();
+                mFragmentToLaunch = new ProfileTeacher();
                 break;
             case R.id.profile_student:
+                checkedNavigationItem = R.id.profile_student;
                 enableToolbarScrolling(false);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new ProfileStudents(),"teacher_profile")
-                        .commit();
+                mFragmentToLaunch = new ProfileStudents();
                 break;
             case R.id.classes:
+                checkedNavigationItem = R.id.classes;
                 enableToolbarScrolling(true);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new ClassesList(),"classes")
-                        .commit();
+                mFragmentToLaunch = new RoutineTabHolder();
                 break;
             case R.id.book_classes:
+                checkedNavigationItem = R.id.book_classes;
                 enableToolbarScrolling(true);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new BookClasses(),"book_classes")
-                        .commit();
+                mFragmentToLaunch = new BookClasses();
+                break;
+            case R.id.custom_room_search:
+                checkedNavigationItem = R.id.custom_room_search;
+                mFragmentToLaunch = new CustomRoutineSearch();
+                enableToolbarScrolling(true);
+                break;
+            case R.id.extra_classes:
+                checkedNavigationItem = R.id.extra_classes;
+                enableToolbarScrolling(true);
+                mFragmentToLaunch = new ExtraClassesStudent();
                 break;
             case R.id.empty_rooms:
+                checkedNavigationItem = R.id.empty_rooms;
                 enableToolbarScrolling(true);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new EmptyRooms(),"empty_rooms")
-                        .commit();
+                mFragmentToLaunch = new EmptyRooms();
                 break;
             case R.id.booked_classroom:
+                checkedNavigationItem = R.id.booked_classroom;
                 enableToolbarScrolling(true);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new BookedClasses(),"booked_classes")
-                        .commit();
+                mFragmentToLaunch = new BookedClasses();
                 break;
             case R.id.sign_out:
                 signOut();
@@ -225,9 +318,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void signOut() {
         try {
             mAuth.signOut();
-        }
-        catch (Exception e)  {
-            Log.e(TAG,"Error : ",e);
+        } catch (Exception e) {
+            Log.e(TAG, "Error : ", e);
         }
     }
 

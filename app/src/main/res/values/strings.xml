@@ -6,6 +6,10 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="email_title">Book cancellation</string>
+    <string name="email_description">The Room you booked was cancelled by admins due to some official event.</string>
+    <string name="load_data_error_for_internet">Unable to load data from server.Please check your internet connection.</string>
+
     <!--Course list -->
     <string name="CSE112">Computer Fundamentals</string>
     <string name="MAT111">Mathematics-I: Differential and Integral Calculus</string>

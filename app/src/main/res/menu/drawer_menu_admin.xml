@@ -22,6 +22,10 @@
             android:icon="@drawable/ic_menu_empty_rooms"
             android:title="Empty Rooms"/>
         <item
+            android:id="@+id/custom_room_search"
+            android:icon="@drawable/ic_search"
+            android:title="Custom Search"/>
+        <item
             android:id="@+id/book_classes"
             android:icon="@drawable/ic_menu_book_class"
             android:title="Book Classroom" />

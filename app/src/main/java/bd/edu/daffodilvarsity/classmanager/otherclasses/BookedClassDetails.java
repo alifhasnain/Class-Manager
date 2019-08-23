@@ -4,19 +4,23 @@ import com.google.firebase.Timestamp;
 
 public class BookedClassDetails {
 
-    private String roomNo;
+    private String roomNo = "";
 
-    private String time;
+    private String time = "";
 
-    private String teacherInitial;
+    private String teacherInitial = "";
 
-    private Timestamp reservationTime;
+    private String teacherEmail = "";
 
-    private String dayOfWeek;
+    private Timestamp reservationDate;
+
+    private String dayOfWeek = "";
 
     private Timestamp timeWhenUserBooked;
 
-    private String uid;
+    private String uid = "";
+
+    private String program = "";
 
     private String docId;
 
@@ -60,6 +64,14 @@ public class BookedClassDetails {
         return dayOfWeek;
     }
 
+    public String getTeacherEmail() {
+        return teacherEmail;
+    }
+
+    public void setTeacherEmail(String teacherEmail) {
+        this.teacherEmail = teacherEmail;
+    }
+
     public void setDayOfWeek(String dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
     }
@@ -72,12 +84,12 @@ public class BookedClassDetails {
         this.timeWhenUserBooked = timeWhenUserBooked;
     }
 
-    public Timestamp getReservationTime() {
-        return reservationTime;
+    public Timestamp getReservationDate() {
+        return reservationDate;
     }
 
-    public void setReservationTime(Timestamp reservationTime) {
-        this.reservationTime = reservationTime;
+    public void setReservationDate(Timestamp reservationDate) {
+        this.reservationDate = reservationDate;
     }
 
     public String getUid() {
@@ -126,5 +138,13 @@ public class BookedClassDetails {
 
     public void setPriority(float priority) {
         this.priority = priority;
+    }
+
+    public String getProgram() {
+        return program;
+    }
+
+    public void setProgram(String program) {
+        this.program = program;
     }
 }

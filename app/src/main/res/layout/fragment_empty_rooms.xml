@@ -19,9 +19,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="3dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="8dp"
-            android:weightSum="10">
+            android:weightSum="13">
 
             <Spinner
                 android:id="@+id/day_selector"
@@ -33,7 +35,7 @@
                 android:id="@+id/time_selector"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="5"/>
+                android:layout_weight="8"/>
 
         </LinearLayout>
 

@@ -40,13 +40,15 @@ public class BookClassViewModel extends ViewModel {
 
         List<Task<QuerySnapshot>> taskList = new ArrayList<>();
 
-        Task<QuerySnapshot> task1 = emptyRoomRef.whereEqualTo("dayOfWeek", dayOfWeek).whereEqualTo("time", selectedTime).get(Source.SERVER);
+        Task<QuerySnapshot> emptyRoomFindTask = emptyRoomRef
+                .whereEqualTo("dayOfWeek", dayOfWeek)
+                .whereEqualTo("time", selectedTime).get(Source.SERVER);
 
-        taskList.add(task1);
+        taskList.add(emptyRoomFindTask);
 
         Timestamp timestamp = new Timestamp(calendar.getTime());
 
-        Task<QuerySnapshot> task2 = bookedRoomRef.whereEqualTo("reserveTime", timestamp)
+        Task<QuerySnapshot> task2 = bookedRoomRef.whereEqualTo("reservationDate", timestamp)
                 .whereEqualTo("dayOfWeek", dayOfWeek)
                 .whereEqualTo("time", selectedTime).get(Source.SERVER);
 

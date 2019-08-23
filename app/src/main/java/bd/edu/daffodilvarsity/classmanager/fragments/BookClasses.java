@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -22,15 +23,27 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.AvailableClassesRecyclerViewAdapter;
+import bd.edu.daffodilvarsity.classmanager.dialogs.BookClassDialog;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 import bd.edu.daffodilvarsity.classmanager.viewmodels.BookClassViewModel;
 
 /**
@@ -63,6 +76,9 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
     private Calendar mSelectedDate;
 
     private Calendar mFinalDate;
+
+    private DateFormat mDateFormater = new SimpleDateFormat("EEE, d MMM, yyyy");
+
 
 
     public BookClasses() {
@@ -150,13 +166,19 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
     private void setupPrimaryDate() {
 
-        mSelectedDate = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
+
+        int year = calendar.get(Calendar.YEAR);
+
+        int month = calendar.get(Calendar.MONTH);
+
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+        mSelectedDate = new GregorianCalendar(year,month,dayOfMonth);
 
         mFinalDate = mSelectedDate;
 
-        DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM, yyyy");
-
-        mPickedTimeText.setText(dateFormat.format(mFinalDate.getTime()));
+        mPickedTimeText.setText(mDateFormater.format(mFinalDate.getTime()));
 
     }
 
@@ -171,10 +193,106 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
         mAdapter.setItemClickListener(new AvailableClassesRecyclerViewAdapter.ItemClickListener() {
             @Override
             public void onItemClicked(int position) {
-                makeToast(mEmptyClasses.get(position).getRoom());
+
+                ClassDetails selectedClass = mEmptyClasses.get(position);
+
+                loadTeacherProfileThenFinishBook(selectedClass);
+
             }
         });
 
+    }
+
+    private void loadTeacherProfileThenFinishBook(final ClassDetails selectedClass) {
+
+        String mail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+        DocumentReference profileRef = FirebaseFirestore.getInstance().document("/teacher_profiles/"+mail);
+
+        profileRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.exists())   {
+                    finishBooking(selectedClass,documentSnapshot.toObject(ProfileObjectTeacher.class));
+                }
+                else {
+                    makeToast("Your document doesn't exist in database.");
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                makeToast("Failed to load data. Please check your internet connection.");
+            }
+        });
+    }
+
+    private void finishBooking(ClassDetails selectedClass, ProfileObjectTeacher profile) {
+
+
+        final BookedClassDetails bcd = new BookedClassDetails();
+
+        bcd.setRoomNo(selectedClass.getRoom());
+        bcd.setTime(selectedClass.getTime());
+        bcd.setTeacherInitial(profile.getTeacherInitial());
+        bcd.setReservationDate(new Timestamp(mFinalDate.getTime()));
+        bcd.setDayOfWeek(getDayOfWeek(mFinalDate));
+        bcd.setTimeWhenUserBooked(Timestamp.now());
+        bcd.setUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        bcd.setPriority(selectedClass.getPriority());
+        bcd.setTeacherEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
+        BookClassDialog bookClassDialog = new BookClassDialog(mDateFormater.format(mFinalDate.getTime()),bcd.getRoomNo(),bcd.getTime());
+
+        bookClassDialog.show(getChildFragmentManager(),"custom_dialog");
+
+        bookClassDialog.addReturnTextListener(new BookClassDialog.CustomDialogListener() {
+            @Override
+            public void returnTexts(String shift, String program, String section, String courseCode) {
+                bcd.setShift(shift);
+                bcd.setSection(section);
+                bcd.setProgram(program);
+                bcd.setCourseCode(courseCode);
+
+                DocumentReference docRef = FirebaseFirestore.getInstance().document("/booked_classes/" + mFinalDate.getTimeInMillis() + "x" + bcd.getRoomNo() + "x" + bcd.getTime() + "/");
+
+                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if(documentSnapshot.exists())   {
+                            makeToast("Class is already booked.");
+                        }
+                        else {
+                            saveData(bcd);
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        makeToast("Failed to load data. Please check your internet connection.");
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void saveData(BookedClassDetails bcd) {
+
+        DocumentReference docRef = FirebaseFirestore.getInstance().document("/booked_classes/" + mFinalDate.getTimeInMillis() + "x" + bcd.getRoomNo() + "x" + bcd.getTime() + "/");
+
+        docRef.set(bcd).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                makeToast("Success!");
+                loadEmptyClassList();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                makeToast("Failed");
+            }
+        });
     }
 
     private void initializeSpinners() {

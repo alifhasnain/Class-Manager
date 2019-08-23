@@ -60,7 +60,7 @@ public class BookedClassesRecyclerViewAdapter extends RecyclerView.Adapter<Booke
 
         holder.section.setText(mBookedClassesList.get(position).getSection());
 
-        String formattedDate = getFormattedDate(mBookedClassesList.get(position).getReservationTime());
+        String formattedDate = getFormattedDate(mBookedClassesList.get(position).getReservationDate());
         holder.reserveDate.setText(formattedDate);
 
         holder.whenBooked.setText(getTimePast(mBookedClassesList.get(position).getTimeWhenUserBooked()));
@@ -77,6 +77,7 @@ public class BookedClassesRecyclerViewAdapter extends RecyclerView.Adapter<Booke
                             @Override
                             public void onSuccess(Void aVoid) {
                                 makeToast(holder.action.getContext(), "Success!");
+                                notifyDataSetChanged();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -115,7 +116,7 @@ public class BookedClassesRecyclerViewAdapter extends RecyclerView.Adapter<Booke
         Timestamp timestamp = new Timestamp(calendar.getTime());
 
         //If is reservation date was before today then setItemType to 0
-        if (bcd.getReservationTime().compareTo(timestamp) < 0) {
+        if (bcd.getReservationDate().compareTo(timestamp) < 0) {
             return 0;
         } else {
             return 1;

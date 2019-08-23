@@ -3,6 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
     app:cardElevation="5dp"
     app:cardUseCompatPadding="true"
     app:cardCornerRadius="3dp">
@@ -20,19 +23,34 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Room : " />
+                android:textSize="17sp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:text="Room : "
+                android:textColor="@color/text_color_black"/>
 
             <TextView
                 android:id="@+id/room_no"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textSize="17sp"
+                android:textColor="@color/text_color_black"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"/>
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/course_code"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="@color/text_color_black"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -42,12 +60,22 @@
             <TextView
                 android:id="@+id/time"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:textSize="15sp"
+                android:textColor="@color/text_color_black"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp" />
 
             <TextView
                 android:id="@+id/reserveDate"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:textSize="15sp"
+                android:textColor="@color/text_color_black"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp" />
 
         </LinearLayout>
 
@@ -66,12 +94,22 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Shift" />
+                    android:text="Shift : "
+                    android:textSize="15sp"
+                    android:textColor="@color/text_color_black"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"/>
 
                 <TextView
                     android:id="@+id/shift"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/text_color_black"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"/>
 
             </LinearLayout>
 
@@ -84,12 +122,22 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Section" />
+                    android:text="Section : "
+                    android:textSize="15sp"
+                    android:textColor="@color/text_color_black"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"/>
 
                 <TextView
                     android:id="@+id/section"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/text_color_black"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"/>
 
             </LinearLayout>
 
@@ -99,24 +147,32 @@
             android:id="@+id/time_till_booking"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="8sp" />
+            android:gravity="end"
+            android:textColor="@color/white"
+            android:background="@color/google_blue"
+            android:layout_marginTop="8dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:textSize="12sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey" />
+            android:background="@color/grey"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
+            android:gravity="end"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_action"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/google_blue"/>
 
         </LinearLayout>
 
