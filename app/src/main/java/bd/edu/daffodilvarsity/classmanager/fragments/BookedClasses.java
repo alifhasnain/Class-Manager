@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.BookedClassesRecyclerViewAdapter;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.viewmodels.BookedClassesViewModel;
 
 /**
@@ -32,13 +31,11 @@ public class BookedClasses extends Fragment {
 
     private BookedClassesViewModel mViewModel;
 
-    private ArrayList<BookedClassDetails> mBookedClasses = new ArrayList<>();
+    private ArrayList<BookedClassDetailsUser> mBookedClasses = new ArrayList<>();
 
     private ProgressBar progressBar;
 
     private TextView loadingContents;
-
-    private ImageView mEmptyImageView;
 
     private TextView mEmptyTextView;
 
@@ -86,12 +83,12 @@ public class BookedClasses extends Fragment {
         //Initialize ViewModel and load booked classes
         mViewModel = ViewModelProviders.of(this).get(BookedClassesViewModel.class);
 
-        mViewModel.getBookedClassList().observe(getViewLifecycleOwner(), new Observer<ArrayList<BookedClassDetails>>() {
+        mViewModel.getBookedClassList().observe(getViewLifecycleOwner(), new Observer<ArrayList<BookedClassDetailsUser>>() {
             @Override
-            public void onChanged(ArrayList<BookedClassDetails> bookedClassDetails) {
+            public void onChanged(ArrayList<BookedClassDetailsUser> bookedClassDetailUsers) {
 
                 mBookedClasses.clear();
-                mBookedClasses.addAll(bookedClassDetails);
+                mBookedClasses.addAll(bookedClassDetailUsers);
 
                 mAdapter.notifyDataSetChanged();
 
@@ -126,7 +123,6 @@ public class BookedClasses extends Fragment {
         mPullToRefresh = view.findViewById(R.id.pull_to_refresh);
         mPullToRefresh.setDistanceToTriggerSync(450);
 
-        mEmptyImageView = view.findViewById(R.id.empty_image);
         mEmptyTextView = view.findViewById(R.id.empty_text_view);
 
     }
@@ -163,11 +159,9 @@ public class BookedClasses extends Fragment {
     private void toggleRecyclerEmptyState()   {
 
         if(mAdapter.getItemCount()==0)   {
-            mEmptyImageView.setVisibility(View.VISIBLE);
             mEmptyTextView.setVisibility(View.VISIBLE);
         }
         else if(mAdapter.getItemCount()>0) {
-            mEmptyImageView.setVisibility(View.GONE);
             mEmptyTextView.setVisibility(View.GONE);
         }
     }

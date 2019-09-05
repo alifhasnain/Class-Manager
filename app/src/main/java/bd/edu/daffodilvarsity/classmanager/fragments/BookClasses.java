@@ -40,7 +40,7 @@ import java.util.GregorianCalendar;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.AvailableClassesRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.dialogs.BookClassDialog;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
@@ -167,6 +167,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
     private void setupPrimaryDate() {
 
         Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE,1);
 
         int year = calendar.get(Calendar.YEAR);
 
@@ -230,7 +231,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
     private void finishBooking(ClassDetails selectedClass, ProfileObjectTeacher profile) {
 
 
-        final BookedClassDetails bcd = new BookedClassDetails();
+        final BookedClassDetailsUser bcd = new BookedClassDetailsUser();
 
         bcd.setRoomNo(selectedClass.getRoom());
         bcd.setTime(selectedClass.getTime());
@@ -277,7 +278,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
     }
 
-    private void saveData(BookedClassDetails bcd) {
+    private void saveData(BookedClassDetailsUser bcd) {
 
         DocumentReference docRef = FirebaseFirestore.getInstance().document("/booked_classes/" + mFinalDate.getTimeInMillis() + "x" + bcd.getRoomNo() + "x" + bcd.getTime() + "/");
 
@@ -399,10 +400,12 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
         Calendar calendar = Calendar.getInstance();
 
+        calendar.add(Calendar.DATE,1);
+
         minDate = calendar.getTimeInMillis();
 
         //Change date of calender
-        calendar.set(2019, Calendar.AUGUST, 25);
+        calendar.add(Calendar.DATE,6);
 
         maxDate = calendar.getTimeInMillis();
 

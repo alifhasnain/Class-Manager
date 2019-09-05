@@ -50,32 +50,18 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+        <TextView
+            android:id="@+id/empty_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:gravity="center"
-            android:orientation="vertical"
+            android:text="No Room Is Booked"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/empty_image"
-                android:layout_width="1in"
-                android:layout_height="1in"
-                android:src="@drawable/ic_menu_empty_rooms"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/empty_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Empty"
-                android:textSize="20sp"
-                android:visibility="gone" />
-
-        </LinearLayout>
+            app:layout_constraintTop_toTopOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

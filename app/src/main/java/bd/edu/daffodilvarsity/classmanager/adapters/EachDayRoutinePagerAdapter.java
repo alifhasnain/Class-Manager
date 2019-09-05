@@ -8,12 +8,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
 
-public class ClassListPagerAdapter extends FragmentPagerAdapter {
+public class EachDayRoutinePagerAdapter extends FragmentPagerAdapter {
 
     private final ArrayList<Fragment> mFragmentList = new ArrayList<>();
     private final ArrayList<String> mFragmentTitleList = new ArrayList<>();
 
-    public ClassListPagerAdapter(@NonNull FragmentManager fm) {
+    public EachDayRoutinePagerAdapter(@NonNull FragmentManager fm) {
         super(fm);
     }
 

@@ -1,8 +1,7 @@
-package bd.edu.daffodilvarsity.classmanager.fragments;
+package bd.edu.daffodilvarsity.classmanager.routine;
 
 
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,26 +28,26 @@ import java.util.Calendar;
 import java.util.LinkedHashMap;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.adapters.ClassListPagerAdapter;
+import bd.edu.daffodilvarsity.classmanager.adapters.EachDayRoutinePagerAdapter;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
-import bd.edu.daffodilvarsity.classmanager.room.EachDayClassViewModel;
-
-import static android.content.Context.MODE_PRIVATE;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RoutineTabHolder extends Fragment {
+public class EachDayRoutineTabHolder extends Fragment {
 
     private EachDayClassViewModel mViewModel;
 
     private View mView;
 
-    private ClassListPagerAdapter classListPagerAdapter;
+    private EachDayRoutinePagerAdapter eachDayRoutinePagerAdapter;
 
     private ViewPager mViewPager;
 
-    public RoutineTabHolder() {
+    private SharedPreferencesHelper mSharedPrefHelper;
+
+    public EachDayRoutineTabHolder() {
         // Required empty public constructor
     }
 
@@ -94,7 +93,7 @@ public class RoutineTabHolder extends Fragment {
                 AlertDialog alertDialog = new AlertDialog.Builder(getContext())
                         .setTitle("Alert")
                         .setMessage("This will refresh whole routine from server and cancel all routine reminders.")
-                        .setNegativeButton("Cancel",null)
+                        .setNegativeButton("Cancel", null)
                         .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -110,19 +109,19 @@ public class RoutineTabHolder extends Fragment {
         }
     }
 
-    private void checkRoutineVersion()  {
+    private void checkRoutineVersion() {
 
         FirebaseFirestore.getInstance().document("routine-version/version/").get(Source.SERVER)
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if(documentSnapshot.exists())   {
+                        if (documentSnapshot.exists()) {
 
                             String version = documentSnapshot.get("version").toString();
 
-                            if(getRoutineVersionFromSharedPreferences()==null || !version.equals(getRoutineVersionFromSharedPreferences())) {
+                            if (mSharedPrefHelper.getRoutineVersionFromSharedPreferences(getContext()) == null || !version.equals(mSharedPrefHelper.getRoutineVersionFromSharedPreferences(getActivity()))) {
                                 makeToast("Downloading new updated routine.");
-                                saveRoutineVersionToSharedPreferences(version);
+                                mSharedPrefHelper.saveRoutineVersionToSharedPreferences(getContext(), version);
                                 forceRefreshWholeRoutine();
                             }
                         }
@@ -132,23 +131,22 @@ public class RoutineTabHolder extends Fragment {
 
     private void forceRefreshWholeRoutine() {
 
-        if(getUserType().equals(HelperClass.USER_TYPE_ADMIN) || getUserType().equals(HelperClass.USER_TYPE_TEACHER))    {
-            mViewModel.loadWholeTeacherRoutineFromServer();
+        String userType = "";
+
+        if (getActivity() != null) {
+            userType = mSharedPrefHelper.getUserType(getContext());
         }
-        else if(getUserType().equals(HelperClass.USER_TYPE_STUDENT))    {
+
+        if (userType.equals(HelperClass.USER_TYPE_ADMIN) || userType.equals(HelperClass.USER_TYPE_TEACHER)) {
+            mViewModel.loadWholeTeacherRoutineFromServer();
+        } else if (userType.equals(HelperClass.USER_TYPE_STUDENT)) {
             mViewModel.loadWholeStudentRoutineFromServer();
         }
     }
 
-    private void saveRoutineVersionToSharedPreferences(String version) {
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(HelperClass.ROUTINE_VERSION,version);
-        editor.apply();
-    }
-
     private void initializeVariables() {
         mViewPager = mView.findViewById(R.id.tab_holder);
+        mSharedPrefHelper = new SharedPreferencesHelper();
     }
 
     private void initializeTabLayout() {
@@ -169,19 +167,6 @@ public class RoutineTabHolder extends Fragment {
 
     }
 
-    private String getRoutineVersionFromSharedPreferences() {
-
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
-
-        return sharedPreferences.getString(HelperClass.ROUTINE_VERSION,"00000000");
-
-    }
-
-    private String getUserType() {
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-        return sharedPreferences.getString(HelperClass.USER_TYPE, "");
-    }
-
     private int getDayOfWeekPosition() {
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
@@ -193,8 +178,8 @@ public class RoutineTabHolder extends Fragment {
         }
     }
 
-    private void makeToast(String msg)  {
-        if(getContext()!=null)  {
+    private void makeToast(String msg) {
+        if (getContext() != null) {
             Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
         }
     }
@@ -202,23 +187,23 @@ public class RoutineTabHolder extends Fragment {
 
     private void initializeViewPager() {
 
-        classListPagerAdapter = new ClassListPagerAdapter(getChildFragmentManager());
+        eachDayRoutinePagerAdapter = new EachDayRoutinePagerAdapter(getChildFragmentManager());
 
-        LinkedHashMap<String,EachDayRoutine> allDaysData = getEachDayFragmentMap();
+        LinkedHashMap<String, EachDayRoutine> allDaysData = getEachDayFragmentMap();
 
-        for(LinkedHashMap.Entry<String,EachDayRoutine> entry : allDaysData.entrySet())   {
-            classListPagerAdapter.addFragment(entry.getValue(),entry.getKey());
+        for (LinkedHashMap.Entry<String, EachDayRoutine> entry : allDaysData.entrySet()) {
+            eachDayRoutinePagerAdapter.addFragment(entry.getValue(), entry.getKey());
         }
 
         mViewPager.setOffscreenPageLimit(4);
 
-        mViewPager.setAdapter(classListPagerAdapter);
+        mViewPager.setAdapter(eachDayRoutinePagerAdapter);
 
     }
 
-    private LinkedHashMap<String,EachDayRoutine> getEachDayFragmentMap()  {
+    private LinkedHashMap<String, EachDayRoutine> getEachDayFragmentMap() {
 
-        LinkedHashMap<String,EachDayRoutine> allDays = new LinkedHashMap<>();
+        LinkedHashMap<String, EachDayRoutine> allDays = new LinkedHashMap<>();
 
         Bundle bundle1 = new Bundle();
         Bundle bundle2 = new Bundle();
@@ -228,38 +213,38 @@ public class RoutineTabHolder extends Fragment {
         Bundle bundle6 = new Bundle();
 
         EachDayRoutine saturday = new EachDayRoutine();
-        bundle1.putString("dayOfWeek","Saturday");
+        bundle1.putString("dayOfWeek", "Saturday");
         saturday.setArguments(bundle1);
-        allDays.put("Saturday",saturday);
+        allDays.put("Saturday", saturday);
 
         EachDayRoutine sunday = new EachDayRoutine();
-        bundle2.putString("dayOfWeek","Sunday");
+        bundle2.putString("dayOfWeek", "Sunday");
         sunday.setArguments(bundle2);
-        allDays.put("Sunday",sunday);
+        allDays.put("Sunday", sunday);
 
 
         EachDayRoutine monday = new EachDayRoutine();
-        bundle3.putString("dayOfWeek","Monday");
+        bundle3.putString("dayOfWeek", "Monday");
         monday.setArguments(bundle3);
-        allDays.put("Monday",monday);
+        allDays.put("Monday", monday);
 
 
         EachDayRoutine tuesday = new EachDayRoutine();
-        bundle4.putString("dayOfWeek","Tuesday");
+        bundle4.putString("dayOfWeek", "Tuesday");
         tuesday.setArguments(bundle4);
-        allDays.put("Tuesday",tuesday);
+        allDays.put("Tuesday", tuesday);
 
 
         EachDayRoutine wednesday = new EachDayRoutine();
-        bundle5.putString("dayOfWeek","Wednesday");
+        bundle5.putString("dayOfWeek", "Wednesday");
         wednesday.setArguments(bundle5);
-        allDays.put("Wednesday",wednesday);
+        allDays.put("Wednesday", wednesday);
 
 
         EachDayRoutine thursday = new EachDayRoutine();
-        bundle6.putString("dayOfWeek","Thursday");
+        bundle6.putString("dayOfWeek", "Thursday");
         thursday.setArguments(bundle6);
-        allDays.put("Thursday",thursday);
+        allDays.put("Thursday", thursday);
 
         return allDays;
 

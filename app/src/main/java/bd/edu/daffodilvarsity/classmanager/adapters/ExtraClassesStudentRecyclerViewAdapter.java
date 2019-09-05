@@ -13,16 +13,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 
 public class ExtraClassesStudentRecyclerViewAdapter extends RecyclerView.Adapter<ExtraClassesStudentRecyclerViewAdapter.ViewHolder> {
 
     private DateFormat mDateFormater = new SimpleDateFormat("EEE, d MMM, yyyy");
 
-    private ArrayList<BookedClassDetails> mExtraClasses;
+    private ArrayList<BookedClassDetailsUser> mExtraClasses;
 
-    public ExtraClassesStudentRecyclerViewAdapter(ArrayList<BookedClassDetails> mExtraClasses) {
+    public ExtraClassesStudentRecyclerViewAdapter(ArrayList<BookedClassDetailsUser> mExtraClasses) {
         this.mExtraClasses = mExtraClasses;
     }
 

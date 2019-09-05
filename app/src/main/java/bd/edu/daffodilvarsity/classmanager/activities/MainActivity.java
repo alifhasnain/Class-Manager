@@ -1,7 +1,6 @@
 package bd.edu.daffodilvarsity.classmanager.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -38,15 +37,18 @@ import bd.edu.daffodilvarsity.classmanager.fragments.EmptyRooms;
 import bd.edu.daffodilvarsity.classmanager.fragments.ExtraClassesStudent;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileStudents;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileTeacher;
-import bd.edu.daffodilvarsity.classmanager.fragments.RoutineTabHolder;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
+import bd.edu.daffodilvarsity.classmanager.routine.EachDayRoutineTabHolder;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
 
-    FirebaseFunctions mFunctions = FirebaseFunctions.getInstance();
+    private SharedPreferencesHelper mSharedPreferencesHelper;
+
+    private FirebaseFunctions mFunctions = FirebaseFunctions.getInstance();
 
     private int checkedNavigationItem;
 
@@ -91,20 +93,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Timestamp timestamp = new Timestamp(gCalendar.getTime());
 
-        BookedClassDetails bookedClassDetails = new BookedClassDetails();
+        BookedClassDetailsUser bookedClassDetailsUser = new BookedClassDetailsUser();
 
-        bookedClassDetails.setRoomNo("115DT");
-        bookedClassDetails.setTime("10.00AM-11.30AM");
-        bookedClassDetails.setReservationDate(timestamp);
-        bookedClassDetails.setProgram("B.Sc in CSE");
-        bookedClassDetails.setShift("Day");
-        bookedClassDetails.setSection("E");
-        bookedClassDetails.setCourseCode("CSE313");
-        bookedClassDetails.setPriority(1f);
+        bookedClassDetailsUser.setRoomNo("115DT");
+        bookedClassDetailsUser.setTime("10.00AM-11.30AM");
+        bookedClassDetailsUser.setReservationDate(timestamp);
+        bookedClassDetailsUser.setProgram("B.Sc in CSE");
+        bookedClassDetailsUser.setShift("Day");
+        bookedClassDetailsUser.setSection("E");
+        bookedClassDetailsUser.setCourseCode("CSE313");
+        bookedClassDetailsUser.setPriority(1f);
 
         Gson gson = new Gson();
 
-        String jsonData = gson.toJson(bookedClassDetails);
+        String jsonData = gson.toJson(bookedClassDetailsUser);
 
         makeToast(jsonData);
 
@@ -125,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setUpHomeFragment() {
 
-        mFragmentToLaunch = new RoutineTabHolder();
+        mFragmentToLaunch = new EachDayRoutineTabHolder();
 
         enableToolbarScrolling(true);
 
@@ -202,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         };
+        mSharedPreferencesHelper = new SharedPreferencesHelper();
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_view);
         mToolBar = findViewById(R.id.toolbar);
@@ -217,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawerToggle.syncState();
 
-        switch (getUserType()) {
+        switch (mSharedPreferencesHelper.getUserType(this)) {
             case HelperClass.USER_TYPE_ADMIN:
                 mNavigationView.inflateMenu(R.menu.drawer_menu_admin);
                 break;
@@ -232,11 +235,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mNavigationView.setNavigationItemSelectedListener(this);
 
         mNavigationView.setCheckedItem(R.id.classes);
-    }
-
-    private String getUserType() {
-        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-        return sharedPreferences.getString(HelperClass.USER_TYPE, null);
     }
 
     private void enableToolbarScrolling(boolean b) {
@@ -270,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.classes:
                 checkedNavigationItem = R.id.classes;
                 enableToolbarScrolling(true);
-                mFragmentToLaunch = new RoutineTabHolder();
+                mFragmentToLaunch = new EachDayRoutineTabHolder();
                 break;
             case R.id.book_classes:
                 checkedNavigationItem = R.id.book_classes;

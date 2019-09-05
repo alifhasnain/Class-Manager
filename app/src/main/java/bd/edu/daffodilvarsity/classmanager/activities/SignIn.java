@@ -32,11 +32,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.functions.FirebaseFunctions;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -44,20 +41,21 @@ import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 
 public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
-    FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
 
-    FirebaseFunctions mFunctions = FirebaseFunctions.getInstance();
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
-    FirebaseAuth.AuthStateListener mAuthStateListener;
+    private FirebaseFirestore db;
 
-    FirebaseFirestore db;
+    private TextInputLayout mEmailEditText;
 
-    TextInputLayout mEmailEditText;
+    private TextInputLayout mPasswordEditText;
 
-    TextInputLayout mPasswordEditText;
+    private SharedPreferencesHelper mSharedPrefHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +96,8 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
+        mSharedPrefHelper = new SharedPreferencesHelper();
+
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -122,9 +122,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            if(getUserType()!=null)   {
-                                checkForOfflineUserInfo();
-                            }
+                            checkForOfflineUserInfo();
                             Log.e("","Error : " , e);
                             showCircularProgressBar(false);
                         }
@@ -142,7 +140,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void checkForOfflineUserInfo() {
-        switch (getUserType()) {
+        switch (mSharedPrefHelper.getUserType(this)) {
             case HelperClass.USER_TYPE_ADMIN:
                 signInAsAdmin();
                 break;
@@ -174,7 +172,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
                             saveShiftAndProgramWithSharedPreferences(profile.getProgram(),profile.getShift());
 
-                            if (getCoursesFromSharedPreferences() == null) {
+                            if (mSharedPrefHelper.getCoursesAndSectionMapFromSharedPreferences(getApplication()) == null) {
                                 saveCoursesWithSharedPreference(profile.getProgram(), profile.getShift(), profile.getLevel(), profile.getTerm(), profile.getSection());
                             }
 
@@ -237,24 +235,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         String courseMapInJson = gson.toJson(coursesMap);
 
         editor.putString(HelperClass.COURSES_HASH_MAP, courseMapInJson).apply();
-    }
-
-    private HashMap<String, String> getCoursesFromSharedPreferences() {
-
-        HashMap<String, String> courseHashMap;
-
-        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-
-        Gson gson = new Gson();
-
-        String coursesInJson = sharedPreferences.getString(HelperClass.COURSES_HASH_MAP, null);
-
-        Type type = new TypeToken<HashMap<String, String>>() {
-        }.getType();
-
-        courseHashMap = gson.fromJson(coursesInJson, type);
-
-        return courseHashMap;
     }
 
     private void completeProfileStudent() {
@@ -399,11 +379,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    private String getUserType() {
-        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-        return sharedPreferences.getString(HelperClass.USER_TYPE, null);
     }
 
     private void clearFocusAndErrorMsg() {

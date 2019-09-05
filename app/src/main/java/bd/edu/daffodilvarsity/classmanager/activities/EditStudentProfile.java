@@ -34,6 +34,8 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
 
     private ProfileObjectStudent mUserProfile;
 
+    ProfileObjectStudent mUpdatedProfile;
+
     private FirebaseAuth mAuth;
 
     private FirebaseFirestore db;
@@ -145,6 +147,8 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
         mSave = findViewById(R.id.save);
         mSave.setOnClickListener(this);
 
+        mUpdatedProfile = new ProfileObjectStudent();
+
         mName = findViewById(R.id.name);
         mStudentId = findViewById(R.id.student_id);
         mDay = findViewById(R.id.day);
@@ -199,44 +203,48 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
 
         String id = mStudentId.getEditText().getText().toString().trim();
 
-        final ProfileObjectStudent profile = new ProfileObjectStudent();
+        mUpdatedProfile.setName(name);
 
-        profile.setName(name);
-
-        profile.setId(id);
+        mUpdatedProfile.setId(id);
 
         if (mBsc.isChecked()) {
-            profile.setProgram(HelperClass.PROGRAM_BSC);
+            mUpdatedProfile.setProgram(HelperClass.PROGRAM_BSC);
         }
 
         if (mDay.isChecked()) {
-            profile.setShift("Day");
+            mUpdatedProfile.setShift("Day");
         } else if (mEvening.isChecked()) {
-            profile.setShift("Evening");
+            mUpdatedProfile.setShift("Evening");
         }
 
         if (mCse.isChecked()) {
-            profile.setDepartment("CSE");
+            mUpdatedProfile.setDepartment("CSE");
         }
 
         final String level = mLevel.getSelectedItem().toString();
         final String term = mTerm.getSelectedItem().toString();
         final String section = mSection.getSelectedItem().toString();
 
-        profile.setLevel(level);
+        mUpdatedProfile.setLevel(level);
 
-        profile.setTerm(term);
+        mUpdatedProfile.setTerm(term);
 
-        profile.setSection(section);
+        mUpdatedProfile.setSection(section);
+
+        if(mUpdatedProfile.getShift().equals(HelperClass.SHIFT_EVENING) && level.equals("Level 4"))    {
+            makeToast("Evening shift can't have Level 4");
+            return;
+        }
 
         DocumentReference docRef = db.document("/student_profiles/" + mAuth.getCurrentUser().getUid());
 
-        docRef.set(profile)
+        docRef.set(mUpdatedProfile)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            makeToast("Information saved.");
+                            makeToast("Saved.");
+
                         } else {
                             makeToast("Failed to save.Please check your internet connection.");
                         }

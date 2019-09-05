@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "bd.edu.daffodilvarsity.classmanager"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -21,11 +21,12 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //AppCompat
     implementation 'androidx.appcompat:appcompat:1.0.2'
+    //ConstraintLayout
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-
     //Design support library
-    implementation 'com.google.android.material:material:1.1.0-alpha06'
+    implementation 'com.google.android.material:material:1.1.0-alpha09'
     //Easy Permission
     implementation 'pub.devrel:easypermissions:3.0.0'
     //Fast CSV
@@ -35,16 +36,20 @@ dependencies {
     //Gson
     implementation 'com.google.code.gson:gson:2.8.5'
     //Firebase authentication
-    implementation 'com.google.firebase:firebase-auth:18.1.0'
+    implementation 'com.google.firebase:firebase-auth:19.0.0'
     //Cloud Firestore
-    implementation 'com.google.firebase:firebase-firestore:20.2.0'
+    implementation 'com.google.firebase:firebase-firestore:21.0.0'
     //Firebase Functions
-    implementation 'com.google.firebase:firebase-functions:18.1.0'
+    implementation 'com.google.firebase:firebase-functions:19.0.0'
     //LifeCycle
     implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
     //Room
-    implementation "androidx.room:room-runtime:2.2.0-alpha02"
-    annotationProcessor "androidx.room:room-compiler:2.2.0-alpha02"
+    implementation "androidx.room:room-runtime:2.2.0-beta01"
+    annotationProcessor "androidx.room:room-compiler:2.2.0-beta01"
+    //WorkManager
+    implementation "androidx.work:work-runtime:2.2.0"
+    //AndroidJob
+    implementation 'com.evernote:android-job:1.3.0-rc1'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'

@@ -1,8 +1,7 @@
-package bd.edu.daffodilvarsity.classmanager.room;
+package bd.edu.daffodilvarsity.classmanager.routine;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import androidx.lifecycle.LiveData;
 
@@ -13,22 +12,19 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
-
-import static android.content.Context.MODE_PRIVATE;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 
 public class EachDayClassRepository {
 
     private RoutineClassDetailsDao allClassesDao;
+
+    private SharedPreferencesHelper mSharedPrefHelper = new SharedPreferencesHelper();
 
     private LiveData<List<RoutineClassDetails>> teacherClassListLiveData;
 
@@ -102,9 +98,9 @@ public class EachDayClassRepository {
 
         final ArrayList<RoutineClassDetails> classesList = new ArrayList<>();
 
-        String shift = getShiftFromSharedPreferences(context);
+        String shift = mSharedPrefHelper.getShiftFromSharedPreferences(context);
 
-        HashMap<String, String> courseHashMap = getCoursesFromSharedPreferences(context);
+        HashMap<String, String> courseHashMap = mSharedPrefHelper.getCoursesAndSectionMapFromSharedPreferences(context);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -159,36 +155,6 @@ public class EachDayClassRepository {
                 }).start();
             }
         });
-    }
-
-    private String getShiftFromSharedPreferences(Context context) {
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
-
-        return sharedPreferences.getString(HelperClass.SHIFT,"");
-
-    }
-
-    private HashMap<String, String> getCoursesFromSharedPreferences(Context context) {
-
-        HashMap<String, String> courseHashMap;
-
-        SharedPreferences sharedPreferences = context.getApplicationContext().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-
-        Gson gson = new Gson();
-
-        String coursesInJson = sharedPreferences.getString(HelperClass.COURSES_HASH_MAP, null);
-
-        Type type = new TypeToken<HashMap<String, String>>() {
-        }.getType();
-
-        courseHashMap = gson.fromJson(coursesInJson, type);
-
-        if (courseHashMap == null) {
-            return new HashMap<String, String>();
-        } else {
-            return courseHashMap;
-        }
     }
 
 }

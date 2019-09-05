@@ -24,7 +24,7 @@ import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 
 public class BookedClassesRecyclerViewAdapter extends RecyclerView.Adapter<BookedClassesRecyclerViewAdapter.ViewHolder> {
 
@@ -32,9 +32,9 @@ public class BookedClassesRecyclerViewAdapter extends RecyclerView.Adapter<Booke
 
     private FirebaseFunctions mFunctions = FirebaseFunctions.getInstance();
 
-    private ArrayList<BookedClassDetails> mBookedClassesList;
+    private ArrayList<BookedClassDetailsUser> mBookedClassesList;
 
-    public BookedClassesRecyclerViewAdapter(ArrayList<BookedClassDetails> mBookedClassesList) {
+    public BookedClassesRecyclerViewAdapter(ArrayList<BookedClassDetailsUser> mBookedClassesList) {
         this.mBookedClassesList = mBookedClassesList;
     }
 
@@ -109,7 +109,7 @@ public class BookedClassesRecyclerViewAdapter extends RecyclerView.Adapter<Booke
     @Override
     public int getItemViewType(int position) {
 
-        BookedClassDetails bcd = mBookedClassesList.get(position);
+        BookedClassDetailsUser bcd = mBookedClassesList.get(position);
 
         Calendar calendar = Calendar.getInstance();
 

@@ -14,11 +14,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 
 public class SearchBookedClassesWithDateViewModel extends ViewModel {
 
-    private MutableLiveData<ArrayList<BookedClassDetails>> mBookedClassesLiveData = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<BookedClassDetailsUser>> mBookedClassesLiveData = new MutableLiveData<>();
 
     private MutableLiveData<String> mToastMsg = new MutableLiveData<>();
 
@@ -30,10 +30,10 @@ public class SearchBookedClassesWithDateViewModel extends ViewModel {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                        ArrayList<BookedClassDetails> classes = new ArrayList<>();
+                        ArrayList<BookedClassDetailsUser> classes = new ArrayList<>();
 
                         for(DocumentSnapshot ds : queryDocumentSnapshots)   {
-                            BookedClassDetails temp = ds.toObject(BookedClassDetails.class);
+                            BookedClassDetailsUser temp = ds.toObject(BookedClassDetailsUser.class);
                             temp.setDocId(ds.getId());
                             classes.add(temp);
                         }
@@ -50,7 +50,7 @@ public class SearchBookedClassesWithDateViewModel extends ViewModel {
                 });
     }
 
-    public LiveData<ArrayList<BookedClassDetails>> getBookedClasses()  {
+    public LiveData<ArrayList<BookedClassDetailsUser>> getBookedClasses()  {
         return mBookedClassesLiveData;
     }
 

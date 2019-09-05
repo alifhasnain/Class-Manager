@@ -23,12 +23,12 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
-import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
 
 public class ExtraClassesStudentViewModel extends ViewModel {
 
-    private MutableLiveData<ArrayList<BookedClassDetails>> classesLiveData = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<BookedClassDetailsUser>> classesLiveData = new MutableLiveData<>();
 
     private MutableLiveData<String> toastMsgLiveData = new MutableLiveData<>();
 
@@ -68,7 +68,7 @@ public class ExtraClassesStudentViewModel extends ViewModel {
 
     private void loadDataFromServer(HashMap<String, String> coursesHashMap, String shift) {
 
-        final ArrayList<BookedClassDetails> extraClasses = new ArrayList<>();
+        final ArrayList<BookedClassDetailsUser> extraClasses = new ArrayList<>();
 
         ArrayList<String> courseCodes = new ArrayList<>();
         ArrayList<String> sections = new ArrayList<>();
@@ -100,7 +100,7 @@ public class ExtraClassesStudentViewModel extends ViewModel {
             public void onSuccess(List<QuerySnapshot> querySnapshots) {
                 for(QuerySnapshot qs : querySnapshots)  {
                     for(DocumentSnapshot ds : qs)   {
-                        extraClasses.add(ds.toObject(BookedClassDetails.class));
+                        extraClasses.add(ds.toObject(BookedClassDetailsUser.class));
                     }
                 }
                 classesLiveData.setValue(extraClasses);
@@ -123,7 +123,7 @@ public class ExtraClassesStudentViewModel extends ViewModel {
 
     }
 
-    public LiveData<ArrayList<BookedClassDetails>> getExtraClassesList() {
+    public LiveData<ArrayList<BookedClassDetailsUser>> getExtraClassesList() {
         return classesLiveData;
     }
 

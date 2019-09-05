@@ -2,7 +2,7 @@ package bd.edu.daffodilvarsity.classmanager.otherclasses;
 
 import com.google.firebase.Timestamp;
 
-public class BookedClassDetails {
+public class BookedClassDetailsUser {
 
     private String roomNo = "";
 
@@ -32,7 +32,7 @@ public class BookedClassDetails {
 
     private float priority;
 
-    public BookedClassDetails() {
+    public BookedClassDetailsUser() {
 
     }
 

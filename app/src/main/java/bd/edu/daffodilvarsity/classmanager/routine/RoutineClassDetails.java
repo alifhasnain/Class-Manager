@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classmanager.room;
+package bd.edu.daffodilvarsity.classmanager.routine;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

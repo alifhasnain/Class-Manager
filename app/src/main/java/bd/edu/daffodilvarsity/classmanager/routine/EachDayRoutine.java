@@ -1,8 +1,6 @@
-package bd.edu.daffodilvarsity.classmanager.fragments;
+package bd.edu.daffodilvarsity.classmanager.routine;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -19,21 +17,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.adapters.ClassListRecyclerViewAdapter;
+import bd.edu.daffodilvarsity.classmanager.adapters.EachDayRoutineRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
-import bd.edu.daffodilvarsity.classmanager.room.EachDayClassViewModel;
-import bd.edu.daffodilvarsity.classmanager.room.RoutineClassDetails;
-
-import static android.content.Context.MODE_PRIVATE;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,6 +32,8 @@ import static android.content.Context.MODE_PRIVATE;
 public class EachDayRoutine extends Fragment {
 
     private EachDayClassViewModel mViewModel;
+
+    private SharedPreferencesHelper mSharedPrefHelper;
 
     private String mDayOfWeek;
 
@@ -52,11 +45,13 @@ public class EachDayRoutine extends Fragment {
 
     private RecyclerView recyclerView;
 
-    private ClassListRecyclerViewAdapter mAdapter;
+    private EachDayRoutineRecyclerViewAdapter mAdapter;
 
     private SwipeRefreshLayout mPullToRefresh;
 
     private TextView mNoClasses;
+
+    private String mUserType;
 
     public EachDayRoutine() {
         // Required empty public constructor
@@ -82,10 +77,10 @@ public class EachDayRoutine extends Fragment {
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (getUserType().equals(HelperClass.USER_TYPE_STUDENT)) {
+                if (mUserType.equals(HelperClass.USER_TYPE_STUDENT)) {
                     showProgressbar(true);
                     loadStudentRoutine();
-                } else if (getUserType().equals(HelperClass.USER_TYPE_TEACHER) || getUserType().equals(HelperClass.USER_TYPE_ADMIN)) {
+                } else if (mUserType.equals(HelperClass.USER_TYPE_TEACHER) || mUserType.equals(HelperClass.USER_TYPE_ADMIN)) {
                     showProgressbar(true);
                     loadTeacherRoutine();
                 }
@@ -111,11 +106,11 @@ public class EachDayRoutine extends Fragment {
 
         mViewModel = ViewModelProviders.of(getActivity()).get(EachDayClassViewModel.class);
 
-        if (getUserType().equals(HelperClass.USER_TYPE_STUDENT)) {
+        if (mUserType.equals(HelperClass.USER_TYPE_STUDENT)) {
 
             loadStudentRoutine();
 
-        } else if (getUserType().equals(HelperClass.USER_TYPE_TEACHER) || getUserType().equals(HelperClass.USER_TYPE_ADMIN)) {
+        } else if (mUserType.equals(HelperClass.USER_TYPE_TEACHER) || mUserType.equals(HelperClass.USER_TYPE_ADMIN)) {
 
             loadTeacherRoutine();
 
@@ -144,6 +139,9 @@ public class EachDayRoutine extends Fragment {
         mPullToRefresh = view.findViewById(R.id.swipe_to_refresh);
         mPullToRefresh.setDistanceToTriggerSync(450);
         mNoClasses = view.findViewById(R.id.no_classes);
+
+        mSharedPrefHelper = new SharedPreferencesHelper();
+        mUserType = mSharedPrefHelper.getUserType(view.getContext());
     }
 
     private void loadTeacherRoutine() {
@@ -151,7 +149,7 @@ public class EachDayRoutine extends Fragment {
         mClasses.clear();
         notifyRecyclerViewAdapter();
 
-        mViewModel.loadClassesTeacher(getTeacherInitialFromSharedPref(), mDayOfWeek);
+        mViewModel.loadClassesTeacher(mSharedPrefHelper.getTeacherInitialFromSharedPref(getContext()), mDayOfWeek);
         initializeViewModelObserver();
         showProgressbar(false);
 
@@ -163,54 +161,23 @@ public class EachDayRoutine extends Fragment {
 
         List<String> sectionList = new ArrayList<>();
 
-        HashMap<String, String> courseHashMap = getCoursesFromSharedPreferences();
+        HashMap<String, String> courseHashMap = mSharedPrefHelper.getCoursesAndSectionMapFromSharedPreferences(getContext());
 
         for (HashMap.Entry<String, String> entry : courseHashMap.entrySet()) {
             courseCodeList.add(entry.getKey());
             sectionList.add(entry.getValue());
         }
 
-        mViewModel.loadClassesStudent(courseCodeList, getShiftFromSharedPreferences(), sectionList, mDayOfWeek);
+        mViewModel.loadClassesStudent(courseCodeList, mSharedPrefHelper.getShiftFromSharedPreferences(getActivity()), sectionList, mDayOfWeek);
         initializeViewModelObserver();
         showProgressbar(false);
 
     }
 
-    private String getShiftFromSharedPreferences() {
-
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-
-        return sharedPreferences.getString(HelperClass.SHIFT, "");
-
-    }
-
     private void initializeRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new ClassListRecyclerViewAdapter(mClasses);
+        mAdapter = new EachDayRoutineRecyclerViewAdapter(mClasses);
         recyclerView.setAdapter(mAdapter);
-    }
-
-    private HashMap<String, String> getCoursesFromSharedPreferences() {
-
-        HashMap<String, String> courseHashMap;
-
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-
-        Gson gson = new Gson();
-
-        String coursesInJson = sharedPreferences.getString(HelperClass.COURSES_HASH_MAP, null);
-
-        Type type = new TypeToken<HashMap<String, String>>() {
-        }.getType();
-
-        courseHashMap = gson.fromJson(coursesInJson, type);
-
-        return courseHashMap;
-    }
-
-    private String getUserType() {
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-        return sharedPreferences.getString(HelperClass.USER_TYPE, "");
     }
 
     private void notifyRecyclerViewAdapter() {
@@ -228,11 +195,6 @@ public class EachDayRoutine extends Fragment {
             progressBar.setVisibility(View.GONE);
             loadingContent.setVisibility(View.GONE);
         }
-    }
-
-    private String getTeacherInitialFromSharedPref()   {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(HelperClass.TEACHER_INITIAL,"");
     }
 
 }

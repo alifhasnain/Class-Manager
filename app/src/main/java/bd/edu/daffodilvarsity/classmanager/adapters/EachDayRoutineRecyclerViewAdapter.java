@@ -13,13 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.room.RoutineClassDetails;
+import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
 
-public class ClassListRecyclerViewAdapter extends RecyclerView.Adapter<ClassListRecyclerViewAdapter.ViewHolder> {
+public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<EachDayRoutineRecyclerViewAdapter.ViewHolder> {
 
     private ArrayList<RoutineClassDetails> mClasses = new ArrayList<>();
 
-    public ClassListRecyclerViewAdapter(ArrayList<RoutineClassDetails> mClasses) {
+    public EachDayRoutineRecyclerViewAdapter(ArrayList<RoutineClassDetails> mClasses) {
         this.mClasses = mClasses;
     }
 

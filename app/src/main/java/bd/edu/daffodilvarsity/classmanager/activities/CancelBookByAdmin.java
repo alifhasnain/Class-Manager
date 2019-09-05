@@ -25,7 +25,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 
 public class CancelBookByAdmin extends AppCompatActivity implements View.OnClickListener {
@@ -50,7 +50,7 @@ public class CancelBookByAdmin extends AppCompatActivity implements View.OnClick
 
     private Button cancelBook;
 
-    private BookedClassDetails mSelectedClass;
+    private BookedClassDetailsUser mSelectedClass;
 
     private ProfileObjectTeacher mProfile;
 
@@ -160,7 +160,7 @@ public class CancelBookByAdmin extends AppCompatActivity implements View.OnClick
 
         Gson gson = new Gson();
         String jsonString = getIntent().getStringExtra("selectedClass");
-        mSelectedClass = gson.fromJson(jsonString,BookedClassDetails.class);
+        mSelectedClass = gson.fromJson(jsonString, BookedClassDetailsUser.class);
 
     }
 

@@ -111,17 +111,10 @@ public class CourseAndSectionSelectorDialog extends AppCompatDialogFragment {
         }
 
         for(Map.Entry<String,String> entry : coursesMap.entrySet()) {
+
             courseCodes.add(entry.getKey());
 
-            String course = entry.getValue();
-
             courseName.add(entry.getValue());
-            /*if(course.length()>22)  {
-                courseName.add(course.substring(0,22) + "...");
-            }
-            else {
-                courseName.add(course);
-            }*/
 
         }
 

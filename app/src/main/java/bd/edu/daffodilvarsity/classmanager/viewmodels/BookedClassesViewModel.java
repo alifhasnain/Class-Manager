@@ -16,12 +16,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 
 public class BookedClassesViewModel extends ViewModel {
 
-    private MutableLiveData<ArrayList<BookedClassDetails>> bookedClassesLiveData = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<BookedClassDetailsUser>> bookedClassesLiveData = new MutableLiveData<>();
 
     private MutableLiveData<String> toastMsgLiveData = new MutableLiveData<>();
 
@@ -36,11 +36,13 @@ public class BookedClassesViewModel extends ViewModel {
         userProfile.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                ProfileObjectTeacher profile = documentSnapshot.toObject(ProfileObjectTeacher.class);
-
-                loadBookedClasses(profile.getTeacherInitial());
-
+                if(documentSnapshot.exists())   {
+                    ProfileObjectTeacher profile = documentSnapshot.toObject(ProfileObjectTeacher.class);
+                    loadBookedClasses(profile.getTeacherInitial());
+                }
+                else    {
+                    loadBookedClasses("xxxxxxxxxxxxxxxxxxxxxxx");
+                }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -53,7 +55,7 @@ public class BookedClassesViewModel extends ViewModel {
 
     private void loadBookedClasses(String teacherInitial) {
 
-        final ArrayList<BookedClassDetails> bookedClassesList = new ArrayList<>();
+        final ArrayList<BookedClassDetailsUser> bookedClassesList = new ArrayList<>();
 
         CollectionReference bookedClassesRef = db.collection("/booked_classes/");
 
@@ -63,7 +65,7 @@ public class BookedClassesViewModel extends ViewModel {
 
                 for(DocumentSnapshot ds : queryDocumentSnapshots)   {
 
-                    BookedClassDetails bcd = ds.toObject(BookedClassDetails.class);
+                    BookedClassDetailsUser bcd = ds.toObject(BookedClassDetailsUser.class);
 
                     bcd.setDocId(ds.getId());
 
@@ -82,7 +84,7 @@ public class BookedClassesViewModel extends ViewModel {
         });
     }
 
-    public LiveData<ArrayList<BookedClassDetails>> getBookedClassList()   {
+    public LiveData<ArrayList<BookedClassDetailsUser>> getBookedClassList()   {
         return bookedClassesLiveData;
     }
 

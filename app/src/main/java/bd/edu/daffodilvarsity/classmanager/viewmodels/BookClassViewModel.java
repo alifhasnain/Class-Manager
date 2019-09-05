@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
 
 public class BookClassViewModel extends ViewModel {
@@ -65,14 +65,14 @@ public class BookClassViewModel extends ViewModel {
 
                 ArrayList<ClassDetails> emptyClassList = new ArrayList<>();
 
-                ArrayList<BookedClassDetails> bookedClassList = new ArrayList<>();
+                ArrayList<BookedClassDetailsUser> bookedClassList = new ArrayList<>();
 
                 for(DocumentSnapshot ds : emptyClass)   {
                     emptyClassList.add(ds.toObject(ClassDetails.class));
                 }
 
                 for (DocumentSnapshot ds : bookedClass) {
-                    bookedClassList.add(ds.toObject(BookedClassDetails.class));
+                    bookedClassList.add(ds.toObject(BookedClassDetailsUser.class));
                 }
 
                 finalRoomList.setValue(getModifiedList(emptyClassList,bookedClassList));
@@ -87,9 +87,9 @@ public class BookClassViewModel extends ViewModel {
 
     }
 
-    private ArrayList<ClassDetails> getModifiedList(ArrayList<ClassDetails> emptyRooms,ArrayList<BookedClassDetails> bookedRooms)   {
+    private ArrayList<ClassDetails> getModifiedList(ArrayList<ClassDetails> emptyRooms,ArrayList<BookedClassDetailsUser> bookedRooms)   {
 
-        for(BookedClassDetails bcd : bookedRooms)   {
+        for(BookedClassDetailsUser bcd : bookedRooms)   {
 
             String room = bcd.getRoomNo();
 

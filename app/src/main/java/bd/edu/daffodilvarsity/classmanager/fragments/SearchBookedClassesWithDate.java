@@ -32,7 +32,7 @@ import java.util.GregorianCalendar;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.activities.CancelBookByAdmin;
 import bd.edu.daffodilvarsity.classmanager.adapters.SearchBookedClassesWithDateRecyclerViewAdapter;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.viewmodels.SearchBookedClassesWithDateViewModel;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -45,7 +45,7 @@ public class SearchBookedClassesWithDate extends Fragment implements View.OnClic
 
     private final int REQUEST_CODE_CANCEL_BOOKING = 6544;
 
-    private ArrayList<BookedClassDetails> mBookedClassesList = new ArrayList<>();
+    private ArrayList<BookedClassDetailsUser> mBookedClassesList = new ArrayList<>();
 
     private TextView mDateTextViw;
 
@@ -106,9 +106,9 @@ public class SearchBookedClassesWithDate extends Fragment implements View.OnClic
 
         mViewModel = ViewModelProviders.of(this).get(SearchBookedClassesWithDateViewModel.class);
 
-        mViewModel.getBookedClasses().observe(getViewLifecycleOwner(), new Observer<ArrayList<BookedClassDetails>>() {
+        mViewModel.getBookedClasses().observe(getViewLifecycleOwner(), new Observer<ArrayList<BookedClassDetailsUser>>() {
             @Override
-            public void onChanged(ArrayList<BookedClassDetails> bookedClassList) {
+            public void onChanged(ArrayList<BookedClassDetailsUser> bookedClassList) {
 
                 mBookedClassesList.clear();
 
@@ -234,26 +234,7 @@ public class SearchBookedClassesWithDate extends Fragment implements View.OnClic
 
     }
 
-    private void pickDate() {
-
-        long minDate;
-
-        long maxDate;
-
-        Calendar calendar = Calendar.getInstance();
-
-        minDate = calendar.getTimeInMillis();
-
-        //Change date of calender
-        calendar.set(2019, Calendar.AUGUST, 25);
-
-        maxDate = calendar.getTimeInMillis();
-
-        showDatePicker(minDate, maxDate);
-
-    }
-
-    private void showDatePicker(long minDate, long maxDate) {
+    private void showDatePicker() {
 
         Calendar calendar = Calendar.getInstance();
 
@@ -264,10 +245,6 @@ public class SearchBookedClassesWithDate extends Fragment implements View.OnClic
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePicker = new DatePickerDialog(getContext(), this, year, month, dayOfMonth);
-
-        datePicker.getDatePicker().setMinDate(minDate);
-
-        datePicker.getDatePicker().setMaxDate(maxDate);
 
         datePicker.show();
     }
@@ -281,7 +258,7 @@ public class SearchBookedClassesWithDate extends Fragment implements View.OnClic
                 break;
 
             case R.id.date:
-                pickDate();
+                showDatePicker();
                 break;
         }
     }

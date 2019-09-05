@@ -1,10 +1,8 @@
 package bd.edu.daffodilvarsity.classmanager.fragments;
 
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,9 +28,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -40,10 +36,8 @@ import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.activities.EditStudentProfile;
 import bd.edu.daffodilvarsity.classmanager.adapters.CourseListRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.dialogs.CourseAndSectionSelectorDialog;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
-
-import static android.content.Context.MODE_PRIVATE;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,6 +45,8 @@ import static android.content.Context.MODE_PRIVATE;
 public class ProfileStudents extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "ProfileStudents";
+
+    private SharedPreferencesHelper mSharedPrefHelper;
 
     private ProfileObjectStudent mUserProfile;
 
@@ -138,14 +134,20 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
 
     private void launchEditProfile() {
         //Convert the profile object to JSON string
-        Gson gson = new Gson();
-        String profileJsonString = gson.toJson(mUserProfile);
-        Intent intent = new Intent(getActivity(), EditStudentProfile.class);
-        intent.putExtra("profileData",profileJsonString);
-        startActivity(intent);
+        if(mUserProfile!=null)  {
+            Gson gson = new Gson();
+            String profileJsonString = gson.toJson(mUserProfile);
+            Intent intent = new Intent(getActivity(), EditStudentProfile.class);
+            intent.putExtra("profileData",profileJsonString);
+            startActivity(intent);
+        }   else    {
+            makeToast("No profile data is loaded.");
+        }
     }
 
     private void initializeVariables(View view) {
+
+        mSharedPrefHelper = new SharedPreferencesHelper();
 
         pullToRefresh = view.findViewById(R.id.pull_to_refresh);
 
@@ -200,7 +202,9 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        deleteCourseFromSharedPref(courseCode);
+                        //Delete CourseCode and LoadAgain
+                        mSharedPrefHelper.deleteCourseFromSharedPref(getActivity(),courseCode);
+                        loadCoursesAndSectionFromHashMap();
                     }
                 }).setNegativeButton("Cancel", null);
 
@@ -208,29 +212,9 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
 
     }
 
-    private void deleteCourseFromSharedPref(String courseCode) {
-
-        HashMap<String, String> courseHashMap = getCoursesFromSharedPreferences();
-
-        courseHashMap.remove(courseCode);
-
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        Gson gson = new Gson();
-
-        String courseMapInJson = gson.toJson(courseHashMap);
-
-        editor.putString(HelperClass.COURSES_HASH_MAP, courseMapInJson).apply();
-
-        loadCoursesAndSectionFromHashMap();
-
-    }
-
     private void loadCoursesAndSectionFromHashMap() {
 
-        HashMap<String, String> hashMap = getCoursesFromSharedPreferences();
+        HashMap<String, String> hashMap = mSharedPrefHelper.getCoursesAndSectionMapFromSharedPreferences(getActivity());
 
         if (hashMap == null) {
             makeToast("Course List maybe empty");
@@ -296,12 +280,12 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
 
     private void showSectionAndCourseSelectDialog() {
 
-        CourseAndSectionSelectorDialog dialog = new CourseAndSectionSelectorDialog(getShiftFromSharedPreferences());
+        CourseAndSectionSelectorDialog dialog = new CourseAndSectionSelectorDialog(mSharedPrefHelper.getShiftFromSharedPreferences(getActivity()));
 
         dialog.setDialogItemSelectListener(new CourseAndSectionSelectorDialog.OnDialogItemSelectListener() {
             @Override
             public void onItemSelected(String section, String courseCode) {
-                addNewCourseOnSharedPreference(courseCode, section);
+                mSharedPrefHelper.addNewCourseOnSharedPreference(getActivity(),courseCode,section);
                 loadCoursesAndSectionFromHashMap();
             }
         });
@@ -310,58 +294,10 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
 
     }
 
-    private void addNewCourseOnSharedPreference(String courseCode, String section) {
-
-        HashMap<String, String> courseHashMap = getCoursesFromSharedPreferences();
-        courseHashMap.put(courseCode, section);
-
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        Gson gson = new Gson();
-
-        String courseMapInJson = gson.toJson(courseHashMap);
-
-        editor.putString(HelperClass.COURSES_HASH_MAP, courseMapInJson).apply();
-
-    }
-
-    private HashMap<String, String> getCoursesFromSharedPreferences() {
-
-        HashMap<String, String> courseHashMap;
-
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-
-        Gson gson = new Gson();
-
-        String coursesInJson = sharedPreferences.getString(HelperClass.COURSES_HASH_MAP, null);
-
-        Type type = new TypeToken<HashMap<String, String>>() {
-        }.getType();
-
-        courseHashMap = gson.fromJson(coursesInJson, type);
-
-        if (courseHashMap == null) {
-            return new HashMap<String, String>();
-        } else {
-            return courseHashMap;
-        }
-    }
-
     private void makeToast(String msg) {
         if (getContext() != null) {
             Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private String getShiftFromSharedPreferences() {
-
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, Context.MODE_PRIVATE);
-
-        String shift = sharedPreferences.getString(HelperClass.SHIFT, null);
-
-        return shift;
     }
 
     @Override

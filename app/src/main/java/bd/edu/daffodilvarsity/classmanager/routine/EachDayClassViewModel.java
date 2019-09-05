@@ -1,8 +1,6 @@
-package bd.edu.daffodilvarsity.classmanager.room;
+package bd.edu.daffodilvarsity.classmanager.routine;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -18,10 +16,12 @@ import com.google.firebase.firestore.Source;
 
 import java.util.List;
 
-import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 
 public class EachDayClassViewModel extends AndroidViewModel {
+
+    private SharedPreferencesHelper mSharedPrefHelper = new SharedPreferencesHelper();
 
     private LiveData<List<RoutineClassDetails>> classesListLiveData;
 
@@ -53,7 +53,7 @@ public class EachDayClassViewModel extends AndroidViewModel {
 
                             dataRepo.loadWholeRoutineFromServer(initial);
 
-                            saveTeacherInitialToSharedPref(initial);
+                            mSharedPrefHelper.saveTeacherInitialToSharedPref(getApplication(),initial);
 
                         }
                     }
@@ -61,7 +61,7 @@ public class EachDayClassViewModel extends AndroidViewModel {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        dataRepo.loadWholeRoutineFromServer(getTeacherInitialFromSharedPref());
+                        dataRepo.loadWholeRoutineFromServer(mSharedPrefHelper.getTeacherInitialFromSharedPref(getApplication()));
                     }
                 });
     }
@@ -82,18 +82,5 @@ public class EachDayClassViewModel extends AndroidViewModel {
 
     public LiveData<String> getToastMsg()  {
         return toastMsg;
-    }
-
-    private void saveTeacherInitialToSharedPref(String initial) {
-
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,Context.MODE_PRIVATE);
-
-        sharedPreferences.edit().putString(HelperClass.TEACHER_INITIAL,initial).apply();
-
-    }
-
-    private String getTeacherInitialFromSharedPref()   {
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,Context.MODE_PRIVATE);
-        return sharedPreferences.getString(HelperClass.TEACHER_INITIAL,"");
     }
 }

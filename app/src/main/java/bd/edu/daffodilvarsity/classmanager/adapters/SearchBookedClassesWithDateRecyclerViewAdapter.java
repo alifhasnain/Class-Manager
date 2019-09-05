@@ -16,15 +16,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetails;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 
 public class SearchBookedClassesWithDateRecyclerViewAdapter extends RecyclerView.Adapter<SearchBookedClassesWithDateRecyclerViewAdapter.ViewHolder> {
 
-    private ArrayList<BookedClassDetails> classList;
+    private ArrayList<BookedClassDetailsUser> classList;
 
     private OnDeleteClickListener onDeleteClickListener;
 
-    public SearchBookedClassesWithDateRecyclerViewAdapter(ArrayList<BookedClassDetails> classList) {
+    public SearchBookedClassesWithDateRecyclerViewAdapter(ArrayList<BookedClassDetailsUser> classList) {
         this.classList = classList;
         onDeleteClickListener = null;
     }
