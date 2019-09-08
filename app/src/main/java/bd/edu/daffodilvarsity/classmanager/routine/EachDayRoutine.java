@@ -16,20 +16,27 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.EachDayRoutineRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
+import bd.edu.daffodilvarsity.classmanager.workers.ReminderSchedulerWorker;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class EachDayRoutine extends Fragment {
+
+    private WorkManager workManager;
 
     private EachDayClassViewModel mViewModel;
 
@@ -77,6 +84,7 @@ public class EachDayRoutine extends Fragment {
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                mNoClasses.setVisibility(View.GONE);
                 if (mUserType.equals(HelperClass.USER_TYPE_STUDENT)) {
                     showProgressbar(true);
                     loadStudentRoutine();
@@ -124,7 +132,7 @@ public class EachDayRoutine extends Fragment {
                 mClasses.clear();
                 mClasses.addAll(routineClassDetails);
                 notifyRecyclerViewAdapter();
-                if(mAdapter.getItemCount() == 0)    {
+                if (mAdapter.getItemCount() == 0) {
                     mNoClasses.setVisibility(View.VISIBLE);
                 }
             }
@@ -132,6 +140,7 @@ public class EachDayRoutine extends Fragment {
     }
 
     private void initializeVariables(View view) {
+        workManager = WorkManager.getInstance(getContext());
         mDayOfWeek = getArguments().getString("dayOfWeek");
         progressBar = view.findViewById(R.id.progress_bar);
         loadingContent = view.findViewById(R.id.loading_content);
@@ -177,6 +186,23 @@ public class EachDayRoutine extends Fragment {
     private void initializeRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new EachDayRoutineRecyclerViewAdapter(mClasses);
+        mAdapter.addNotificationChangeListener(new EachDayRoutineRecyclerViewAdapter.NotificationChangeListener() {
+            @Override
+            public void onNotificationChanges(RoutineClassDetails routineClassDetails) {
+                if (routineClassDetails.isNotificationEnabled()) {
+                    routineClassDetails.setNotificationEnabled(false);
+                } else {
+                    routineClassDetails.setNotificationEnabled(true);
+                }
+                mViewModel.setNotificationEnabled(routineClassDetails);
+
+                PeriodicWorkRequest reminderScheduler = new PeriodicWorkRequest
+                        .Builder(ReminderSchedulerWorker.class, 6, TimeUnit.HOURS)
+                        .build();
+
+                workManager.enqueueUniquePeriodicWork(HelperClass.SCHEDULER_ID, ExistingPeriodicWorkPolicy.REPLACE, reminderScheduler);
+            }
+        });
         recyclerView.setAdapter(mAdapter);
     }
 

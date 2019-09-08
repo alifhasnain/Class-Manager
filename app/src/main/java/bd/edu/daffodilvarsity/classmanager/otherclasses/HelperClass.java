@@ -39,6 +39,10 @@ public class HelperClass {
 
     public static final String TEACHER_INITIAL = "teacher_initial";
 
+    public static final String REMINDER_TAG = "work_manager_reminder_tag";
+
+    public static final String SCHEDULER_ID = "work_scheduler_tag";
+
 
 
     /*private Map<String,String> courcesBscDay;

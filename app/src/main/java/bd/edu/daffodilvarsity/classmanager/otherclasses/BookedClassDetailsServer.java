@@ -1,7 +1,5 @@
 package bd.edu.daffodilvarsity.classmanager.otherclasses;
 
-import com.google.firebase.Timestamp;
-
 public class BookedClassDetailsServer {
 
     private String roomNo = "";
@@ -10,19 +8,9 @@ public class BookedClassDetailsServer {
 
     private String teacherInitial = "";
 
-    private String teacherEmail = "";
-
     private int[] reservationDate = new int[3];
 
-    private String dayOfWeek = "";
-
-    private Timestamp timeWhenUserBooked;
-
-    private String uid = "";
-
     private String program = "";
-
-    private String docId;
 
     private String shift;
 
@@ -60,44 +48,12 @@ public class BookedClassDetailsServer {
         this.teacherInitial = teacherInitial;
     }
 
-    public String getDayOfWeek() {
-        return dayOfWeek;
+    public int[] getReservationDate() {
+        return reservationDate;
     }
 
-    public String getTeacherEmail() {
-        return teacherEmail;
-    }
-
-    public void setTeacherEmail(String teacherEmail) {
-        this.teacherEmail = teacherEmail;
-    }
-
-    public void setDayOfWeek(String dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
-    }
-
-    public Timestamp getTimeWhenUserBooked() {
-        return timeWhenUserBooked;
-    }
-
-    public void setTimeWhenUserBooked(Timestamp timeWhenUserBooked) {
-        this.timeWhenUserBooked = timeWhenUserBooked;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getDocId() {
-        return docId;
-    }
-
-    public void setDocId(String docId) {
-        this.docId = docId;
+    public void setReservationDate(int[] reservationDate) {
+        this.reservationDate = reservationDate;
     }
 
     public String getShift() {

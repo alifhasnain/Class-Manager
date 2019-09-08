@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -15,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
@@ -41,7 +43,7 @@ public class BookedClassesViewModel extends ViewModel {
                     loadBookedClasses(profile.getTeacherInitial());
                 }
                 else    {
-                    loadBookedClasses("xxxxxxxxxxxxxxxxxxxxxxx");
+                    loadBookedClasses("xxxxxxxxxxxx");
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -59,7 +61,12 @@ public class BookedClassesViewModel extends ViewModel {
 
         CollectionReference bookedClassesRef = db.collection("/booked_classes/");
 
-        bookedClassesRef.whereEqualTo("teacherInitial",teacherInitial).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime());
+
+        bookedClassesRef.whereEqualTo("teacherInitial",teacherInitial)
+                .whereGreaterThanOrEqualTo("reservationDate",timestamp)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 

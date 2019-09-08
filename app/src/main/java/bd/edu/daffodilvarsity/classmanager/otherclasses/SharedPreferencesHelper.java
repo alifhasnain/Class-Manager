@@ -18,33 +18,36 @@ public class SharedPreferencesHelper {
         return sharedPreferences.getString(HelperClass.USER_TYPE, "");
     }
 
-    public String getTeacherInitialFromSharedPref(Context context)   {
+    public String getTeacherInitialFromSharedPref(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(HelperClass.TEACHER_INITIAL,"");
+        return sharedPreferences.getString(HelperClass.TEACHER_INITIAL, "");
     }
 
-    public void saveTeacherInitialToSharedPref(Context context,String initial) {
+    public void saveTeacherInitialToSharedPref(Context context, String initial) {
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,Context.MODE_PRIVATE);
+        if (context != null) {
+            SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, Context.MODE_PRIVATE);
 
-        sharedPreferences.edit().putString(HelperClass.TEACHER_INITIAL,initial).apply();
+            sharedPreferences.edit().putString(HelperClass.TEACHER_INITIAL, initial).apply();
+        }
 
     }
 
-    public void saveRoutineVersionToSharedPreferences(Context context , String version) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(HelperClass.ROUTINE_VERSION,version);
-        editor.apply();
+    public void saveRoutineVersionToSharedPreferences(Context context, String version) {
+        if (context != null) {
+            SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(HelperClass.ROUTINE_VERSION, version);
+            editor.apply();
+        }
     }
 
     public String getRoutineVersionFromSharedPreferences(Context context) {
-        if(context!=null)   {
-            SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
+        if (context != null) {
+            SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
 
-            return sharedPreferences.getString(HelperClass.ROUTINE_VERSION,"00000000");
-        }
-        else {
+            return sharedPreferences.getString(HelperClass.ROUTINE_VERSION, "00000000");
+        } else {
             return "00000000";
         }
     }
@@ -67,7 +70,7 @@ public class SharedPreferencesHelper {
         return courseHashMap;
     }
 
-    public void addNewCourseOnSharedPreference(Context context,String courseCode, String section) {
+    public void addNewCourseOnSharedPreference(Context context, String courseCode, String section) {
 
         HashMap<String, String> courseHashMap = getCoursesAndSectionMapFromSharedPreferences(context);
 
@@ -92,7 +95,7 @@ public class SharedPreferencesHelper {
         return sharedPreferences.getString(HelperClass.SHIFT, "");
     }
 
-    public void deleteCourseFromSharedPref(Context context , String courseCode) {
+    public void deleteCourseFromSharedPref(Context context, String courseCode) {
 
         HashMap<String, String> courseHashMap = getCoursesAndSectionMapFromSharedPreferences(context);
 

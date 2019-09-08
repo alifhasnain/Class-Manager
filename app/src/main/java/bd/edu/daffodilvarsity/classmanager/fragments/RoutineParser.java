@@ -297,7 +297,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
 
             while ((row = parser.nextRow()) != null) {
 
-                if (row.getField(0).equals(endDay) || row.getField(0).equals("Lab (Electrical Circuit, Digital Electronics, Electronic Devices and Circuits)")) {
+                if (row.getField(0).equals(endDay) || row.getField(0).equals("Electrical Lab")) {
                     parser.nextRow();
                     break;
                 }
@@ -490,8 +490,9 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                 }
 
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e("CSV Parser Error Log", "Exception", e);
+            Toast.makeText(getContext(), "Parse Error!", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -558,6 +559,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
 
         } catch (IOException e) {
             Log.e("CSV Parser Error Log", "Exception", e);
+            Toast.makeText(getContext(), "Parse Error!", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -1,6 +1,7 @@
 package bd.edu.daffodilvarsity.classmanager.adapters;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +18,17 @@ import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
 
 public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<EachDayRoutineRecyclerViewAdapter.ViewHolder> {
 
+    private NotificationChangeListener notificationChangeListener;
+
     private ArrayList<RoutineClassDetails> mClasses = new ArrayList<>();
 
     public EachDayRoutineRecyclerViewAdapter(ArrayList<RoutineClassDetails> mClasses) {
         this.mClasses = mClasses;
+        notificationChangeListener = null;
+    }
+
+    public void addNotificationChangeListener(NotificationChangeListener listener)  {
+        notificationChangeListener = listener;
     }
 
     @NonNull
@@ -33,7 +41,7 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
         try {
             holder.courseName.setText(mClasses.get(position).getCourseName());
@@ -42,6 +50,25 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
             holder.teacherInitial.setText(mClasses.get(position).getTeacherInitial());
             holder.section.setText(mClasses.get(position).getSection());
             holder.roomNo.setText(mClasses.get(position).getRoom());
+
+            if(mClasses.get(position).isNotificationEnabled())    {
+                holder.notification.setBackgroundColor(Color.parseColor("#4885ed"));
+                holder.notification.setImageResource(R.drawable.ic_alarm_on_white);
+            }
+            else    {
+                holder.notification.setBackgroundColor(Color.parseColor("#DB3236"));
+                holder.notification.setImageResource(R.drawable.ic_alarm_off_white);
+            }
+
+            holder.notification.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(notificationChangeListener!=null)    {
+                        notificationChangeListener.onNotificationChanges(mClasses.get(position));
+                    }
+                }
+            });
+
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -76,5 +103,9 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
             roomNo = itemView.findViewById(R.id.room_no);
             notification = itemView.findViewById(R.id.notification);
         }
+    }
+
+    public interface NotificationChangeListener {
+        void onNotificationChanges(RoutineClassDetails routineClassDetails);
     }
 }

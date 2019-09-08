@@ -49,25 +49,29 @@ public class TeacherProfileListViewModel extends ViewModel {
     }
 
     public void loadNextTeacherProfiles() {
-        db.collection("teacher_profiles").orderBy("name").startAfter(loadAfter).limit(8).get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (DocumentSnapshot ds : queryDocumentSnapshots) {
-                            teachersList.add(ds.toObject(ProfileObjectTeacher.class));
+        try {
+            db.collection("teacher_profiles").orderBy("name").startAfter(loadAfter).limit(8).get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for (DocumentSnapshot ds : queryDocumentSnapshots) {
+                                teachersList.add(ds.toObject(ProfileObjectTeacher.class));
+                            }
+                            if (queryDocumentSnapshots.size() > 0) {
+                                loadAfter = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
+                                teacherProfileLiveData.setValue(teachersList);
+                            }
                         }
-                        if (queryDocumentSnapshots.size() > 0) {
-                            loadAfter = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
-                            teacherProfileLiveData.setValue(teachersList);
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            toastMsg.setValue("Failed to load.Please check your internet connection.");
                         }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        toastMsg.setValue("Failed to load.Please check your internet connection.");
-                    }
-                });
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void loadTeacherProfilesWithSubstring(String queryText)   {

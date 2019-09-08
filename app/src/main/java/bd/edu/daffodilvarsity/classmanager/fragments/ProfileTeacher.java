@@ -110,7 +110,7 @@ public class ProfileTeacher extends Fragment {
 
         Task<DocumentSnapshot> taskGetProfileInfo = teacherProfiles.get();
 
-        DocumentReference bookInfo = db.document("/book_count/" + currentUserEmail);
+        DocumentReference bookInfo = db.document("/book_room_count/" + currentUserEmail);
 
         Task<DocumentSnapshot> taskGetBookCount = bookInfo.get();
 
@@ -123,7 +123,7 @@ public class ProfileTeacher extends Fragment {
                     mProfile = documentSnapshotsList.get(0).toObject(ProfileObjectTeacher.class);
                 }
                 if (documentSnapshotsList.get(1).exists())  {
-                    bookedClassesThisMonth = documentSnapshotsList.get(1).getLong("classBookedThisMonth").intValue();
+                    bookedClassesThisMonth = documentSnapshotsList.get(1).getLong("counter").intValue();
                 }
 
                 pullToRefresh.setRefreshing(false);

@@ -1,21 +1,16 @@
 package bd.edu.daffodilvarsity.classmanager.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.functions.FirebaseFunctions;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,12 +25,13 @@ public class BookedClassesRecyclerViewAdapter extends RecyclerView.Adapter<Booke
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private FirebaseFunctions mFunctions = FirebaseFunctions.getInstance();
-
     private ArrayList<BookedClassDetailsUser> mBookedClassesList;
+
+    OnBookCancelListener onBookCancelListener;
 
     public BookedClassesRecyclerViewAdapter(ArrayList<BookedClassDetailsUser> mBookedClassesList) {
         this.mBookedClassesList = mBookedClassesList;
+        onBookCancelListener = null;
     }
 
     @NonNull
@@ -45,6 +41,10 @@ public class BookedClassesRecyclerViewAdapter extends RecyclerView.Adapter<Booke
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.booked_room_list_item, parent, false);
 
         return new ViewHolder(view);
+    }
+
+    public void addOnBookCancelListener(OnBookCancelListener listener) {
+        this.onBookCancelListener = listener;
     }
 
     @Override
@@ -66,42 +66,25 @@ public class BookedClassesRecyclerViewAdapter extends RecyclerView.Adapter<Booke
         holder.whenBooked.setText(getTimePast(mBookedClassesList.get(position).getTimeWhenUserBooked()));
 
         switch (holder.getItemViewType()) {
+
             case 0:
-                holder.action.setText("Mark as done");
+                //Not cancelable
+                holder.action.setEnabled(false);
+                holder.action.setText("Not Cancelable");
+                break;
+
+            case 1:
                 holder.action.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        //Cloud function to cancel book
+                        if (onBookCancelListener != null) {
+                            onBookCancelListener.onBookCancel(mBookedClassesList.get(position));
+                        }
 
-                        //Delete related document from cloud firestore on click
-                        db.document("/booked_classes/" + mBookedClassesList.get(position).getDocId() + "/").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                makeToast(holder.action.getContext(), "Success!");
-                                notifyDataSetChanged();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                makeToast(holder.action.getContext(), "Failed!");
-                            }
-                        });
                     }
                 });
                 break;
-            case 1:
-
-                if (isBookCancelable(mBookedClassesList.get(position).getTimeWhenUserBooked())) {
-                    holder.action.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //Cloud function to cancel book
-                        }
-                    });
-                    break;
-                }
-                else    {
-                    holder.action.setEnabled(false);
-                }
 
         }
     }
@@ -113,10 +96,13 @@ public class BookedClassesRecyclerViewAdapter extends RecyclerView.Adapter<Booke
 
         Calendar calendar = Calendar.getInstance();
 
-        Timestamp timestamp = new Timestamp(calendar.getTime());
+        Timestamp timestamp = bcd.getTimeWhenUserBooked();
+
+        Calendar reservationTime = Calendar.getInstance();
+        reservationTime.setTimeInMillis(timestamp.getSeconds() * 1000);
 
         //If is reservation date was before today then setItemType to 0
-        if (bcd.getReservationDate().compareTo(timestamp) < 0) {
+        if ((calendar.getTimeInMillis() - reservationTime.getTimeInMillis()) > 86400000) {
             return 0;
         } else {
             return 1;
@@ -156,11 +142,11 @@ public class BookedClassesRecyclerViewAdapter extends RecyclerView.Adapter<Booke
 
         if (dayPast >= 1) {
             if (dayPast == 1) {
-                msg += dayPast + " day ago";
+                msg += "Booked " + dayPast + " day ago";
             } else if (dayPast > 30) {
                 msg = "Booked more than a month ago";
             } else {
-                msg = dayPast + " days ago";
+                msg = "Booked " + dayPast + " days ago";
             }
         }
 
@@ -173,24 +159,6 @@ public class BookedClassesRecyclerViewAdapter extends RecyclerView.Adapter<Booke
         }
 
         return msg;
-    }
-
-    private boolean isBookCancelable(Timestamp whenUserBooked) {
-
-        long bookTimeInMillis = whenUserBooked.getSeconds() * 1000;
-        long currentTimeInMillis = Calendar.getInstance().getTimeInMillis();
-
-        if ((currentTimeInMillis - bookTimeInMillis) < 86400000) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void makeToast(Context context, String text) {
-        if (context != null) {
-            Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
-        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -231,5 +199,9 @@ public class BookedClassesRecyclerViewAdapter extends RecyclerView.Adapter<Booke
 
             action = itemView.findViewById(R.id.btn_action);
         }
+    }
+
+    public interface OnBookCancelListener {
+        void onBookCancel(BookedClassDetailsUser bcd);
     }
 }

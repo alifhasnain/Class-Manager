@@ -76,6 +76,10 @@ public class EachDayClassViewModel extends AndroidViewModel {
         //classesListLiveData = dataRepo.getClasses();
     }
 
+    public void setNotificationEnabled(RoutineClassDetails routineClassDetails)    {
+        dataRepo.setNotificationEnables(routineClassDetails);
+    }
+
     public LiveData<List<RoutineClassDetails>> getClasses()    {
         return classesListLiveData;
     }

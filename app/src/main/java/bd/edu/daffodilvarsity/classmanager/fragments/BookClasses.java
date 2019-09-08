@@ -25,11 +25,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
+import com.google.gson.Gson;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,6 +42,7 @@ import java.util.GregorianCalendar;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.AvailableClassesRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.dialogs.BookClassDialog;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsServer;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
@@ -217,7 +220,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
                     finishBooking(selectedClass,documentSnapshot.toObject(ProfileObjectTeacher.class));
                 }
                 else {
-                    makeToast("Your document doesn't exist in database.");
+                    makeToast("Your document doesn't exist in database.Please contact admin.");
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -231,48 +234,51 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
     private void finishBooking(ClassDetails selectedClass, ProfileObjectTeacher profile) {
 
 
-        final BookedClassDetailsUser bcd = new BookedClassDetailsUser();
+        final BookedClassDetailsServer bcdServer = new BookedClassDetailsServer();
 
-        bcd.setRoomNo(selectedClass.getRoom());
-        bcd.setTime(selectedClass.getTime());
-        bcd.setTeacherInitial(profile.getTeacherInitial());
-        bcd.setReservationDate(new Timestamp(mFinalDate.getTime()));
-        bcd.setDayOfWeek(getDayOfWeek(mFinalDate));
-        bcd.setTimeWhenUserBooked(Timestamp.now());
-        bcd.setUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        bcd.setPriority(selectedClass.getPriority());
-        bcd.setTeacherEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        bcdServer.setRoomNo(selectedClass.getRoom());
+        bcdServer.setTime(selectedClass.getTime());
+        bcdServer.setTeacherInitial(profile.getTeacherInitial());
+        int year = mFinalDate.get(Calendar.YEAR);
+        int month = mFinalDate.get(Calendar.MONTH);
+        int dayOfMonth = mFinalDate.get(Calendar.DAY_OF_MONTH);
+        bcdServer.setReservationDate(new int[]{year, month, dayOfMonth});
+        bcdServer.setPriority(selectedClass.getPriority());
 
-        BookClassDialog bookClassDialog = new BookClassDialog(mDateFormater.format(mFinalDate.getTime()),bcd.getRoomNo(),bcd.getTime());
+        BookClassDialog bookClassDialog = new BookClassDialog(mDateFormater.format(mFinalDate.getTime()),bcdServer.getRoomNo(),bcdServer.getTime());
 
         bookClassDialog.show(getChildFragmentManager(),"custom_dialog");
 
         bookClassDialog.addReturnTextListener(new BookClassDialog.CustomDialogListener() {
             @Override
             public void returnTexts(String shift, String program, String section, String courseCode) {
-                bcd.setShift(shift);
-                bcd.setSection(section);
-                bcd.setProgram(program);
-                bcd.setCourseCode(courseCode);
+                bcdServer.setShift(shift);
+                bcdServer.setSection(section);
+                bcdServer.setProgram(program);
+                bcdServer.setCourseCode(courseCode);
 
-                DocumentReference docRef = FirebaseFirestore.getInstance().document("/booked_classes/" + mFinalDate.getTimeInMillis() + "x" + bcd.getRoomNo() + "x" + bcd.getTime() + "/");
+                Gson gson = new Gson();
 
-                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if(documentSnapshot.exists())   {
-                            makeToast("Class is already booked.");
-                        }
-                        else {
-                            saveData(bcd);
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        makeToast("Failed to load data. Please check your internet connection.");
-                    }
-                });
+                String jsonString = gson.toJson(bcdServer);
+
+                makeToast(jsonString);
+
+                FirebaseFunctions.getInstance().getHttpsCallable("bookRoom")
+                        .call(jsonString)
+                        .addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
+                            @Override
+                            public void onSuccess(HttpsCallableResult httpsCallableResult) {
+                                loadEmptyClassList();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                makeToast("Failed!Please try again.");
+                                loadEmptyClassList();
+                            }
+                        });
+
             }
         });
 

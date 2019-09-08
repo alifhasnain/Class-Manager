@@ -32,7 +32,7 @@ public class BookClassViewModel extends ViewModel {
     private MutableLiveData<String> toastText = new MutableLiveData<>();
 
 
-    public void loadData(String dayOfWeek, Calendar calendar,String selectedTime)  {
+    public void loadData(String dayOfWeek, Calendar calendar,String time)  {
 
         CollectionReference emptyRoomRef = db.collection("/main_campus_empty_classes");
 
@@ -42,7 +42,7 @@ public class BookClassViewModel extends ViewModel {
 
         Task<QuerySnapshot> emptyRoomFindTask = emptyRoomRef
                 .whereEqualTo("dayOfWeek", dayOfWeek)
-                .whereEqualTo("time", selectedTime).get(Source.SERVER);
+                .whereEqualTo("time", time).get(Source.SERVER);
 
         taskList.add(emptyRoomFindTask);
 
@@ -50,7 +50,7 @@ public class BookClassViewModel extends ViewModel {
 
         Task<QuerySnapshot> task2 = bookedRoomRef.whereEqualTo("reservationDate", timestamp)
                 .whereEqualTo("dayOfWeek", dayOfWeek)
-                .whereEqualTo("time", selectedTime).get(Source.SERVER);
+                .whereEqualTo("time", time).get(Source.SERVER);
 
         taskList.add(task2);
 

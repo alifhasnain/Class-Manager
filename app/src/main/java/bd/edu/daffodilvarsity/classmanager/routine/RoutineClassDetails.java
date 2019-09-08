@@ -27,7 +27,7 @@ public class RoutineClassDetails {
 
     private float priority;
 
-    private int notificationId;
+    private boolean notificationEnabled;
 
     public RoutineClassDetails(String room, String courseCode, String courseName, String teacherInitial, String time, String dayOfWeek, String shift, String section, float priority) {
         this.room = room;
@@ -45,8 +45,12 @@ public class RoutineClassDetails {
         this.id = id;
     }
 
-    public void setNotificationId(int notificationId) {
-        this.notificationId = notificationId;
+    public boolean isNotificationEnabled() {
+        return notificationEnabled;
+    }
+
+    public void setNotificationEnabled(boolean notificationEnabled) {
+        this.notificationEnabled = notificationEnabled;
     }
 
     public int getId() {
@@ -83,10 +87,6 @@ public class RoutineClassDetails {
 
     public float getPriority() {
         return priority;
-    }
-
-    public int getNotificationId() {
-        return notificationId;
     }
 
     public String getShift() {

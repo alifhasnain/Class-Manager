@@ -14,6 +14,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -155,6 +156,52 @@ public class EachDayClassRepository {
                 }).start();
             }
         });
+    }
+
+    public void setNotificationEnables(final RoutineClassDetails rcd)    {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                allClassesDao.notificationEnabled(rcd);
+            }
+        }).start();
+    }
+
+    public List<RoutineClassDetails> getTodaysClasses()   {
+
+        Calendar calendar = Calendar.getInstance();
+
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        String dayOfWeek = "";
+
+        switch (day)
+        {
+            case 0:
+                dayOfWeek = "Sunday";
+                break;
+            case 1:
+                dayOfWeek = "Monday";
+                break;
+            case 2:
+                dayOfWeek = "Tuesday";
+                break;
+            case 3:
+                dayOfWeek = "Wednesday";
+                break;
+            case 4:
+                dayOfWeek = "Thursday";
+                break;
+            case 5:
+                dayOfWeek = "Friday";
+                break;
+            case 6:
+                dayOfWeek = "Saturday";
+                break;
+        }
+
+        return allClassesDao.getTodaysClasses(dayOfWeek);
+
     }
 
 }

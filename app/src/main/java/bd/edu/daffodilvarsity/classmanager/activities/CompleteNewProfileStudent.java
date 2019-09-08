@@ -66,6 +66,16 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
         initializeOnClickListeners();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        try {
+            mAuth.signOut();
+        } catch (Exception e)   {
+            e.printStackTrace();
+        }
+    }
+
     private void initializeVariables() {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();

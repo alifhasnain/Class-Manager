@@ -22,12 +22,13 @@
         android:weightSum="10">
 
         <ImageButton
+            android:id="@+id/notification"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
             android:layout_weight="1.5"
-            android:background="@color/grey"
-            android:src="@drawable/ic_notifications_off_black_24dp"
+            android:background="@color/google_red"
+            android:src="@drawable/ic_alarm_off_white"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackgroundBorderless"/>
