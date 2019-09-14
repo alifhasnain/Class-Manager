@@ -1,6 +1,7 @@
 package bd.edu.daffodilvarsity.classmanager.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -45,6 +46,8 @@ import bd.edu.daffodilvarsity.classmanager.routine.EachDayRoutineTabHolder;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
+
+    private long currentTimeInMillis;
 
     private SharedPreferencesHelper mSharedPreferencesHelper;
 
@@ -188,7 +191,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if(System.currentTimeMillis() < (currentTimeInMillis+1500)) {
+                super.onBackPressed();
+                finish();
+            }
+            else {
+                currentTimeInMillis = System.currentTimeMillis();
+                makeToast("press back again to exit");
+            }
         }
 
     }
@@ -298,6 +308,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.sign_out:
                 signOut();
                 break;
+            case R.id.report_bug:
+                String[] emails = new String[1];
+                emails[0] = "hasnain.alif20@gmail.com";
+                sendMail(emails,"Bug in Class Manager App","");
+                break;
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -318,6 +333,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mAuth.signOut();
         } catch (Exception e) {
             Log.e(TAG, "Error : ", e);
+        }
+    }
+
+    private void sendMail(String[] email,String subject,String body)    {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL,email);
+        intent.putExtra(Intent.EXTRA_SUBJECT,subject);
+        intent.putExtra(Intent.EXTRA_TEXT,body);
+        if (intent.resolveActivity(this.getPackageManager()) != null) {
+            this.startActivity(intent);
         }
     }
 

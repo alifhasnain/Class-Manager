@@ -39,7 +39,7 @@ public class HelperClass {
 
     public static final String TEACHER_INITIAL = "teacher_initial";
 
-    public static final String REMINDER_TAG = "work_manager_reminder_tag";
+    public static final int NOTIFICATION_ALARM_REQ_CODE = 1111;
 
     public static final String SCHEDULER_ID = "work_scheduler_tag";
 

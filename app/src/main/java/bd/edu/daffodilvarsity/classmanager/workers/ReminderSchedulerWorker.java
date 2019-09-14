@@ -20,6 +20,7 @@ import bd.edu.daffodilvarsity.classmanager.routine.EachDayClassRepository;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
 
 import static android.content.Context.ALARM_SERVICE;
+import static bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass.NOTIFICATION_ALARM_REQ_CODE;
 
 public class ReminderSchedulerWorker extends Worker {
 
@@ -39,10 +40,12 @@ public class ReminderSchedulerWorker extends Worker {
 
         long minTime = getMinimumTimeFromPriority(classes);
 
-        if(minTime != 0)   {
+        if(minTime != 0 && (minTime-System.currentTimeMillis() < 18000000))   {
             scheduleAlarm(title,"You have class after sometime be prepared.",minTime);
         }
-
+        else {
+            cancelAlarm();
+        }
 
         return Result.success();
     }
@@ -55,10 +58,20 @@ public class ReminderSchedulerWorker extends Worker {
         intent.putExtra("title",titleString);
         intent.putExtra("description",descriptionString);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),1111,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),NOTIFICATION_ALARM_REQ_CODE,intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP,time,pendingIntent);
+
+    }
+
+    private void cancelAlarm()  {
+        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+
+        Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),NOTIFICATION_ALARM_REQ_CODE,intent,0);
+
+        alarmManager.cancel(pendingIntent);
 
     }
 
@@ -73,13 +86,13 @@ public class ReminderSchedulerWorker extends Worker {
 
         for(RoutineClassDetails routineClassDetails : classDetails)  {
             if((getTimeForPriority(routineClassDetails.getPriority()).getTimeInMillis() - currentTime.getTimeInMillis() - 900000)>0) {
-                if(getTimeForPriority(routineClassDetails.getPriority()).getTimeInMillis() <lowestTime.getTimeInMillis() )  {
+                if((getTimeForPriority(routineClassDetails.getPriority()).getTimeInMillis() <lowestTime.getTimeInMillis()) && (getTimeForPriority(routineClassDetails.getPriority()).getTimeInMillis() > currentTime.getTimeInMillis() ))  {
                     lowestTime = getTimeForPriority(routineClassDetails.getPriority());
                 }
             }
         }
 
-        if(lowestTime.getTimeInMillis()==compareCalendar.getTimeInMillis()) {
+        if(lowestTime.getTimeInMillis()==currentTime.getTimeInMillis()) {
             return 0;
         }
         else {

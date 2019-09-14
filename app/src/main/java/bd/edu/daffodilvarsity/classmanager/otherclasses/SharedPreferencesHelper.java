@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -111,5 +112,32 @@ public class SharedPreferencesHelper {
 
         editor.putString(HelperClass.COURSES_HASH_MAP, courseMapInJson).apply();
 
+    }
+
+    public static void saveCourseWithSharedPreference(Context context,String program, String shift, String level, String term, String section) {
+
+        if(context==null)   {
+            return;
+        }
+
+        HelperClass helperClass = HelperClass.getInstance();
+
+        ArrayList<String> coursesList = helperClass.getCourseList(program, shift, level, term);
+
+        HashMap<String, String> coursesMap = new HashMap<>();
+
+        for (String courseCode : coursesList) {
+            coursesMap.put(courseCode, section);
+        }
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        Gson gson = new Gson();
+
+        String courseMapInJson = gson.toJson(coursesMap);
+
+        editor.putString(HelperClass.COURSES_HASH_MAP, courseMapInJson).apply();
     }
 }

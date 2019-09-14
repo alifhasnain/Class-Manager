@@ -135,6 +135,9 @@ public class EachDayRoutine extends Fragment {
                 if (mAdapter.getItemCount() == 0) {
                     mNoClasses.setVisibility(View.VISIBLE);
                 }
+                else {
+                    mNoClasses.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -197,7 +200,7 @@ public class EachDayRoutine extends Fragment {
                 mViewModel.setNotificationEnabled(routineClassDetails);
 
                 PeriodicWorkRequest reminderScheduler = new PeriodicWorkRequest
-                        .Builder(ReminderSchedulerWorker.class, 6, TimeUnit.HOURS)
+                        .Builder(ReminderSchedulerWorker.class, 55, TimeUnit.MINUTES)
                         .build();
 
                 workManager.enqueueUniquePeriodicWork(HelperClass.SCHEDULER_ID, ExistingPeriodicWorkPolicy.REPLACE, reminderScheduler);

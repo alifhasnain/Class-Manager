@@ -11,6 +11,7 @@ import androidx.work.WorkManager;
 
 import java.util.concurrent.TimeUnit;
 
+import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.workers.ReminderSchedulerWorker;
 
 
@@ -32,10 +33,10 @@ public class BaseApplication extends Application {
 
         PeriodicWorkRequest notificationChecker = new PeriodicWorkRequest.Builder(
                 ReminderSchedulerWorker.class,55, TimeUnit.MINUTES
-        ).addTag("periodic_notification_checker").build();
+        ).build();
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "UNIQUE_ID",
+                HelperClass.SCHEDULER_ID,
                 ExistingPeriodicWorkPolicy.KEEP,
                 notificationChecker
         );

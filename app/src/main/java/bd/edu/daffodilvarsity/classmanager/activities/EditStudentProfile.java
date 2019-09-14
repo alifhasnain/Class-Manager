@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 
 public class EditStudentProfile extends AppCompatActivity implements View.OnClickListener {
 
@@ -244,7 +245,14 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             makeToast("Saved.");
-
+                            SharedPreferencesHelper.saveCourseWithSharedPreference(
+                                    getApplicationContext(),
+                                    mUpdatedProfile.getProgram(),
+                                    mUpdatedProfile.getShift(),
+                                    mUpdatedProfile.getLevel(),
+                                    mUpdatedProfile.getTerm(),
+                                    mUpdatedProfile.getSection()
+                            );
                         } else {
                             makeToast("Failed to save.Please check your internet connection.");
                         }

@@ -1,7 +1,6 @@
 package bd.edu.daffodilvarsity.classmanager.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -19,14 +18,11 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 
 public class CompleteNewProfileStudent extends AppCompatActivity implements View.OnClickListener {
 
@@ -173,7 +169,7 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             makeToast("Information saved.");
-                            saveCourseWithSharedPreference(profile.getProgram(), profile.getShift(), level, term, section);
+                            SharedPreferencesHelper.saveCourseWithSharedPreference(getApplicationContext(),profile.getProgram(), profile.getShift(), level, term, section);
                             startActivity(new Intent(CompleteNewProfileStudent.this, MainActivity.class));
                             finish();
                         } else {
@@ -182,29 +178,6 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
                     }
                 });
 
-    }
-
-    private void saveCourseWithSharedPreference(String program, String shift, String level, String term, String section) {
-
-        HelperClass helperClass = HelperClass.getInstance();
-
-        ArrayList<String> coursesList = helperClass.getCourseList(program, shift, level, term);
-
-        HashMap<String, String> coursesMap = new HashMap<>();
-
-        for (String courseCode : coursesList) {
-            coursesMap.put(courseCode, section);
-        }
-
-        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        Gson gson = new Gson();
-
-        String courseMapInJson = gson.toJson(coursesMap);
-
-        editor.putString(HelperClass.COURSES_HASH_MAP, courseMapInJson).apply();
     }
 
     private boolean checkGivenInfo() {
