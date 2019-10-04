@@ -13,7 +13,7 @@ import androidx.core.app.NotificationManagerCompat;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.activities.SignIn;
 
-import static bd.edu.daffodilvarsity.classmanager.BaseApplication.ROUTINE_REMINDER_ID;
+import static bd.edu.daffodilvarsity.classmanager.BaseApplication.ROUTINE_REMINDER_CHANNEL_ID;
 
 public class NotificationReceiver extends BroadcastReceiver {
 
@@ -38,7 +38,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
-        Notification notification = new NotificationCompat.Builder(context,ROUTINE_REMINDER_ID)
+        Notification notification = new NotificationCompat.Builder(context, ROUTINE_REMINDER_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notifications_active_black_24dp)
                 .setContentTitle(title)
                 .setContentText(description)

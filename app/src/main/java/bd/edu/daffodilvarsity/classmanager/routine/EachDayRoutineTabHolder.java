@@ -96,7 +96,7 @@ public class EachDayRoutineTabHolder extends Fragment {
                         .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                makeToast("Refreshing...\nPlease pull to refresh if routine doesn't automatically updates.");
+                                makeToast("Downloading routine");
                                 forceRefreshWholeRoutine();
                             }
                         }).create();

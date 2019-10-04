@@ -2,11 +2,14 @@ package bd.edu.daffodilvarsity.classmanager.routine;
 
 import android.app.AlarmManager;
 import android.app.Application;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.work.ExistingPeriodicWorkPolicy;
@@ -24,12 +27,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.broadcastreceiver.NotificationReceiver;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 import bd.edu.daffodilvarsity.classmanager.workers.ReminderSchedulerWorker;
 
 import static android.content.Context.ALARM_SERVICE;
+import static bd.edu.daffodilvarsity.classmanager.BaseApplication.DOWNLOAD_PROGRESS_CHANNEL_ID;
 import static bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass.NOTIFICATION_ALARM_REQ_CODE;
 
 public class EachDayClassViewModel extends AndroidViewModel {
@@ -102,6 +107,8 @@ public class EachDayClassViewModel extends AndroidViewModel {
 
         Task<List<byte[]>> allDownloadTask = Tasks.whenAllSuccess(dayRoutineTask, eveningRoutineTask);
 
+        showDownloadNotificationProgress(true,"Downloading...");
+
         allDownloadTask.addOnSuccessListener(new OnSuccessListener<List<byte[]>>() {
             @Override
             public void onSuccess(List<byte[]> byteArrayList) {
@@ -114,11 +121,13 @@ public class EachDayClassViewModel extends AndroidViewModel {
                 dataRepo.saveJsonRoutineToRoomDatabase(dayJsonString, eveningJsonString);
                 mSharedPrefHelper.saveRoutineVersionToSharedPreferences(getApplication(), version);
                 downloadInProgress = false;
+                showDownloadNotificationProgress(false,"Download Complete");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 downloadInProgress = false;
+                showDownloadNotificationProgress(false,"Download Failed");
             }
         });
     }
@@ -144,6 +153,8 @@ public class EachDayClassViewModel extends AndroidViewModel {
 
         Task<List<byte[]>> allDownloadTask = Tasks.whenAllSuccess(dayRoutineTask, eveningRoutineTask);
 
+        showDownloadNotificationProgress(true,"Downloading...");
+
         allDownloadTask.addOnSuccessListener(new OnSuccessListener<List<byte[]>>() {
             @Override
             public void onSuccess(List<byte[]> byteArrayList) {
@@ -153,13 +164,32 @@ public class EachDayClassViewModel extends AndroidViewModel {
                 cancelAlarms();
                 dataRepo.saveJsonRoutineToRoomDatabase(dayJsonString, eveningJsonString);
                 downloadInProgress = false;
+                showDownloadNotificationProgress(false,"Download Complete");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 downloadInProgress = false;
+                showDownloadNotificationProgress(false,"Download Failed");
             }
         });
+    }
+
+    public void showDownloadNotificationProgress(boolean downloading , String message)  {
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplication());
+
+        Notification notification = new NotificationCompat.Builder(getApplication(),DOWNLOAD_PROGRESS_CHANNEL_ID)
+                .setContentTitle("Routine Download")
+                .setContentText(message)
+                .setSmallIcon(R.drawable.ic_download)
+                .setProgress(0,0,downloading)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setSound(null)
+                .build();
+
+        notificationManager.notify(1225,notification);
+
     }
 
     public void loadClassesStudent(List<String> courseCodeList, String shift, List<String> sectionList, String dayOfWeek) {

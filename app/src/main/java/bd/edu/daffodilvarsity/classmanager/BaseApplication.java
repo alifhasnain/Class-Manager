@@ -9,6 +9,8 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
@@ -17,7 +19,9 @@ import bd.edu.daffodilvarsity.classmanager.workers.ReminderSchedulerWorker;
 
 public class BaseApplication extends Application {
 
-    public static final String ROUTINE_REMINDER_ID = "routine_reminder_notification_channel";
+    public static final String ROUTINE_REMINDER_CHANNEL_ID = "routine_reminder_notification_channel";
+
+    public static final String DOWNLOAD_PROGRESS_CHANNEL_ID = "routine_download_progress";
 
     @Override
     public void onCreate() {
@@ -47,14 +51,26 @@ public class BaseApplication extends Application {
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)  {
             NotificationChannel channel1 = new NotificationChannel(
-                    ROUTINE_REMINDER_ID,
+                    ROUTINE_REMINDER_CHANNEL_ID,
                     "Routine Reminder Channel",
                     NotificationManager.IMPORTANCE_HIGH
             );
             channel1.setDescription("This channel shows the notification of daily routine");
 
+            NotificationChannel channel2 = new NotificationChannel(
+                    DOWNLOAD_PROGRESS_CHANNEL_ID,
+                    "Download Progress Channel",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel2.setDescription("This channel shows the download progress of routine");
+            channel2.setSound(null,null);
+
+            List<NotificationChannel> channelList = new ArrayList<>();
+            channelList.add(channel1);
+            channelList.add(channel2);
+
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel1);
+            notificationManager.createNotificationChannels(channelList);
         }
 
     }
