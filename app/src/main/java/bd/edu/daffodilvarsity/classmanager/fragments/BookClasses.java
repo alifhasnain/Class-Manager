@@ -3,6 +3,7 @@ package bd.edu.daffodilvarsity.classmanager.fragments;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -233,7 +234,6 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
     private void finishBooking(ClassDetails selectedClass, ProfileObjectTeacher profile) {
 
-
         final BookedClassDetailsServer bcdServer = new BookedClassDetailsServer();
 
         bcdServer.setRoomNo(selectedClass.getRoom());
@@ -252,6 +252,9 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
         bookClassDialog.addReturnTextListener(new BookClassDialog.CustomDialogListener() {
             @Override
             public void returnTexts(String shift, String program, String section, String courseCode) {
+
+                makeToast("Please wait while processing");
+
                 bcdServer.setShift(shift);
                 bcdServer.setSection(section);
                 bcdServer.setProgram(program);
@@ -261,13 +264,17 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
                 String jsonString = gson.toJson(bcdServer);
 
-                makeToast(jsonString);
-
                 FirebaseFunctions.getInstance().getHttpsCallable("bookRoom")
                         .call(jsonString)
                         .addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
                             @Override
-                            public void onSuccess(HttpsCallableResult httpsCallableResult) {
+                            public void onSuccess(final HttpsCallableResult httpsCallableResult) {
+                                try {
+                                    makeToast(httpsCallableResult.getData().toString());
+                                }
+                                catch (Exception e) {
+                                    Log.e("Error",e.getMessage());
+                                }
                                 loadEmptyClassList();
                             }
                         })

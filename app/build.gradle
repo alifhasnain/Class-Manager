@@ -32,7 +32,7 @@ dependencies {
     //Fast CSV
     implementation 'de.siegmar:fastcsv:1.0.3'
     //File Selector
-    implementation 'com.github.TutorialsAndroid:FilePicker:v4.0.19'
+    implementation 'com.github.TutorialsAndroid:FilePicker:v5.0.19'
     //Gson
     implementation 'com.google.code.gson:gson:2.8.5'
     //Firebase authentication
@@ -41,13 +41,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:21.0.0'
     //Firebase Functions
     implementation 'com.google.firebase:firebase-functions:19.0.0'
+    //Firebase Storage
+    implementation 'com.google.firebase:firebase-storage:19.0.1'
     //Firebase Push Notification
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
     //LifeCycle
-    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
     //Room
-    implementation "androidx.room:room-runtime:2.2.0-beta01"
-    annotationProcessor "androidx.room:room-compiler:2.2.0-beta01"
+    implementation "androidx.room:room-runtime:2.2.0-rc01"
+    annotationProcessor "androidx.room:room-compiler:2.2.0-rc01"
     //WorkManager
     implementation "androidx.work:work-runtime:2.2.0"
 

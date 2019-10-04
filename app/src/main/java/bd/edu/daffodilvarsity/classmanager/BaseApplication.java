@@ -36,7 +36,7 @@ public class BaseApplication extends Application {
         ).build();
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                HelperClass.SCHEDULER_ID,
+                HelperClass.WORK_SCHEDULER_ID,
                 ExistingPeriodicWorkPolicy.KEEP,
                 notificationChecker
         );

@@ -2,7 +2,9 @@ package bd.edu.daffodilvarsity.classmanager.fragments;
 
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,12 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.developer.filepicker.controller.DialogSelectionListener;
@@ -27,9 +31,16 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +78,10 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
 
     private Button uploadAll;
 
+    private Button uploadJson;
+
+    private EditText routineVersion;
+
     private ArrayList<ClassDetails> allNonEmptyClassDetails = new ArrayList<>();
 
     private ArrayList<ClassDetails> allEmptyClassDetails = new ArrayList<>();
@@ -98,6 +113,9 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
         uploadProgressText = view.findViewById(R.id.total_uploaded);
         uploadAll = view.findViewById(R.id.upload_all);
         uploadAll.setOnClickListener(this);
+        uploadJson = view.findViewById(R.id.upload_json);
+        uploadJson.setOnClickListener(this);
+        routineVersion = view.findViewById(R.id.routine_version);
 
         view.findViewById(R.id.btn_select_file).setOnClickListener(this);
 
@@ -126,6 +144,11 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
     }
 
     private void selectFileFromStorage() {
+
+        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.O) {
+            makeToast("Android Version Oreo is needed to parse file.");
+            return;
+        }
 
         if (!hasStoragePermission()) {
             return;
@@ -194,12 +217,12 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
 
         } else if (campus.equals("Main Campus") && shift.equals("Evening")) {
 
-            readRoutineEvening(file, "Saturday", "Sunday","Evening");
-            readRoutineEvening(file, "Sunday", "Monday","Evening");
-            readRoutineEvening(file, "Monday", "Tuesday","Evening");
-            readRoutineEvening(file, "Tuesday", "Wednesday","Evening");
-            readRoutineEvening(file, "Wednesday", "Thursday","Evening");
-            readRoutineEvening(file, "Thursday", "Nothing","Evening");
+            readRoutineEvening(file, "Saturday", "Sunday");
+            readRoutineEvening(file, "Sunday", "Monday");
+            readRoutineEvening(file, "Monday", "Tuesday");
+            readRoutineEvening(file, "Tuesday", "Wednesday");
+            readRoutineEvening(file, "Wednesday", "Thursday");
+            readRoutineEvening(file, "Thursday", "Nothing");
 
             if(allEmptyClassDetails.size()>0 || allNonEmptyClassDetails.size()>0)   {
 
@@ -268,6 +291,78 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
             });
 
         }
+    }
+
+    private void checkAndUploadToFirebaseStorage()  {
+
+        final ArrayList<ClassDetails> allClasses = new ArrayList<>();
+        allClasses.addAll(allNonEmptyClassDetails);
+        allClasses.addAll(allEmptyClassDetails);
+
+        if(allClasses.size()==0)    {
+            makeToast("No classes on the list.");
+            return;
+        }
+        if(routineVersion.getText().toString().equals("")) {
+            makeToast("Please identify semester with routine version");
+            return;
+        }
+
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                .setTitle("Are you sure to proceed?")
+                .setMessage("You are uploading total " + allClasses.size() + " classes as JSON file.")
+                .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        uploadToFirebaseStorage(allClasses);
+                    }
+                })
+                .setNegativeButton("Cancel",null)
+                .create();
+        alertDialog.show();
+
+    }
+
+    private void uploadToFirebaseStorage(ArrayList<ClassDetails> allClasses)  {
+
+        Type type = new TypeToken<ArrayList<ClassDetails>>(){}.getType();
+        Gson gson = new Gson();
+
+        String allClassesJsonString = gson.toJson(allClasses,type);
+
+        byte[] allClassByteArray = allClassesJsonString.getBytes(StandardCharsets.UTF_8);
+
+        String campus = mCampusSelector.getSelectedItem().toString();
+        String shift = mShiftSelector.getSelectedItem().toString();
+
+        StorageReference routineToUpload = FirebaseStorage.getInstance().getReference();
+
+        if (campus.equals("Main Campus") && shift.equals("Day")) {
+            routineToUpload = FirebaseStorage.getInstance().getReference().child("main_campus/routine_day.txt");
+        } else if (campus.equals("Main Campus") && shift.equals("Evening")) {
+            routineToUpload = FirebaseStorage.getInstance().getReference().child("main_campus/routine_evening.txt");
+        }
+
+        StorageMetadata metadata = new StorageMetadata.Builder()
+                .setCustomMetadata("version",routineVersion.getText().toString())
+                .build();
+
+        UploadTask uploadTask = routineToUpload.putBytes(allClassByteArray,metadata);
+        uploadJson.setEnabled(false);
+
+        uploadTask.addOnSuccessListener(getActivity(),new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                makeToast("Successfully saved!");
+                uploadJson.setEnabled(true);
+            }
+        }).addOnFailureListener(getActivity(),new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                makeToast("Failed to save.\nPlease try again.");
+                uploadJson.setEnabled(true);
+            }
+        });
     }
 
     private void readRoutineDay(File file, String startDay, String endDay , String shift) {
@@ -497,7 +592,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
 
     }
 
-    private void readRoutineEvening(File file, String startDay, String endDay, String shift) {
+    private void readRoutineEvening(File file, String startDay, String endDay) {
 
         CsvReader csvReader = new CsvReader();
 
@@ -637,6 +732,15 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
             case R.id.upload_all:
                 upload();
                 break;
+            case R.id.upload_json:
+                checkAndUploadToFirebaseStorage();
+                break;
+        }
+    }
+
+    private void makeToast(String txt)  {
+        if(getContext()!=null)  {
+            Toast.makeText(getContext(), txt, Toast.LENGTH_SHORT).show();
         }
     }
 

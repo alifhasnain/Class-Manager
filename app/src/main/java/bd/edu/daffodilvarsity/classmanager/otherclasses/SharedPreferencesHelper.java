@@ -14,9 +14,20 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class SharedPreferencesHelper {
 
+    public void setUserType(Context context, String type) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(HelperClass.USER_TYPE, type).apply();
+    }
+
     public String getUserType(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
         return sharedPreferences.getString(HelperClass.USER_TYPE, "");
+    }
+
+    public void removeUserTypeFromSharedPref(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+        sharedPreferences.edit().remove(HelperClass.USER_TYPE).apply();
     }
 
     public String getTeacherInitialFromSharedPref(Context context) {
@@ -38,7 +49,7 @@ public class SharedPreferencesHelper {
         if (context != null) {
             SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(HelperClass.ROUTINE_VERSION, version);
+            editor.putString(HelperClass.ROUTINE_VERSION_UPDATE, version);
             editor.apply();
         }
     }
@@ -47,7 +58,7 @@ public class SharedPreferencesHelper {
         if (context != null) {
             SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
 
-            return sharedPreferences.getString(HelperClass.ROUTINE_VERSION, "00000000");
+            return sharedPreferences.getString(HelperClass.ROUTINE_VERSION_UPDATE, "00000000");
         } else {
             return "00000000";
         }
@@ -114,9 +125,9 @@ public class SharedPreferencesHelper {
 
     }
 
-    public static void saveCourseWithSharedPreference(Context context,String program, String shift, String level, String term, String section) {
+    public void saveCourseWithSharedPreference(Context context, String program, String shift, String level, String term, String section) {
 
-        if(context==null)   {
+        if (context == null) {
             return;
         }
 
@@ -139,5 +150,97 @@ public class SharedPreferencesHelper {
         String courseMapInJson = gson.toJson(coursesMap);
 
         editor.putString(HelperClass.COURSES_HASH_MAP, courseMapInJson).apply();
+    }
+
+    public void removeCoursesFromSharedPref(Context context) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.remove(HelperClass.COURSES_HASH_MAP).apply();
+
+    }
+
+    public void saveUserEmail(Context context, String email) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString(HelperClass.USER_EMAIL, email).apply();
+
+    }
+
+    public String getUserEmail(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+        return sharedPreferences.getString(HelperClass.USER_EMAIL, null);
+    }
+
+    public void saveStudentProfileOffline(Context context, ProfileObjectStudent profile) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+
+        Gson gson = new Gson();
+
+        String profileJsonString = gson.toJson(profile);
+
+        sharedPreferences.edit().putString(HelperClass.STUDENT_PROFILE, profileJsonString).apply();
+
+    }
+
+    public ProfileObjectStudent getStudentOfflineProfile(Context context) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+
+        String profileJsonString = sharedPreferences.getString(HelperClass.STUDENT_PROFILE, null);
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<ProfileObjectStudent>() {
+        }.getType();
+
+        ProfileObjectStudent studentProfile = gson.fromJson(profileJsonString, type);
+
+        return studentProfile;
+
+    }
+
+    public void removeStudentProfileFromSharedPref(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+        sharedPreferences.edit().remove(HelperClass.STUDENT_PROFILE).apply();
+    }
+
+    public ProfileObjectTeacher getTeacherOfflineProfile(Context context) {
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<ProfileObjectTeacher>() {
+        }.getType();
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+
+        String teacherProfileJson = sharedPreferences.getString(HelperClass.TEACHER_PROFILE, null);
+
+        if (teacherProfileJson == null) {
+            return null;
+        } else {
+            ProfileObjectTeacher prfile = gson.fromJson(teacherProfileJson,type);
+            return prfile;
+        }
+    }
+
+    public void saveTeacherProfileToSharedPref(Context context , ProfileObjectTeacher profile)    {
+
+        Gson gson = new Gson();
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
+        sharedPreferences.edit().putString(HelperClass.TEACHER_PROFILE,gson.toJson(profile)).apply();
+
+    }
+
+    public void removeTeacherProfileFromSharedPref(Context context) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
+        sharedPreferences.edit().remove(HelperClass.TEACHER_PROFILE).apply();
+
     }
 }

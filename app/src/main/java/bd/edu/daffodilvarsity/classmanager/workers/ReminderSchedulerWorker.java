@@ -5,6 +5,7 @@ import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
@@ -12,10 +13,18 @@ import androidx.work.WorkerParameters;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import bd.edu.daffodilvarsity.classmanager.broadcastreceiver.NotificationReceiver;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 import bd.edu.daffodilvarsity.classmanager.routine.EachDayClassRepository;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
 
@@ -32,76 +41,109 @@ public class ReminderSchedulerWorker extends Worker {
     @Override
     public Result doWork() {
 
+        List<RoutineClassDetails> classes = new ArrayList<>();
+
         EachDayClassRepository repo = new EachDayClassRepository((Application) getApplicationContext());
 
-        List<RoutineClassDetails> classes = repo.getTodaysClasses();
+        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
 
-        String title = "Reminder";
+        ProfileObjectStudent studentProfile = sharedPreferencesHelper.getStudentOfflineProfile(getApplicationContext());
 
-        long minTime = getMinimumTimeFromPriority(classes);
+        String userType = sharedPreferencesHelper.getUserType(getApplicationContext());
 
-        if(minTime != 0 && (minTime-System.currentTimeMillis() < 18000000))   {
-            scheduleAlarm(title,"You have class after sometime be prepared.",minTime);
+        if (userType.equals(HelperClass.USER_TYPE_STUDENT)) {
+            HashMap<String, String> courseAndSectionHashMap = sharedPreferencesHelper.getCoursesAndSectionMapFromSharedPreferences(getApplicationContext());
+
+            List<String> courseList = new ArrayList<>();
+            List<String> sectionList = new ArrayList<>();
+
+            for (Map.Entry<String, String> entry : courseAndSectionHashMap.entrySet()) {
+                courseList.add(entry.getKey());
+                sectionList.add(entry.getValue());
+            }
+
+            classes = repo.getTodaysClasses(courseList, sectionList, studentProfile.getShift());
+
+        } else if (userType.equals(HelperClass.USER_TYPE_ADMIN) || userType.equals(HelperClass.USER_TYPE_TEACHER)) {
+
+            ProfileObjectTeacher profileTeacher = sharedPreferencesHelper.getTeacherOfflineProfile(getApplicationContext());
+
+            classes = repo.getTodaysClasses(profileTeacher.getTeacherInitial());
+
         }
-        else {
+
+        Notification notification = getMinimumTimeFromPriority(classes);
+        long minTime = notification.getTime();
+
+        Date date = new Date();
+        date.setTime(minTime);
+        Log.e("ERROR", date.toString());
+
+        if ((minTime - System.currentTimeMillis()) >= 14400000) {
+            //If time is greater than 4 hour then cancel alarm
             cancelAlarm();
+        } else if ((minTime - System.currentTimeMillis()) > 900000) {
+            //If current remaining time is greater than
+            scheduleAlarm(notification.getTitle(), notification.getDescription(), (minTime - 899000));
         }
 
         return Result.success();
     }
 
-    private void scheduleAlarm(String titleString,String descriptionString,long time)    {
+    private void scheduleAlarm(String titleString, String descriptionString, long time) {
 
         AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
 
         Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
-        intent.putExtra("title",titleString);
-        intent.putExtra("description",descriptionString);
+        intent.putExtra("title", titleString);
+        intent.putExtra("description", descriptionString);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),NOTIFICATION_ALARM_REQ_CODE,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), NOTIFICATION_ALARM_REQ_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,time,pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
 
     }
 
-    private void cancelAlarm()  {
+    private void cancelAlarm() {
+
         AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
 
         Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),NOTIFICATION_ALARM_REQ_CODE,intent,0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), NOTIFICATION_ALARM_REQ_CODE, intent, 0);
 
         alarmManager.cancel(pendingIntent);
 
     }
 
-    private long getMinimumTimeFromPriority(List<RoutineClassDetails> classDetails) {
+    private Notification getMinimumTimeFromPriority(List<RoutineClassDetails> classDetails) {
+
+        Notification notification = new Notification();
 
         Calendar currentTime = Calendar.getInstance();
 
         Calendar compareCalendar = Calendar.getInstance();
-        compareCalendar.add(Calendar.DATE,4);
+        compareCalendar.add(Calendar.DATE, 4);
 
-        Calendar lowestTime = compareCalendar;
+        long lowestTime = compareCalendar.getTimeInMillis();
+        notification.setTime(lowestTime);
 
-        for(RoutineClassDetails routineClassDetails : classDetails)  {
-            if((getTimeForPriority(routineClassDetails.getPriority()).getTimeInMillis() - currentTime.getTimeInMillis() - 900000)>0) {
-                if((getTimeForPriority(routineClassDetails.getPriority()).getTimeInMillis() <lowestTime.getTimeInMillis()) && (getTimeForPriority(routineClassDetails.getPriority()).getTimeInMillis() > currentTime.getTimeInMillis() ))  {
-                    lowestTime = getTimeForPriority(routineClassDetails.getPriority());
-                }
+        for (int i = 0; i < classDetails.size(); i++) {
+
+            long classTime = getTimeFormPriority(classDetails.get(i).getPriority()).getTimeInMillis();
+
+            if ((classTime > currentTime.getTimeInMillis()) && classTime < lowestTime) {
+                lowestTime = classTime;
+                notification.setDescription("Your class will held at " + classDetails.get(i).getTime() + " in " + classDetails.get(i).getRoom() + ".This was a soft reminder.");
+                notification.setTime(lowestTime);
             }
         }
 
-        if(lowestTime.getTimeInMillis()==currentTime.getTimeInMillis()) {
-            return 0;
-        }
-        else {
-            return lowestTime.getTimeInMillis();
-        }
+        return notification;
 
     }
 
-    private Calendar getTimeForPriority(float priority)   {
+    private Calendar getTimeFormPriority(float priority) {
 
         Calendar routineTime;
 
@@ -169,5 +211,38 @@ public class ReminderSchedulerWorker extends Worker {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private class Notification {
+
+        String title = "Reminder";
+
+        String description = "";
+
+        long time = 0;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public long getTime() {
+            return time;
+        }
+
+        public void setTime(long time) {
+            this.time = time;
+        }
     }
 }

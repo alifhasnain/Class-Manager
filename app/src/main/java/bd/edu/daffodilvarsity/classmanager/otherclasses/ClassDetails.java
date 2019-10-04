@@ -18,11 +18,7 @@ public class ClassDetails {
 
     private String section = "";
 
-    private String batch = "";
-
     private float priority;
-
-    private String teacherUid = "";
 
     private String documentId;
 
@@ -111,28 +107,12 @@ public class ClassDetails {
         this.section = section;
     }
 
-    public String getBatch() {
-        return batch;
-    }
-
-    public void setBatch(String batch) {
-        this.batch = batch;
-    }
-
     public float getPriority() {
         return priority;
     }
 
     public void setPriority(float priority) {
         this.priority = priority;
-    }
-
-    public String getTeacherUid() {
-        return teacherUid;
-    }
-
-    public void setTeacherUid(String teacherUid) {
-        this.teacherUid = teacherUid;
     }
 
     public String getDocumentId() {

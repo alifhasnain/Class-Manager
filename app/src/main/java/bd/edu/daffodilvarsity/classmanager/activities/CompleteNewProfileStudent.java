@@ -8,15 +8,11 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import bd.edu.daffodilvarsity.classmanager.R;
@@ -161,7 +157,20 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
         profile.setSection(section);
 
-        DocumentReference docRef = db.document("/student_profiles/" + mAuth.getCurrentUser().getUid());
+        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
+
+        sharedPreferencesHelper.saveStudentProfileOffline(this,profile);
+
+        sharedPreferencesHelper.saveCourseWithSharedPreference(this,profile.getProgram(), profile.getShift(), level, term, section);
+
+        sharedPreferencesHelper.setUserType(this,HelperClass.USER_TYPE_STUDENT);
+
+        Intent intent = new Intent(CompleteNewProfileStudent.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+
+        /*DocumentReference docRef = db.document("/student_profiles/" + mAuth.getCurrentUser().getUid());
 
         docRef.set(profile)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -169,14 +178,14 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             makeToast("Information saved.");
-                            SharedPreferencesHelper.saveCourseWithSharedPreference(getApplicationContext(),profile.getProgram(), profile.getShift(), level, term, section);
+                            new SharedPreferencesHelper().saveCourseWithSharedPreference(getApplicationContext(),profile.getProgram(), profile.getShift(), level, term, section);
                             startActivity(new Intent(CompleteNewProfileStudent.this, MainActivity.class));
                             finish();
                         } else {
                             makeToast("Failed to save.Please check your internet connection.");
                         }
                     }
-                });
+                });*/
 
     }
 

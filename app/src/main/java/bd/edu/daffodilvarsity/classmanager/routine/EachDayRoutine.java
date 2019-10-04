@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -28,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.EachDayRoutineRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 import bd.edu.daffodilvarsity.classmanager.workers.ReminderSchedulerWorker;
 
@@ -149,7 +152,7 @@ public class EachDayRoutine extends Fragment {
         loadingContent = view.findViewById(R.id.loading_content);
         recyclerView = view.findViewById(R.id.recycler_view);
         mPullToRefresh = view.findViewById(R.id.swipe_to_refresh);
-        mPullToRefresh.setDistanceToTriggerSync(450);
+        mPullToRefresh.setDistanceToTriggerSync(350);
         mNoClasses = view.findViewById(R.id.no_classes);
 
         mSharedPrefHelper = new SharedPreferencesHelper();
@@ -161,7 +164,8 @@ public class EachDayRoutine extends Fragment {
         mClasses.clear();
         notifyRecyclerViewAdapter();
 
-        mViewModel.loadClassesTeacher(mSharedPrefHelper.getTeacherInitialFromSharedPref(getContext()), mDayOfWeek);
+        ProfileObjectTeacher profile = mSharedPrefHelper.getTeacherOfflineProfile(getContext());
+        mViewModel.loadClassesTeacher(profile.getTeacherInitial(), mDayOfWeek);
         initializeViewModelObserver();
         showProgressbar(false);
 
@@ -180,7 +184,9 @@ public class EachDayRoutine extends Fragment {
             sectionList.add(entry.getValue());
         }
 
-        mViewModel.loadClassesStudent(courseCodeList, mSharedPrefHelper.getShiftFromSharedPreferences(getActivity()), sectionList, mDayOfWeek);
+        ProfileObjectStudent profile = mSharedPrefHelper.getStudentOfflineProfile(getContext());
+
+        mViewModel.loadClassesStudent(courseCodeList, profile.getShift(), sectionList, mDayOfWeek);
         initializeViewModelObserver();
         showProgressbar(false);
 
@@ -203,7 +209,7 @@ public class EachDayRoutine extends Fragment {
                         .Builder(ReminderSchedulerWorker.class, 55, TimeUnit.MINUTES)
                         .build();
 
-                workManager.enqueueUniquePeriodicWork(HelperClass.SCHEDULER_ID, ExistingPeriodicWorkPolicy.REPLACE, reminderScheduler);
+                workManager.enqueueUniquePeriodicWork(HelperClass.WORK_SCHEDULER_ID, ExistingPeriodicWorkPolicy.REPLACE, reminderScheduler);
             }
         });
         recyclerView.setAdapter(mAdapter);
@@ -223,6 +229,12 @@ public class EachDayRoutine extends Fragment {
         } else {
             progressBar.setVisibility(View.GONE);
             loadingContent.setVisibility(View.GONE);
+        }
+    }
+
+    private void makeToast(String txt)  {
+        if(getContext()!=null)  {
+            Toast.makeText(getContext(), txt, Toast.LENGTH_SHORT).show();
         }
     }
 

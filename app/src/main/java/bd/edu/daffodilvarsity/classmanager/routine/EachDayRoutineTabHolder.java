@@ -29,7 +29,6 @@ import java.util.LinkedHashMap;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.EachDayRoutinePagerAdapter;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 
 /**
@@ -97,7 +96,7 @@ public class EachDayRoutineTabHolder extends Fragment {
                         .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                makeToast("Updating....");
+                                makeToast("Refreshing...\nPlease pull to refresh if routine doesn't automatically updates.");
                                 forceRefreshWholeRoutine();
                             }
                         }).create();
@@ -121,17 +120,18 @@ public class EachDayRoutineTabHolder extends Fragment {
 
                             if (mSharedPrefHelper.getRoutineVersionFromSharedPreferences(getContext()) == null || !version.equals(mSharedPrefHelper.getRoutineVersionFromSharedPreferences(getActivity()))) {
                                 makeToast("Downloading new updated routine.");
-                                mSharedPrefHelper.saveRoutineVersionToSharedPreferences(getContext(), version);
-                                forceRefreshWholeRoutine();
+                                forceRefreshWholeRoutine(version);
                             }
                         }
                     }
                 });
     }
 
-    private void forceRefreshWholeRoutine() {
+    private void forceRefreshWholeRoutine(String version) {
 
-        String userType = "";
+        mViewModel.loadWholeRoutineFromServer(version);
+
+        /*String userType = "";
 
         if (getActivity() != null) {
             userType = mSharedPrefHelper.getUserType(getContext());
@@ -141,7 +141,13 @@ public class EachDayRoutineTabHolder extends Fragment {
             mViewModel.loadWholeTeacherRoutineFromServer();
         } else if (userType.equals(HelperClass.USER_TYPE_STUDENT)) {
             mViewModel.loadWholeStudentRoutineFromServer();
-        }
+        }*/
+    }
+
+    private void forceRefreshWholeRoutine() {
+
+        mViewModel.loadWholeRoutineFromServer();
+
     }
 
     private void initializeVariables() {
@@ -195,9 +201,9 @@ public class EachDayRoutineTabHolder extends Fragment {
             eachDayRoutinePagerAdapter.addFragment(entry.getValue(), entry.getKey());
         }
 
-        mViewPager.setOffscreenPageLimit(4);
-
         mViewPager.setAdapter(eachDayRoutinePagerAdapter);
+
+        mViewPager.setOffscreenPageLimit(4);
 
     }
 

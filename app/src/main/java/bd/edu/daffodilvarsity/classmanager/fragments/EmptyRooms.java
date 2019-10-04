@@ -72,7 +72,7 @@ public class EmptyRooms extends Fragment implements View.OnClickListener {
     }
 
     private void initializeRecyclerView() {
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.hasFixedSize();
     }
@@ -173,8 +173,7 @@ public class EmptyRooms extends Fragment implements View.OnClickListener {
         String time = timeSelector.getSelectedItem().toString();
 
         showProgressbar(true);
-        mViewModel.loadEmptyClasses(day,time);
-
+        mViewModel.loadEmptyRooms(day,time);
     }
 
     private void showProgressbar(boolean visible) {

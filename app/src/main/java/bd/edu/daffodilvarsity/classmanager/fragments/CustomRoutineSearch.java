@@ -27,8 +27,8 @@ import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.CustomRoutineSearchRecyclerViewAdapter;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
+import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
 import bd.edu.daffodilvarsity.classmanager.viewmodels.CustomRoutineSearchViewModel;
 
 /**
@@ -36,11 +36,9 @@ import bd.edu.daffodilvarsity.classmanager.viewmodels.CustomRoutineSearchViewMod
  */
 public class CustomRoutineSearch extends Fragment implements View.OnClickListener {
 
-    private static final String TAG = "CustomRoutineSearch";
-
     private CustomRoutineSearchViewModel mViewModel;
 
-    private ArrayList<ClassDetails> mClassesList = new ArrayList<>();
+    private ArrayList<RoutineClassDetails> mClassesList = new ArrayList<>();
 
     private RecyclerView mRecyclerView;
 
@@ -109,7 +107,10 @@ public class CustomRoutineSearch extends Fragment implements View.OnClickListene
 
     private void initializeSpinner() {
 
-        String[] items = HelperClass.getSevenDaysOfWeek().toArray(new String[HelperClass.getSevenDaysOfWeek().size()]);
+        ArrayList<String> allDaysOfWeek = HelperClass.getSevenDaysOfWeek();
+        allDaysOfWeek.add(0,"All");
+
+        String[] items = allDaysOfWeek.toArray(new String[allDaysOfWeek.size()]);
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_items, items);
 
@@ -135,9 +136,9 @@ public class CustomRoutineSearch extends Fragment implements View.OnClickListene
 
         mViewModel = ViewModelProviders.of(this).get(CustomRoutineSearchViewModel.class);
 
-        mViewModel.getClasses().observe(getViewLifecycleOwner(), new Observer<ArrayList<ClassDetails>>() {
+        mViewModel.getClasses().observe(getViewLifecycleOwner(), new Observer<ArrayList<RoutineClassDetails>>() {
             @Override
-            public void onChanged(ArrayList<ClassDetails> classList) {
+            public void onChanged(ArrayList<RoutineClassDetails> classList) {
 
                 mClassesList.clear();
                 mClassesList.addAll(classList);
@@ -164,17 +165,16 @@ public class CustomRoutineSearch extends Fragment implements View.OnClickListene
 
     private void loadClasses() {
 
-        if(teacherInitialEditText.getText().toString().isEmpty())   {
+        /*if(teacherInitialEditText.getText().toString().isEmpty())   {
             makeToast("Please insert a teacher initial");
             return;
-        }
+        }*/
 
         mClassesList.clear();
         mAdapter.notifyDataSetChanged();
         toggleEmptyList(false);
         showProgressbar(true);
         closeKeyboard();
-
 
 
         String teacherInitial = teacherInitialEditText.getText().toString().trim();

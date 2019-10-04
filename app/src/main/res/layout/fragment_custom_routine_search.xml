@@ -64,7 +64,7 @@
         android:drawableTop="@drawable/ic_menu_empty_rooms"
         android:scaleX="2.5"
         android:scaleY="2.5"
-        android:text="Nothing here"
+        android:text="Empty"
         android:textSize="8sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

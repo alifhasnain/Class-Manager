@@ -11,7 +11,6 @@ import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,14 +27,9 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
@@ -66,17 +60,12 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
         initializeVariables();
 
+        loadSavedUserEmail();
+
         initializeOnClickListeners();
 
-    }
+        checkIfUserIsSignedInStudent();
 
-    private void testMethodCreateProfile() {
-
-        ProfileObjectTeacher profile = new ProfileObjectTeacher("Alif Hasnain", "hasnain.alif20@gmail.com", "RAH", "");
-
-        CollectionReference cr = db.collection("/teacher_profiles");
-
-        cr.add(profile);
     }
 
     @Override
@@ -91,6 +80,17 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         mAuth.removeAuthStateListener(mAuthStateListener);
     }
 
+    @Override
+    public void onBackPressed() {
+        LinearLayout progressBarHolder = findViewById(R.id.progress_bar_holder);
+        if(progressBarHolder.getVisibility() == View.VISIBLE)   {
+            progressBarHolder.setVisibility(View.GONE);
+        }
+        else    {
+            super.onBackPressed();
+        }
+    }
+
     private void initializeVariables() {
 
         mAuth = FirebaseAuth.getInstance();
@@ -101,21 +101,19 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                showCircularProgressBar(true);
+
                 if (firebaseAuth.getCurrentUser() != null && isEmailVerified()) {
                     mAuth.getCurrentUser().getIdToken(false).addOnSuccessListener(new OnSuccessListener<GetTokenResult>() {
                         @Override
                         public void onSuccess(GetTokenResult result) {
-                            if(result.getClaims().get("admin") != null) {
-                                signInAsAdmin();
+                            if (result.getClaims().get("admin") != null) {
+                                signInAsAdminOrTeacher(HelperClass.USER_TYPE_ADMIN);
                                 showCircularProgressBar(false);
-                            }
-                            else if(result.getClaims().get("teacher") != null) {
+                            } else if (result.getClaims().get("teacher") != null) {
                                 showCircularProgressBar(false);
-                                signInAsTeacher();
-                            }
-                            else if(result.getClaims().get("student") != null)  {
-                                showCircularProgressBar(false);
-                                checkIfStudentProfileExistInDatabase();
+                                signInAsAdminOrTeacher(HelperClass.USER_TYPE_TEACHER);
                             }
 
                         }
@@ -123,11 +121,14 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             checkForOfflineUserInfo();
-                            Log.e("","Error : " , e);
+                            Log.e("", "Error : ", e);
                             showCircularProgressBar(false);
                         }
                     });
-                } else if (firebaseAuth.getCurrentUser() != null) {
+                } else if (firebaseAuth.getCurrentUser() == null) {
+                    showCircularProgressBar(false);
+                } else if (firebaseAuth.getCurrentUser() != null && !isEmailVerified()) {
+                    showCircularProgressBar(true);
                     sendVerificationMail();
                 }
             }
@@ -139,16 +140,34 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     }
 
+    private void checkIfUserIsSignedInStudent() {
+
+        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
+
+        String userType = sharedPreferencesHelper.getUserType(this);
+
+        ProfileObjectStudent profile = sharedPreferencesHelper.getStudentOfflineProfile(this);
+
+        if(userType.equals(HelperClass.USER_TYPE_STUDENT) && profile!=null) {
+            signInAsStudent();
+        }
+    }
+
+    private void loadSavedUserEmail() {
+        String email = new SharedPreferencesHelper().getUserEmail(getApplicationContext());
+        if (email != null) {
+            mEmailEditText.getEditText().setText(email);
+            mPasswordEditText.getEditText().requestFocus();
+        }
+    }
+
     private void checkForOfflineUserInfo() {
         switch (mSharedPrefHelper.getUserType(this)) {
             case HelperClass.USER_TYPE_ADMIN:
-                signInAsAdmin();
+                signInAsAdminOrTeacher(HelperClass.USER_TYPE_ADMIN);
                 break;
             case HelperClass.USER_TYPE_TEACHER:
-                signInAsTeacher();
-                break;
-            case HelperClass.USER_TYPE_STUDENT:
-                signInAsStudent();
+                signInAsAdminOrTeacher(HelperClass.USER_TYPE_TEACHER);
                 break;
         }
     }
@@ -170,10 +189,10 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
                             ProfileObjectStudent profile = documentSnapshot.toObject(ProfileObjectStudent.class);
 
-                            saveShiftAndProgramWithSharedPreferences(profile.getProgram(),profile.getShift());
+                            saveShiftAndProgramWithSharedPreferences(profile.getProgram(), profile.getShift());
 
                             if (mSharedPrefHelper.getCoursesAndSectionMapFromSharedPreferences(getApplication()) == null) {
-                                saveCoursesWithSharedPreference(profile.getProgram(), profile.getShift(), profile.getLevel(), profile.getTerm(), profile.getSection());
+                                new SharedPreferencesHelper().saveCourseWithSharedPreference(getApplicationContext(),profile.getProgram(), profile.getShift(), profile.getLevel(), profile.getTerm(), profile.getSection());
                             }
 
                             signInAsStudent();
@@ -200,73 +219,89 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         findViewById(R.id.sign_in).setOnClickListener(this);
         findViewById(R.id.sign_up).setOnClickListener(this);
         findViewById(R.id.forgot_pass).setOnClickListener(this);
+        findViewById(R.id.sign_in_as_student).setOnClickListener(this);
     }
 
-    private void saveShiftAndProgramWithSharedPreferences(String program,String shift) {
+    private void saveShiftAndProgramWithSharedPreferences(String program, String shift) {
 
         SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putString(HelperClass.PROGRAM,program).apply();
+        editor.putString(HelperClass.PROGRAM, program).apply();
 
-        editor.putString(HelperClass.SHIFT,shift).apply();
+        editor.putString(HelperClass.SHIFT, shift).apply();
 
-    }
-
-    private void saveCoursesWithSharedPreference(String program, String shift, String level, String term, String section) {
-
-        HelperClass helperClass = HelperClass.getInstance();
-
-        ArrayList<String> coursesList = helperClass.getCourseList(program, shift, level, term);
-
-        HashMap<String, String> coursesMap = new HashMap<>();
-
-        for (String courseCode : coursesList) {
-            coursesMap.put(courseCode, section);
-        }
-
-        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        Gson gson = new Gson();
-
-        String courseMapInJson = gson.toJson(coursesMap);
-
-        editor.putString(HelperClass.COURSES_HASH_MAP, courseMapInJson).apply();
     }
 
     private void completeProfileStudent() {
-        setUserType(HelperClass.USER_TYPE_STUDENT);
+        new SharedPreferencesHelper().setUserType(this,HelperClass.USER_TYPE_STUDENT);
         makeToast("Please complete your profile information");
         startActivity(new Intent(this, CompleteNewProfileStudent.class));
     }
 
-    private void signInAsAdmin() {
-        setUserType(HelperClass.USER_TYPE_ADMIN);
+    private void signInAsAdminOrTeacher(final String userType) {
+
+        showCircularProgressBar(true);
+
+        final SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
+
+        if(sharedPreferencesHelper.getTeacherOfflineProfile(this)==null)    {
+            DocumentReference profile = FirebaseFirestore.getInstance().document("teacher_profiles/"+mAuth.getCurrentUser().getEmail());
+            profile.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if(documentSnapshot.exists())   {
+
+                        showCircularProgressBar(false);
+
+                        ProfileObjectTeacher profile = documentSnapshot.toObject(ProfileObjectTeacher.class);
+                        sharedPreferencesHelper.saveTeacherProfileToSharedPref(getApplicationContext(),profile);
+                        launchMainActivity(userType);
+
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    makeToast("Login Failed.Please check your internet connection.");
+                    showCircularProgressBar(false);
+                }
+            });
+        }   else    {
+            showCircularProgressBar(false);
+            launchMainActivity(userType);
+        }
+
+    }
+
+    private void launchMainActivity(String userType)    {
+        switch (userType)
+        {
+            case HelperClass.USER_TYPE_ADMIN:
+                new SharedPreferencesHelper().setUserType(this,HelperClass.USER_TYPE_ADMIN);
+                break;
+            case HelperClass.USER_TYPE_TEACHER:
+                new SharedPreferencesHelper().setUserType(this,HelperClass.USER_TYPE_TEACHER);
+                break;
+        }
         startMainActivity();
     }
+
+    /*private void signInAsTeacher() {
+        new SharedPreferencesHelper().setUserType(this,HelperClass.USER_TYPE_TEACHER);
+        startMainActivity();
+    }*/
 
     private void signInAsStudent() {
-        setUserType(HelperClass.USER_TYPE_STUDENT);
-        startMainActivity();
-    }
-
-    private void signInAsTeacher() {
-        setUserType(HelperClass.USER_TYPE_TEACHER);
         startMainActivity();
     }
 
     private void startMainActivity() {
-        startActivity(new Intent(this, MainActivity.class));
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
         finish();
-    }
-
-    private void setUserType(String type) {
-        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(HelperClass.USER_TYPE, type).apply();
     }
 
     @Override
@@ -279,6 +314,10 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
             case R.id.sign_up:
                 startSignUpActivityWithTransition();
+                break;
+
+            case R.id.sign_in_as_student:
+                completeProfileStudent();
                 break;
 
             case R.id.forgot_pass:
@@ -311,6 +350,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
             return;
         }
 
+        new SharedPreferencesHelper().saveUserEmail(getApplicationContext(), sEmail);
         showCircularProgressBar(true);
 
         mAuth.signInWithEmailAndPassword(sEmail, sPassword).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -345,7 +385,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                     mPasswordEditText.getEditText().setText("");
                     signOut();
                 } else if (!task.isSuccessful()) {
-                    showCircularProgressBar(true);
+                    showCircularProgressBar(false);
                 }
             }
         });
@@ -354,14 +394,11 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     private void showCircularProgressBar(boolean visible) {
         LinearLayout progressBarHolder = findViewById(R.id.progress_bar_holder);
-        ProgressBar progressBar = findViewById(R.id.circular_progress_bar);
 
         if (visible) {
             progressBarHolder.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.VISIBLE);
         } else {
             progressBarHolder.setVisibility(View.GONE);
-            progressBar.setVisibility(View.GONE);
         }
     }
 

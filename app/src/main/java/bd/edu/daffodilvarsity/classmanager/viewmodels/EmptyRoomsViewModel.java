@@ -1,27 +1,36 @@
 package bd.edu.daffodilvarsity.classmanager.viewmodels;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
+import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
+import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetailsDao;
+import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetailsDatabase;
 
-public class EmptyRoomsViewModel extends ViewModel {
+public class EmptyRoomsViewModel extends AndroidViewModel {
 
     private MutableLiveData<ArrayList<String>> mEmptyRoomsLiveData = new MutableLiveData<>();
 
     private MutableLiveData<String> mToastMsg = new MutableLiveData<>();
 
-    public void loadEmptyClasses(String day,String time)    {
+    private RoutineClassDetailsDao allClassesDao;
+
+    public EmptyRoomsViewModel(@NonNull Application application) {
+        super(application);
+
+        RoutineClassDetailsDatabase db = RoutineClassDetailsDatabase.getInstance(application);
+        allClassesDao = db.routineClassDetailsDao();
+
+    }
+
+    /*public void loadEmptyClasses(String day,String time)    {
 
         final ArrayList<String> emptyRooms = new ArrayList<>();
 
@@ -42,6 +51,24 @@ public class EmptyRoomsViewModel extends ViewModel {
                 mToastMsg.setValue("Error loading data.Please check your internet connection.");
             }
         });
+    }*/
+
+    public void loadEmptyRooms(final String day, final String time)    {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                List<RoutineClassDetails> emptyRoomsClassDetails = allClassesDao.getEmptyRooms(day,time,"");
+                ArrayList<String> emptyRoomList =  new ArrayList<>();
+
+                for(RoutineClassDetails rcd : emptyRoomsClassDetails)   {
+                    emptyRoomList.add(rcd.getRoom());
+                }
+
+                mEmptyRoomsLiveData.postValue(emptyRoomList);
+
+            }
+        }).start();
     }
 
     public LiveData<ArrayList<String>> getEmptyClasses()  {

@@ -1,6 +1,8 @@
 package bd.edu.daffodilvarsity.classmanager.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -19,10 +22,14 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Transaction;
 import com.google.gson.Gson;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
@@ -100,7 +107,7 @@ public class CancelBookByAdmin extends AppCompatActivity implements View.OnClick
                 if(documentSnapshot.exists())   {
                     mProfile = documentSnapshot.toObject(ProfileObjectTeacher.class);
                     pullToRefresh.setRefreshing(false);
-                    loadData();
+                    loadDataToViews();
                 }
                 else {
                     pullToRefresh.setRefreshing(false);
@@ -115,7 +122,7 @@ public class CancelBookByAdmin extends AppCompatActivity implements View.OnClick
         });
     }
 
-    private void loadData() {
+    private void loadDataToViews() {
 
         reserveDate.setText(getFormattedDate(mSelectedClass.getReservationDate()));
 
@@ -150,7 +157,7 @@ public class CancelBookByAdmin extends AppCompatActivity implements View.OnClick
 
         description = findViewById(R.id.description);
 
-        sendPushMsgAndEmail = findViewById(R.id.send_push_msg);
+        sendPushMsgAndEmail = findViewById(R.id.send_email);
         sendPushMsgAndEmail.setOnClickListener(this);
 
         cancelBook = findViewById(R.id.cancel_book);
@@ -176,8 +183,8 @@ public class CancelBookByAdmin extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId())
         {
-            case R.id.send_push_msg:
-                sendPushMsgAndEmail();
+            case R.id.send_email:
+                sendEmail(new String[]{mSelectedClass.getTeacherEmail()});
                 break;
 
             case R.id.cancel_book:
@@ -186,8 +193,19 @@ public class CancelBookByAdmin extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void sendPushMsgAndEmail() {
+    private void sendEmail(String[] email) {
 
+        String subject = title.getText().toString();
+        String body = description.getText().toString();
+
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, email);
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, body);
+        if (intent.resolveActivity(this.getPackageManager()) != null) {
+            this.startActivity(intent);
+        }
     }
 
     private void cancelBook() {
@@ -204,9 +222,51 @@ public class CancelBookByAdmin extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                DocumentReference documentReference = FirebaseFirestore.getInstance().document("booked_classes/" + mSelectedClass.getDocId());
+                final DocumentReference bookCountRef = FirebaseFirestore.getInstance().document("book_room_count/"+mProfile.getEmail());
 
-                documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                final DocumentReference documentReference = FirebaseFirestore.getInstance().document("booked_classes/" + mSelectedClass.getDocId());
+
+                FirebaseFirestore.getInstance().runTransaction(new Transaction.Function<Object>() {
+                    @Nullable
+                    @Override
+                    public Object apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+
+                        DocumentSnapshot bookCount = transaction.get(bookCountRef);
+
+                        if(bookCount.exists())  {
+                            if(bookCount.getDouble("counter")>0)    {
+                                int count = (int) (bookCount.getDouble("counter")-1);
+                                transaction.update(bookCountRef,"counter",count);
+                            }
+                            else {
+                                transaction.delete(bookCountRef);
+                            }
+                        }   else    {
+                            Map<String,Integer> countMap = new HashMap<>();
+                            countMap.put("counter",0);
+                            transaction.set(bookCountRef,countMap);
+                        }
+
+                        transaction.delete(documentReference);
+
+                        return null;
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<Object>() {
+                    @Override
+                    public void onSuccess(Object o) {
+                        makeToast("Success");
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        makeToast("Failed!");
+                        makeToast(e.getMessage());
+                    }
+                });
+
+                /*documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         setResult(RESULT_OK);
@@ -217,7 +277,7 @@ public class CancelBookByAdmin extends AppCompatActivity implements View.OnClick
                     public void onFailure(@NonNull Exception e) {
                         makeToast("Failed to load. Please check your internet connection.");
                     }
-                });
+                });*/
             }
         });
 

@@ -59,9 +59,9 @@ public class AdminPanel extends Fragment {
         pagerAdapter.addFragment(new RoutineParser(),"Parse Routine");
         pagerAdapter.addFragment(new ParseTeacherProfiles(),"Parse Teacher Profiles");
         pagerAdapter.addFragment(new AddTeacherProfile(),"Add Teacher Profile");
-        pagerAdapter.addFragment(new TeacherProfileList(),"Teacher Profiles");
         pagerAdapter.addFragment(new SearchBookedClassesWithDate(),"Booked Classes (Date)");
         pagerAdapter.addFragment(new GiveTeacherClaim(),"Give Teacher Claim");
+        pagerAdapter.addFragment(new TeacherProfileList(),"Teacher Profiles");
 
         mViewPager.setAdapter(pagerAdapter);
     }

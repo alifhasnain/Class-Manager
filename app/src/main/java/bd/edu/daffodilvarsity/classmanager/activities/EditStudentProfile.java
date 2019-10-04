@@ -12,10 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -113,6 +111,12 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
     private void initializeReceivedData() {
@@ -237,7 +241,23 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
             return;
         }
 
-        DocumentReference docRef = db.document("/student_profiles/" + mAuth.getCurrentUser().getUid());
+        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
+
+        sharedPreferencesHelper.saveStudentProfileOffline(this,mUpdatedProfile);
+
+        sharedPreferencesHelper.saveCourseWithSharedPreference(
+                this,
+                mUpdatedProfile.getProgram(),
+                mUpdatedProfile.getShift(),
+                mUpdatedProfile.getLevel(),
+                mUpdatedProfile.getTerm(),
+                mUpdatedProfile.getSection()
+        );
+
+        makeToast("Saved");
+
+        /*DocumentReference docRef = db.document("/student_profiles/" + mAuth.getCurrentUser().getUid());
+
 
         docRef.set(mUpdatedProfile)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -245,7 +265,7 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             makeToast("Saved.");
-                            SharedPreferencesHelper.saveCourseWithSharedPreference(
+                            new SharedPreferencesHelper().saveCourseWithSharedPreference(
                                     getApplicationContext(),
                                     mUpdatedProfile.getProgram(),
                                     mUpdatedProfile.getShift(),
@@ -257,7 +277,7 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
                             makeToast("Failed to save.Please check your internet connection.");
                         }
                     }
-                });
+                });*/
 
     }
 

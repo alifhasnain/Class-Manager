@@ -23,12 +23,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Transaction;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.ArrayList;
 
@@ -156,7 +152,7 @@ public class BookedClasses extends Fragment {
                         .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                cancelBook(bcd);
+                                cancelBook(bcd.getDocId());
                             }
                         })
                         .setNegativeButton("Cancel",null).create();
@@ -168,7 +164,38 @@ public class BookedClasses extends Fragment {
 
     }
 
-    private void cancelBook(final BookedClassDetailsUser bcd) {
+    private void cancelBook(String docId)   {
+
+        if(docId != null)  {
+
+            String jsonString = "{" + "\"docId\"" + ":" + "\"" + docId + "\"}";
+
+            FirebaseFunctions.getInstance().getHttpsCallable("cancelBook")
+                    .call(jsonString)
+                    .addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
+                        @Override
+                        public void onSuccess(HttpsCallableResult httpsCallableResult) {
+                            try {
+                                makeToast(httpsCallableResult.getData().toString());
+                            }
+                            catch (Exception e) {
+                                Log.e("Error",e.getMessage());
+                            }
+
+                            loadBookedClasses();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            makeToast("Failed to load. Please try again.");
+                        }
+                    });
+
+        }
+    }
+
+    /*private void cancelBook(final BookedClassDetailsUser bcd) {
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.runTransaction(new Transaction.Function<Void>() {
             @Nullable
@@ -203,7 +230,7 @@ public class BookedClasses extends Fragment {
                 makeToast("Failed to cancel.");
             }
         });
-    }
+    }*/
 
     private void loadBookedClasses()    {
 

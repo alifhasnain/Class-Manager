@@ -25,7 +25,7 @@ public class HelperClass {
 
     public static final String TERM = "term";
 
-    public static final String ROUTINE_VERSION = "routine_version";
+    public static final String ROUTINE_VERSION_UPDATE = "routine_update";
 
     public static final String COURSES_HASH_MAP = "course_list";
 
@@ -37,12 +37,17 @@ public class HelperClass {
 
     public static final String USER_TYPE_ADMIN = "user_type_admin";
 
+    public static final String STUDENT_PROFILE = "student_offline_profile";
+
+    public static final String TEACHER_PROFILE = "teacher_offline_profile";
+
     public static final String TEACHER_INITIAL = "teacher_initial";
+
+    public static final String USER_EMAIL = "user_email";
 
     public static final int NOTIFICATION_ALARM_REQ_CODE = 1111;
 
-    public static final String SCHEDULER_ID = "work_scheduler_tag";
-
+    public static final String WORK_SCHEDULER_ID = "work_scheduler_tag";
 
 
     /*private Map<String,String> courcesBscDay;
@@ -454,7 +459,6 @@ public class HelperClass {
         daysOfWeek.add("Tuesday");
         daysOfWeek.add("Wednesday");
         daysOfWeek.add("Thursday");
-        daysOfWeek.add("Friday");
 
         return daysOfWeek;
     }

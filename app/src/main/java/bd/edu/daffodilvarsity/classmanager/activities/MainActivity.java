@@ -3,7 +3,6 @@ package bd.edu.daffodilvarsity.classmanager.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -16,18 +15,9 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.functions.FirebaseFunctions;
-import com.google.firebase.functions.HttpsCallableResult;
-import com.google.gson.Gson;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.fragments.AdminPanel;
@@ -35,23 +25,17 @@ import bd.edu.daffodilvarsity.classmanager.fragments.BookClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookedClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.CustomRoutineSearch;
 import bd.edu.daffodilvarsity.classmanager.fragments.EmptyRooms;
-import bd.edu.daffodilvarsity.classmanager.fragments.ExtraClassesStudent;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileStudents;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileTeacher;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 import bd.edu.daffodilvarsity.classmanager.routine.EachDayRoutineTabHolder;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "MainActivity";
-
     private long currentTimeInMillis;
 
     private SharedPreferencesHelper mSharedPreferencesHelper;
-
-    private FirebaseFunctions mFunctions = FirebaseFunctions.getInstance();
 
     private int checkedNavigationItem;
 
@@ -74,8 +58,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initializeVariables();
 
-        if (mAuth.getCurrentUser() != null && !isEmailVerified()) {
-            mAuth.signOut();
+        if (new SharedPreferencesHelper().getUserType(this) != HelperClass.USER_TYPE_STUDENT) {
+            if (mAuth.getCurrentUser() != null && !isEmailVerified()) {
+                mAuth.signOut();
+            }
         }
 
         setUpNavigationDrawer();
@@ -83,48 +69,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (savedInstanceState == null) {
             setUpHomeFragment();
         }
-
-        //testSaveTimestamp();
-
-    }
-
-    private void testSaveTimestamp() {
-
-        Calendar calendar = Calendar.getInstance();
-
-        GregorianCalendar gCalendar = new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-
-        Timestamp timestamp = new Timestamp(gCalendar.getTime());
-
-        BookedClassDetailsUser bookedClassDetailsUser = new BookedClassDetailsUser();
-
-        bookedClassDetailsUser.setRoomNo("115DT");
-        bookedClassDetailsUser.setTime("10.00AM-11.30AM");
-        bookedClassDetailsUser.setReservationDate(timestamp);
-        bookedClassDetailsUser.setProgram("B.Sc in CSE");
-        bookedClassDetailsUser.setShift("Day");
-        bookedClassDetailsUser.setSection("E");
-        bookedClassDetailsUser.setCourseCode("CSE313");
-        bookedClassDetailsUser.setPriority(1f);
-
-        Gson gson = new Gson();
-
-        String jsonData = gson.toJson(bookedClassDetailsUser);
-
-        makeToast(jsonData);
-
-        mFunctions.getHttpsCallable("test").call(jsonData)
-                .addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
-                    @Override
-                    public void onSuccess(HttpsCallableResult httpsCallableResult) {
-                        makeToast("Success");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                makeToast("Failed");
-            }
-        });
 
     }
 
@@ -144,7 +88,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthStateListener);
+
+        if (mAuthStateListener != null) {
+            mAuth.addAuthStateListener(mAuthStateListener);
+        }
 
         mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
@@ -182,7 +129,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         super.onPause();
-        mAuth.removeAuthStateListener(mAuthStateListener);
+        if (mAuthStateListener != null) {
+            mAuth.removeAuthStateListener(mAuthStateListener);
+        }
     }
 
     @Override
@@ -191,29 +140,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            if(System.currentTimeMillis() < (currentTimeInMillis+1500)) {
+            if (System.currentTimeMillis() < (currentTimeInMillis + 1500)) {
                 super.onBackPressed();
                 finish();
-            }
-            else {
+            } else {
                 currentTimeInMillis = System.currentTimeMillis();
                 makeToast("press back again to exit");
             }
         }
-
     }
 
     private void initializeVariables() {
+
         mAuth = FirebaseAuth.getInstance();
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (mAuth.getCurrentUser() == null) {
-                    startActivity(new Intent(MainActivity.this, SignIn.class));
-                    finish();
+
+        if (!new SharedPreferencesHelper().getUserType(this).equals(HelperClass.USER_TYPE_STUDENT)) {
+            mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    if (mAuth.getCurrentUser() == null && new SharedPreferencesHelper().getUserType(getApplicationContext()) != HelperClass.USER_TYPE_STUDENT) {
+                        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
+                        sharedPreferencesHelper.removeUserTypeFromSharedPref(getApplicationContext());
+                        sharedPreferencesHelper.removeTeacherProfileFromSharedPref(getApplicationContext());
+                        startActivity(new Intent(MainActivity.this, SignIn.class));
+                        finish();
+                    }
                 }
-            }
-        };
+            };
+        }
+
         mSharedPreferencesHelper = new SharedPreferencesHelper();
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_view);
@@ -290,11 +245,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mFragmentToLaunch = new CustomRoutineSearch();
                 enableToolbarScrolling(true);
                 break;
-            case R.id.extra_classes:
-                checkedNavigationItem = R.id.extra_classes;
-                enableToolbarScrolling(true);
-                mFragmentToLaunch = new ExtraClassesStudent();
-                break;
             case R.id.empty_rooms:
                 checkedNavigationItem = R.id.empty_rooms;
                 enableToolbarScrolling(true);
@@ -311,7 +261,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.report_bug:
                 String[] emails = new String[1];
                 emails[0] = "hasnain.alif20@gmail.com";
-                sendMail(emails,"Bug in Class Manager App","");
+                sendMail(emails, "Bug in Class Manager App", "");
+                break;
+            case R.id.about:
+                startActivity(new Intent(this,About.class));
                 break;
         }
 
@@ -329,19 +282,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void signOut() {
-        try {
-            mAuth.signOut();
-        } catch (Exception e) {
-            Log.e(TAG, "Error : ", e);
+
+        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
+
+        if (sharedPreferencesHelper.getUserType(this).equals(HelperClass.USER_TYPE_STUDENT)) {
+            sharedPreferencesHelper.removeStudentProfileFromSharedPref(this);
+            sharedPreferencesHelper.removeUserTypeFromSharedPref(this);
+            sharedPreferencesHelper.removeCoursesFromSharedPref(this);
+            startActivity(new Intent(this,SignIn.class));
+            finish();
+        } else {
+            try {
+                mAuth.signOut();
+            } catch (Exception e) {
+                //Log.e(TAG, "Error : ", e);
+            }
         }
     }
 
-    private void sendMail(String[] email,String subject,String body)    {
+    private void sendMail(String[] email, String subject, String body) {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:"));
-        intent.putExtra(Intent.EXTRA_EMAIL,email);
-        intent.putExtra(Intent.EXTRA_SUBJECT,subject);
-        intent.putExtra(Intent.EXTRA_TEXT,body);
+        intent.putExtra(Intent.EXTRA_EMAIL, email);
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, body);
         if (intent.resolveActivity(this.getPackageManager()) != null) {
             this.startActivity(intent);
         }

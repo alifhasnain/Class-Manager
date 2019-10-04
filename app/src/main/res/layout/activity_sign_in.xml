@@ -2,8 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".activities.SignIn">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -95,14 +95,32 @@
             android:layout_marginTop="15dp"
             android:layout_marginEnd="8dp"
             android:elevation="10dp"
-            android:text="Sign In"
+            android:text="Sign In As Teacher"
             android:textColor="@color/white"
-            android:textSize="23sp"
+            android:textSize="20sp"
             android:transitionName="sign_in_transition"
             app:backgroundTint="@color/colorTransparent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/forgot_pass"
+            app:rippleColor="@color/white"
+            app:strokeColor="@color/white"
+            app:strokeWidth="3dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sign_in_as_student"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:elevation="10dp"
+            android:text="Sign In As Student"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:backgroundTint="@color/colorTransparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sign_in"
             app:rippleColor="@color/white"
             app:strokeColor="@color/white"
             app:strokeWidth="3dp" />
@@ -165,18 +183,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/semi_transparent_black"
-        android:gravity="center"
-        android:visibility="gone"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:gravity="center"
+        android:visibility="gone">
+
         <ProgressBar
             android:id="@+id/circular_progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.ProgressBar"
-            android:indeterminateTint="@color/google_yellow"
             android:indeterminate="true"
-            android:visibility="gone"/>
+            android:indeterminateTint="@color/google_yellow" />
     </LinearLayout>
 
 </FrameLayout>

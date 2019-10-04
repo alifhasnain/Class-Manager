@@ -29,6 +29,10 @@ public class RoutineClassDetails {
 
     private boolean notificationEnabled;
 
+    public RoutineClassDetails() {
+
+    }
+
     public RoutineClassDetails(String room, String courseCode, String courseName, String teacherInitial, String time, String dayOfWeek, String shift, String section, float priority) {
         this.room = room;
         this.courseCode = courseCode;
@@ -91,5 +95,41 @@ public class RoutineClassDetails {
 
     public String getShift() {
         return shift;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public void setTeacherInitial(String teacherInitial) {
+        this.teacherInitial = teacherInitial;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public void setDayOfWeek(String dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+    }
+
+    public void setShift(String shift) {
+        this.shift = shift;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
+    }
+
+    public void setPriority(float priority) {
+        this.priority = priority;
     }
 }

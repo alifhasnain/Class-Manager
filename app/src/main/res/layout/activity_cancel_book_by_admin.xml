@@ -156,7 +156,7 @@
             <EditText
                 android:id="@+id/description"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
                 android:hint="Description"
                 android:layout_margin="8dp"
                 android:padding="5dp"
@@ -166,11 +166,11 @@
                 android:text="@string/email_description" />
 
             <Button
-                android:id="@+id/send_push_msg"
+                android:id="@+id/send_email"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Send notification and email"/>
+                android:text="Send Email"/>
 
             <Button
                 android:id="@+id/cancel_book"

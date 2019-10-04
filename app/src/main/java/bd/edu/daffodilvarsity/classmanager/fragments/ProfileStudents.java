@@ -4,6 +4,7 @@ package bd.edu.daffodilvarsity.classmanager.fragments;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -105,12 +106,32 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadProfileData();
+
+                loadProfileDataFromSharedPref();
+                loadCoursesAndSectionFromHashMap();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        pullToRefresh.setRefreshing(false);
+                    }
+                },700);
             }
         });
 
-        loadProfileData();
+        //loadProfileData();
+        loadProfileDataFromSharedPref();
         loadCoursesAndSectionFromHashMap();
+
+    }
+
+    private void loadProfileDataFromSharedPref() {
+
+        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
+
+        ProfileObjectStudent profile = sharedPreferencesHelper.getStudentOfflineProfile(getContext());
+
+        displayData(profile);
 
     }
 
@@ -133,6 +154,8 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
     }
 
     private void launchEditProfile() {
+
+        mUserProfile = new SharedPreferencesHelper().getStudentOfflineProfile(getContext());
         //Convert the profile object to JSON string
         if(mUserProfile!=null)  {
             Gson gson = new Gson();
@@ -278,9 +301,13 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
 
     }
 
-    private void showSectionAndCourseSelectDialog() {
+    private void addNewCourse() {
 
-        CourseAndSectionSelectorDialog dialog = new CourseAndSectionSelectorDialog(mSharedPrefHelper.getShiftFromSharedPreferences(getActivity()));
+        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
+
+        ProfileObjectStudent profile = sharedPreferencesHelper.getStudentOfflineProfile(getContext());
+
+        CourseAndSectionSelectorDialog dialog = new CourseAndSectionSelectorDialog(profile.getShift());
 
         dialog.setDialogItemSelectListener(new CourseAndSectionSelectorDialog.OnDialogItemSelectListener() {
             @Override
@@ -304,7 +331,7 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_course:
-                showSectionAndCourseSelectDialog();
+                addNewCourse();
                 break;
         }
     }
