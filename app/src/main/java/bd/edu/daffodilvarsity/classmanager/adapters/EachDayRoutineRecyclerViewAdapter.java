@@ -2,6 +2,7 @@ package bd.edu.daffodilvarsity.classmanager.adapters;
 
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import bd.edu.daffodilvarsity.classmanager.DiffUtilCallbacks.EachDayRoutineDiffCallback;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
 
@@ -22,13 +26,29 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
 
     private ArrayList<RoutineClassDetails> mClasses = new ArrayList<>();
 
-    public EachDayRoutineRecyclerViewAdapter(ArrayList<RoutineClassDetails> mClasses) {
-        this.mClasses = mClasses;
+    public EachDayRoutineRecyclerViewAdapter() {
         notificationChangeListener = null;
     }
 
     public void addNotificationChangeListener(NotificationChangeListener listener)  {
         notificationChangeListener = listener;
+    }
+
+    public void updateRecyclerViewAdapter(List<RoutineClassDetails> updatedList) {
+        EachDayRoutineDiffCallback diffCallback = new EachDayRoutineDiffCallback(mClasses,updatedList);
+        Log.e("ERROR",mClasses.size() + "");
+        Log.e("ERROR",updatedList.size() + "");
+        for(RoutineClassDetails rcd : mClasses) {
+            Log.e("ERROR",Boolean.toString(rcd.isNotificationEnabled()));
+        }
+        for(RoutineClassDetails rcd : updatedList) {
+            Log.e("ERROR",Boolean.toString(rcd.isNotificationEnabled()));
+        }
+        DiffUtil.DiffResult result = DiffUtil.calculateDiff(diffCallback);
+        result.dispatchUpdatesTo(this);
+
+        mClasses.clear();
+        mClasses.addAll(updatedList);
     }
 
     @NonNull

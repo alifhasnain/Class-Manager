@@ -1,5 +1,6 @@
 package bd.edu.daffodilvarsity.classmanager.routine;
 
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -31,6 +32,20 @@ public class RoutineClassDetails {
 
     public RoutineClassDetails() {
 
+    }
+
+    public RoutineClassDetails(int id, String room, String courseCode, String courseName, String teacherInitial, String time, String dayOfWeek, String shift, String section, float priority, boolean notificationEnabled) {
+        this.id = id;
+        this.room = room;
+        this.courseCode = courseCode;
+        this.courseName = courseName;
+        this.teacherInitial = teacherInitial;
+        this.time = time;
+        this.dayOfWeek = dayOfWeek;
+        this.shift = shift;
+        this.section = section;
+        this.priority = priority;
+        this.notificationEnabled = notificationEnabled;
     }
 
     public RoutineClassDetails(String room, String courseCode, String courseName, String teacherInitial, String time, String dayOfWeek, String shift, String section, float priority) {
@@ -132,4 +147,16 @@ public class RoutineClassDetails {
     public void setPriority(float priority) {
         this.priority = priority;
     }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(!(obj instanceof RoutineClassDetails))   {
+            return false;
+        }
+        RoutineClassDetails compareObj = (RoutineClassDetails) obj;
+        //Log.e("ERROR", this.notificationEnabled + " AND " + compareObj.isNotificationEnabled());
+        return (this.id == compareObj.getId() && this.room.equals(compareObj.getRoom()) && this.courseCode.equals(compareObj.getCourseCode()) && this.courseName.equals(compareObj.getCourseName()) && this.teacherInitial.equals(compareObj.getTeacherInitial()) && this.time.equals(compareObj.getTime()) && this.shift.equals(compareObj.getShift()) && this.dayOfWeek.equals(compareObj.getDayOfWeek()) && this.section.equals(compareObj.getSection()) && this.priority == compareObj.getPriority() && this.notificationEnabled == compareObj.isNotificationEnabled());
+    }
+
+
 }

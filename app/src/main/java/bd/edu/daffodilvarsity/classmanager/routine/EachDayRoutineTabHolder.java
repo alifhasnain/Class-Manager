@@ -55,7 +55,7 @@ public class EachDayRoutineTabHolder extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mView = inflater.inflate(R.layout.fragment_classes, container, false);
+        mView = inflater.inflate(R.layout.fragment_routine_tab_holder, container, false);
         setHasOptionsMenu(true);
 
         initializeVariables();
@@ -203,7 +203,7 @@ public class EachDayRoutineTabHolder extends Fragment {
 
         mViewPager.setAdapter(eachDayRoutinePagerAdapter);
 
-        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setOffscreenPageLimit(3);
 
     }
 

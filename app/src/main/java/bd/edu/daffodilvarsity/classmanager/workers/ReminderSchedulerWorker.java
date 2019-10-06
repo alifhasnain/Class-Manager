@@ -83,7 +83,7 @@ public class ReminderSchedulerWorker extends Worker {
             //If time is greater than 4 hour then cancel alarm
             cancelAlarm();
         } else if ((minTime - System.currentTimeMillis()) > 900000) {
-            //If current remaining time is greater than
+            //If current remaining time is greater than 15 min
             scheduleAlarm(notification.getTitle(), notification.getDescription(), (minTime - 899000));
         }
 

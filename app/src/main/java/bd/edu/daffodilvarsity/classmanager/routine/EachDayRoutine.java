@@ -17,14 +17,10 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.EachDayRoutineRecyclerViewAdapter;
@@ -32,22 +28,17 @@ import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
-import bd.edu.daffodilvarsity.classmanager.workers.ReminderSchedulerWorker;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class EachDayRoutine extends Fragment {
 
-    private WorkManager workManager;
-
     private EachDayClassViewModel mViewModel;
 
     private SharedPreferencesHelper mSharedPrefHelper;
 
     private String mDayOfWeek;
-
-    private ArrayList<RoutineClassDetails> mClasses = new ArrayList<>();
 
     private TextView loadingContent;
 
@@ -132,9 +123,7 @@ public class EachDayRoutine extends Fragment {
         mViewModel.getClasses().observe(getViewLifecycleOwner(), new Observer<List<RoutineClassDetails>>() {
             @Override
             public void onChanged(List<RoutineClassDetails> routineClassDetails) {
-                mClasses.clear();
-                mClasses.addAll(routineClassDetails);
-                notifyRecyclerViewAdapter();
+                notifyRecyclerViewAdapter(routineClassDetails);
                 if (mAdapter.getItemCount() == 0) {
                     mNoClasses.setVisibility(View.VISIBLE);
                 }
@@ -146,7 +135,6 @@ public class EachDayRoutine extends Fragment {
     }
 
     private void initializeVariables(View view) {
-        workManager = WorkManager.getInstance(getContext());
         mDayOfWeek = getArguments().getString("dayOfWeek");
         progressBar = view.findViewById(R.id.progress_bar);
         loadingContent = view.findViewById(R.id.loading_content);
@@ -160,9 +148,6 @@ public class EachDayRoutine extends Fragment {
     }
 
     private void loadTeacherRoutine() {
-
-        mClasses.clear();
-        notifyRecyclerViewAdapter();
 
         ProfileObjectTeacher profile = mSharedPrefHelper.getTeacherOfflineProfile(getContext());
         mViewModel.loadClassesTeacher(profile.getTeacherInitial(), mDayOfWeek);
@@ -194,30 +179,39 @@ public class EachDayRoutine extends Fragment {
 
     private void initializeRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new EachDayRoutineRecyclerViewAdapter(mClasses);
+        mAdapter = new EachDayRoutineRecyclerViewAdapter();
         mAdapter.addNotificationChangeListener(new EachDayRoutineRecyclerViewAdapter.NotificationChangeListener() {
             @Override
             public void onNotificationChanges(RoutineClassDetails routineClassDetails) {
-                if (routineClassDetails.isNotificationEnabled()) {
-                    routineClassDetails.setNotificationEnabled(false);
+                RoutineClassDetails modified = new RoutineClassDetails(
+                        routineClassDetails.getId(),
+                        routineClassDetails.getRoom(),
+                        routineClassDetails.getCourseCode(),
+                        routineClassDetails.getCourseName(),
+                        routineClassDetails.getTeacherInitial(),
+                        routineClassDetails.getTime(),
+                        routineClassDetails.getDayOfWeek(),
+                        routineClassDetails.getShift(),
+                        routineClassDetails.getSection(),
+                        routineClassDetails.getPriority(),
+                        routineClassDetails.isNotificationEnabled()
+                );
+                if (modified.isNotificationEnabled()) {
+                    modified.setNotificationEnabled(false);
                 } else {
-                    routineClassDetails.setNotificationEnabled(true);
+                    modified.setNotificationEnabled(true);
                 }
-                mViewModel.setNotificationEnabled(routineClassDetails);
 
-                PeriodicWorkRequest reminderScheduler = new PeriodicWorkRequest
-                        .Builder(ReminderSchedulerWorker.class, 55, TimeUnit.MINUTES)
-                        .build();
+                mViewModel.setNotificationEnabled(modified);
 
-                workManager.enqueueUniquePeriodicWork(HelperClass.WORK_SCHEDULER_ID, ExistingPeriodicWorkPolicy.REPLACE, reminderScheduler);
             }
         });
         recyclerView.setAdapter(mAdapter);
     }
 
-    private void notifyRecyclerViewAdapter() {
+    private void notifyRecyclerViewAdapter(List<RoutineClassDetails> updatedList) {
         if (mAdapter != null) {
-            mAdapter.notifyDataSetChanged();
+            mAdapter.updateRecyclerViewAdapter(updatedList);
             recyclerView.scheduleLayoutAnimation();
         }
     }

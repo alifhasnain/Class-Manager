@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -55,11 +57,16 @@ public class About extends AppCompatActivity implements View.OnClickListener {
                             if (!version.equals(sharedPrefHelper.getRoutineVersionFromSharedPreferences(getApplicationContext()))) {
                                 makeToast("Downloading new updated routine.");
                                 mViewModel.loadWholeRoutineFromServer(version);
-                            }
-                            else {
+                            } else {
                                 makeToast("Already using the latest version.");
                             }
                         }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        makeToast("Failed!Please check your internet connection.");
                     }
                 });
     }
