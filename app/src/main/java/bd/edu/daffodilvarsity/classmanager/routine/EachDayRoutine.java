@@ -46,6 +46,8 @@ public class EachDayRoutine extends Fragment {
 
     private RecyclerView recyclerView;
 
+    private boolean animateRecyclerView = false;
+
     private EachDayRoutineRecyclerViewAdapter mAdapter;
 
     private SwipeRefreshLayout mPullToRefresh;
@@ -79,6 +81,7 @@ public class EachDayRoutine extends Fragment {
             @Override
             public void onRefresh() {
                 mNoClasses.setVisibility(View.GONE);
+                animateRecyclerView = true;
                 if (mUserType.equals(HelperClass.USER_TYPE_STUDENT)) {
                     showProgressbar(true);
                     loadStudentRoutine();
@@ -130,6 +133,7 @@ public class EachDayRoutine extends Fragment {
                 else {
                     mNoClasses.setVisibility(View.GONE);
                 }
+                animateRecyclerView = false;
             }
         });
     }
@@ -212,7 +216,9 @@ public class EachDayRoutine extends Fragment {
     private void notifyRecyclerViewAdapter(List<RoutineClassDetails> updatedList) {
         if (mAdapter != null) {
             mAdapter.updateRecyclerViewAdapter(updatedList);
-            recyclerView.scheduleLayoutAnimation();
+            if(animateRecyclerView) {
+                recyclerView.scheduleLayoutAnimation();
+            }
         }
     }
 

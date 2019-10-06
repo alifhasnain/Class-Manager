@@ -2,10 +2,11 @@ package bd.edu.daffodilvarsity.classmanager.adapters;
 
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,16 +36,11 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
     }
 
     public void updateRecyclerViewAdapter(List<RoutineClassDetails> updatedList) {
+
         EachDayRoutineDiffCallback diffCallback = new EachDayRoutineDiffCallback(mClasses,updatedList);
-        Log.e("ERROR",mClasses.size() + "");
-        Log.e("ERROR",updatedList.size() + "");
-        for(RoutineClassDetails rcd : mClasses) {
-            Log.e("ERROR",Boolean.toString(rcd.isNotificationEnabled()));
-        }
-        for(RoutineClassDetails rcd : updatedList) {
-            Log.e("ERROR",Boolean.toString(rcd.isNotificationEnabled()));
-        }
+
         DiffUtil.DiffResult result = DiffUtil.calculateDiff(diffCallback);
+
         result.dispatchUpdatesTo(this);
 
         mClasses.clear();
@@ -61,7 +57,7 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
 
         try {
             holder.courseName.setText(mClasses.get(position).getCourseName());
@@ -85,6 +81,8 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
                 public void onClick(View view) {
                     if(notificationChangeListener!=null)    {
                         notificationChangeListener.onNotificationChanges(mClasses.get(position));
+                        Animation pulse = AnimationUtils.loadAnimation(holder.notification.getContext(),R.anim.pulse_anim);
+                        holder.notification.startAnimation(pulse);
                     }
                 }
             });
