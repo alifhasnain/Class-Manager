@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initializeVariables();
 
-        if (new SharedPreferencesHelper().getUserType(this) != HelperClass.USER_TYPE_STUDENT) {
+        if (!new SharedPreferencesHelper().getUserType(this).equals(HelperClass.USER_TYPE_STUDENT)) {
             if (mAuth.getCurrentUser() != null && !isEmailVerified()) {
                 mAuth.signOut();
             }

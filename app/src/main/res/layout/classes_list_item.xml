@@ -27,7 +27,6 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
             android:layout_weight="1.5"
-            android:background="@color/google_red"
             android:src="@drawable/ic_alarm_off_white"
             android:clickable="true"
             android:focusable="true"

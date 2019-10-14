@@ -118,7 +118,7 @@ public class EachDayRoutineTabHolder extends Fragment {
 
                             String version = documentSnapshot.get("version").toString();
 
-                            if (mSharedPrefHelper.getRoutineVersionFromSharedPreferences(getContext()) == null || !version.equals(mSharedPrefHelper.getRoutineVersionFromSharedPreferences(getActivity()))) {
+                            if (mSharedPrefHelper.getRoutineVersionFromSharedPreferences(getContext()).equals("00000000") || !version.equals(mSharedPrefHelper.getRoutineVersionFromSharedPreferences(getActivity()))) {
                                 makeToast("Downloading new updated routine.");
                                 forceRefreshWholeRoutine(version);
                             }
