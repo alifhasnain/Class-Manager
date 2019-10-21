@@ -60,7 +60,7 @@ public class SharedPreferencesHelper {
 
             return sharedPreferences.getString(HelperClass.ROUTINE_VERSION_UPDATE, "00000000");
         } else {
-            return "00000000";
+            return "00000";
         }
     }
 
@@ -226,6 +226,11 @@ public class SharedPreferencesHelper {
             ProfileObjectTeacher prfile = gson.fromJson(teacherProfileJson,type);
             return prfile;
         }
+    }
+
+    private void removeTeacherOfflineProfile(Context context)  {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
+        sharedPreferences.edit().remove(HelperClass.TEACHER_PROFILE).apply();
     }
 
     public void saveTeacherProfileToSharedPref(Context context , ProfileObjectTeacher profile)    {

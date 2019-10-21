@@ -154,9 +154,12 @@ public class EachDayRoutine extends Fragment {
     private void loadTeacherRoutine() {
 
         ProfileObjectTeacher profile = mSharedPrefHelper.getTeacherOfflineProfile(getContext());
-        mViewModel.loadClassesTeacher(profile.getTeacherInitial(), mDayOfWeek);
-        initializeViewModelObserver();
-        showProgressbar(false);
+
+        if(profile!=null)   {
+            mViewModel.loadClassesTeacher(profile.getTeacherInitial(), mDayOfWeek);
+            initializeViewModelObserver();
+            showProgressbar(false);
+        }
 
     }
 

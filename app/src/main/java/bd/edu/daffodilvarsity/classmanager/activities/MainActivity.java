@@ -289,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             sharedPreferencesHelper.removeStudentProfileFromSharedPref(this);
             sharedPreferencesHelper.removeUserTypeFromSharedPref(this);
             sharedPreferencesHelper.removeCoursesFromSharedPref(this);
+            sharedPreferencesHelper.removeTeacherProfileFromSharedPref(this);
             startActivity(new Intent(this,SignIn.class));
             finish();
         } else {

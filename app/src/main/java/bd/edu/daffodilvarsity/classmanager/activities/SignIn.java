@@ -108,12 +108,16 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                     mAuth.getCurrentUser().getIdToken(false).addOnSuccessListener(new OnSuccessListener<GetTokenResult>() {
                         @Override
                         public void onSuccess(GetTokenResult result) {
+
                             if (result.getClaims().get("admin") != null) {
                                 signInAsAdminOrTeacher(HelperClass.USER_TYPE_ADMIN);
                                 showCircularProgressBar(false);
                             } else if (result.getClaims().get("teacher") != null) {
                                 showCircularProgressBar(false);
                                 signInAsAdminOrTeacher(HelperClass.USER_TYPE_TEACHER);
+                            } else if(result.getClaims().get("student") != null)    {
+                                showCircularProgressBar(false);
+                                makeToast("Only teachers can sign in.\nIf you are a teacher but your data doesn't exist please contact to the department.");
                             }
 
                         }
@@ -247,6 +251,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         final SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
 
         if(sharedPreferencesHelper.getTeacherOfflineProfile(this)==null)    {
+            Log.e("ERROR","Offline Profile Not Null");
             DocumentReference profile = FirebaseFirestore.getInstance().document("teacher_profiles/"+mAuth.getCurrentUser().getEmail());
             profile.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
@@ -259,6 +264,10 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                         sharedPreferencesHelper.saveTeacherProfileToSharedPref(getApplicationContext(),profile);
                         launchMainActivity(userType);
 
+                    }   else {
+                        makeToast("Profile doesn't exist in teacher list.\nContact admin.");
+                        showCircularProgressBar(false);
+                        launchMainActivity(userType);
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -269,6 +278,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                 }
             });
         }   else    {
+            Log.e("ERROR","Offline Profile Null");
             showCircularProgressBar(false);
             launchMainActivity(userType);
         }

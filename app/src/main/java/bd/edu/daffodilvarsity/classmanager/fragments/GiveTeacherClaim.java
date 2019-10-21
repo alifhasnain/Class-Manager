@@ -70,7 +70,11 @@ public class GiveTeacherClaim extends Fragment implements View.OnClickListener {
 
         String emailStr = email.getEditText().getText().toString();
 
-        mFunctions.getHttpsCallable("addTeacher").call(emailStr).addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
+        String jsonEmail = "{\"email\" : " + "\"" + emailStr + "\"" + "}";
+
+        makeToast("Processing...");
+
+        mFunctions.getHttpsCallable("addTeacher").call(jsonEmail).addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
             @Override
             public void onSuccess(HttpsCallableResult httpsCallableResult) {
                 makeToast("Success.");
