@@ -31,13 +31,13 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
         notificationChangeListener = null;
     }
 
-    public void addNotificationChangeListener(NotificationChangeListener listener)  {
+    public void addNotificationChangeListener(NotificationChangeListener listener) {
         notificationChangeListener = listener;
     }
 
     public void updateRecyclerViewAdapter(List<RoutineClassDetails> updatedList) {
 
-        EachDayRoutineDiffCallback diffCallback = new EachDayRoutineDiffCallback(mClasses,updatedList);
+        EachDayRoutineDiffCallback diffCallback = new EachDayRoutineDiffCallback(mClasses, updatedList);
 
         DiffUtil.DiffResult result = DiffUtil.calculateDiff(diffCallback);
 
@@ -51,7 +51,7 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.classes_list_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.classes_list_item, parent, false);
 
         return new ViewHolder(view);
     }
@@ -67,21 +67,22 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
             holder.section.setText(mClasses.get(position).getSection());
             holder.roomNo.setText(mClasses.get(position).getRoom());
 
-            if(mClasses.get(position).isNotificationEnabled())    {
-                holder.notification.setBackgroundColor(Color.parseColor("#4885ed"));
+            if (mClasses.get(position).isNotificationEnabled()) {
+                holder.notification.setBackgroundColor(getRandomColor(position));
                 holder.notification.setImageResource(R.drawable.ic_alarm_on_white);
-            }
-            else    {
-                holder.notification.setBackgroundColor(Color.parseColor("#DB3236"));
-                holder.notification.setImageResource(R.drawable.ic_alarm_off_white);
+                holder.divider.setVisibility(View.INVISIBLE);
+            } else {
+                holder.notification.setBackgroundColor(Color.parseColor("#00000000"));
+                holder.notification.setImageResource(R.drawable.ic_alarm_off_black);
+                holder.divider.setVisibility(View.VISIBLE);
             }
 
             holder.notification.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(notificationChangeListener!=null)    {
+                    if (notificationChangeListener != null) {
                         notificationChangeListener.onNotificationChanges(mClasses.get(position));
-                        Animation pulse = AnimationUtils.loadAnimation(holder.notification.getContext(),R.anim.pulse_anim);
+                        Animation pulse = AnimationUtils.loadAnimation(holder.notification.getContext(), R.anim.pulse_anim);
                         holder.notification.startAnimation(pulse);
                     }
                 }
@@ -89,8 +90,7 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
 
         } catch (NullPointerException e) {
             e.printStackTrace();
-        }
-        catch (Resources.NotFoundException e)  {
+        } catch (Resources.NotFoundException e) {
             e.printStackTrace();
         }
 
@@ -99,6 +99,30 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
     @Override
     public int getItemCount() {
         return mClasses.size();
+    }
+
+    private int getRandomColor(int position) {
+
+        switch (position)
+        {
+            case 0:
+            case 5:
+                return Color.parseColor("#00BCD4");
+            case 1:
+            case 6:
+                return Color.parseColor("#FF9800");
+            case 2:
+            case 7:
+                return Color.parseColor("#AB47BC");
+            case 3:
+            case 8:
+            return Color.parseColor("#7E57C2");
+            case 4:
+            case 9:
+                return Color.parseColor("#29B6F6");
+            default:
+                return Color.parseColor("#7E57C2");
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -110,6 +134,7 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
         TextView section;
         TextView roomNo;
         ImageView notification;
+        View divider;
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -120,6 +145,7 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
             section = itemView.findViewById(R.id.section);
             roomNo = itemView.findViewById(R.id.room_no);
             notification = itemView.findViewById(R.id.notification);
+            divider = itemView.findViewById(R.id.divider);
         }
     }
 

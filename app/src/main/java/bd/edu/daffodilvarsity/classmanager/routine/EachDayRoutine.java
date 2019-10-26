@@ -21,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.EachDayRoutineRecyclerViewAdapter;
@@ -46,7 +47,7 @@ public class EachDayRoutine extends Fragment {
 
     private RecyclerView recyclerView;
 
-    private boolean animateRecyclerView = false;
+    private AtomicBoolean animateRecyclerView = new AtomicBoolean(false);
 
     private EachDayRoutineRecyclerViewAdapter mAdapter;
 
@@ -81,7 +82,7 @@ public class EachDayRoutine extends Fragment {
             @Override
             public void onRefresh() {
                 mNoClasses.setVisibility(View.GONE);
-                animateRecyclerView = true;
+                animateRecyclerView.set(true);
                 if (mUserType.equals(HelperClass.USER_TYPE_STUDENT)) {
                     showProgressbar(true);
                     loadStudentRoutine();
@@ -94,7 +95,7 @@ public class EachDayRoutine extends Fragment {
                     public void run() {
                         mPullToRefresh.setRefreshing(false);
                     }
-                }, 800);
+                }, 500);
             }
         });
     }
@@ -133,7 +134,6 @@ public class EachDayRoutine extends Fragment {
                 else {
                     mNoClasses.setVisibility(View.GONE);
                 }
-                animateRecyclerView = false;
             }
         });
     }
@@ -219,7 +219,7 @@ public class EachDayRoutine extends Fragment {
     private void notifyRecyclerViewAdapter(List<RoutineClassDetails> updatedList) {
         if (mAdapter != null) {
             mAdapter.updateRecyclerViewAdapter(updatedList);
-            if(animateRecyclerView) {
+            if(animateRecyclerView.compareAndSet(true,false)) {
                 recyclerView.scheduleLayoutAnimation();
             }
         }
