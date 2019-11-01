@@ -251,8 +251,9 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         final SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
 
         if(sharedPreferencesHelper.getTeacherOfflineProfile(this)==null)    {
-            Log.e("ERROR","Offline Profile Not Null");
+
             DocumentReference profile = FirebaseFirestore.getInstance().document("teacher_profiles/"+mAuth.getCurrentUser().getEmail());
+
             profile.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {

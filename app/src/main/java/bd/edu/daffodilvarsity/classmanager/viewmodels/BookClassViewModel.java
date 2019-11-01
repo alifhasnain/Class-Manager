@@ -1,9 +1,11 @@
 package bd.edu.daffodilvarsity.classmanager.viewmodels;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,15 +24,33 @@ import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
+import bd.edu.daffodilvarsity.classmanager.routine.EachDayClassRepository;
 
-public class BookClassViewModel extends ViewModel {
+public class BookClassViewModel extends AndroidViewModel {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    private EachDayClassRepository dataRepo;
 
     private MutableLiveData<ArrayList<ClassDetails>> finalRoomList = new MutableLiveData<>();
 
     private MutableLiveData<String> toastText = new MutableLiveData<>();
 
+    private MutableLiveData<List<String>> coursesListTeacher = new MutableLiveData<>();
+
+    public BookClassViewModel(@NonNull Application application) {
+        super(application);
+        dataRepo = new EachDayClassRepository(application);
+    }
+
+    public void loadTeacherCourses(final String initial)   {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                coursesListTeacher.postValue(dataRepo.loadTeacherCourses(initial));
+            }
+        }).start();
+    }
 
     public void loadData(String dayOfWeek, Calendar calendar,String time)  {
 
@@ -105,6 +125,10 @@ public class BookClassViewModel extends ViewModel {
 
     public LiveData<ArrayList<ClassDetails>> getData()  {
         return finalRoomList;
+    }
+
+    public LiveData<List<String>> getTeacherCourses()   {
+        return coursesListTeacher;
     }
 
     public LiveData<String> showToast() {

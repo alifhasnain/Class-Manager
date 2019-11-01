@@ -330,6 +330,10 @@ public class EachDayClassRepository {
         return allClassesDao.getTodaysClassesTeacher(initial,getDayOfWeek());
     }
 
+    public List<String> loadTeacherCourses(String initial)  {
+        return allClassesDao.getCoursesWithInitial(initial);
+    }
+
     private String getDayOfWeek()  {
 
         Calendar calendar = Calendar.getInstance();

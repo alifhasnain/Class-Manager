@@ -39,6 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.AvailableClassesRecyclerViewAdapter;
@@ -48,6 +49,7 @@ import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 import bd.edu.daffodilvarsity.classmanager.viewmodels.BookClassViewModel;
 
 /**
@@ -56,6 +58,10 @@ import bd.edu.daffodilvarsity.classmanager.viewmodels.BookClassViewModel;
 public class BookClasses extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
     private static final String TAG = "BookClasses";
+
+    private SharedPreferencesHelper sharedPrefHelper;
+
+    private List<String> teacherCourses = new ArrayList<>();
 
     private BookClassViewModel mViewModel;
 
@@ -107,11 +113,29 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
         return view;
     }
 
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         mViewModel = ViewModelProviders.of(this).get(BookClassViewModel.class);
+
+        ProfileObjectTeacher teacherProfile = sharedPrefHelper.getTeacherOfflineProfile(getActivity());
+
+        if(teacherProfile!=null)    {
+            mViewModel.loadTeacherCourses(teacherProfile.getTeacherInitial());
+        }   else    {
+            makeToast("Loading profile from database.");
+        }
+
+
+        mViewModel.getTeacherCourses().observe(getViewLifecycleOwner(), new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> strings) {
+                teacherCourses.clear();
+                teacherCourses.addAll(strings);
+            }
+        });
 
         mViewModel.getData().observe(getViewLifecycleOwner(), new Observer<ArrayList<ClassDetails>>() {
             @Override
@@ -139,6 +163,9 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
     @Override
     public void onStart() {
         super.onStart();
+
+        updateTeacherProfileFromServer();
+
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -148,6 +175,8 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
     }
 
     private void initializeVariablesAndOnClickListeners(View view) {
+
+        sharedPrefHelper = new SharedPreferencesHelper();
 
         mTimeSpinner = view.findViewById(R.id.time);
         mSearchBtn = view.findViewById(R.id.search);
@@ -165,6 +194,25 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
         view.findViewById(R.id.pick_date).setOnClickListener(this);
 
         mPickedTimeText = view.findViewById(R.id.date_text);
+
+    }
+
+    private void updateTeacherProfileFromServer()   {
+
+        DocumentReference profile = FirebaseFirestore.getInstance().document("teacher_profiles/"+FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
+        profile.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.exists())   {
+                    ProfileObjectTeacher profile = documentSnapshot.toObject(ProfileObjectTeacher.class);
+                    sharedPrefHelper.saveTeacherProfileToSharedPref(getActivity(),profile);
+
+                }   else {
+                    makeToast("Profile doesn't exist in teacher list.\nContact admin.");
+                }
+            }
+        });
 
     }
 
@@ -201,14 +249,16 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
                 ClassDetails selectedClass = mEmptyClasses.get(position);
 
-                loadTeacherProfileThenFinishBook(selectedClass);
+                String teacherInitial = sharedPrefHelper.getTeacherOfflineProfile(getContext()).getTeacherInitial();
+
+                finishBooking(selectedClass,teacherInitial);
 
             }
         });
 
     }
 
-    private void loadTeacherProfileThenFinishBook(final ClassDetails selectedClass) {
+    /*private void checkIfProfileExistThenFinishBook(final ClassDetails selectedClass) {
 
         String mail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
@@ -218,7 +268,8 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if(documentSnapshot.exists())   {
-                    finishBooking(selectedClass,documentSnapshot.toObject(ProfileObjectTeacher.class));
+                    sharedPrefHelper.saveTeacherProfileToSharedPref(getActivity(),documentSnapshot.toObject(ProfileObjectTeacher.class));
+                    finishBooking(selectedClass,sharedPrefHelper.getTeacherInitialFromSharedPref(getContext()));
                 }
                 else {
                     makeToast("Your document doesn't exist in database.Please contact admin.");
@@ -230,22 +281,22 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
                 makeToast("Failed to load data. Please check your internet connection.");
             }
         });
-    }
+    }*/
 
-    private void finishBooking(ClassDetails selectedClass, ProfileObjectTeacher profile) {
+    private void finishBooking(ClassDetails selectedClass, String initial) {
 
         final BookedClassDetailsServer bcdServer = new BookedClassDetailsServer();
 
         bcdServer.setRoomNo(selectedClass.getRoom());
         bcdServer.setTime(selectedClass.getTime());
-        bcdServer.setTeacherInitial(profile.getTeacherInitial());
+        bcdServer.setTeacherInitial(initial);
         int year = mFinalDate.get(Calendar.YEAR);
         int month = mFinalDate.get(Calendar.MONTH);
         int dayOfMonth = mFinalDate.get(Calendar.DAY_OF_MONTH);
         bcdServer.setReservationDate(new int[]{year, month, dayOfMonth});
         bcdServer.setPriority(selectedClass.getPriority());
 
-        BookClassDialog bookClassDialog = new BookClassDialog(mDateFormater.format(mFinalDate.getTime()),bcdServer.getRoomNo(),bcdServer.getTime());
+        BookClassDialog bookClassDialog = new BookClassDialog(mDateFormater.format(mFinalDate.getTime()),bcdServer.getRoomNo(),bcdServer.getTime(),teacherCourses);
 
         bookClassDialog.show(getChildFragmentManager(),"custom_dialog");
 

@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -16,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
@@ -42,6 +42,8 @@ public class BookClassDialog extends AppCompatDialogFragment {
 
     private Spinner courseSelector;
 
+    private List<String> teacherCourses;
+
     private String[] courseDay;
 
     private String[] coursesEveningBsc;
@@ -50,10 +52,11 @@ public class BookClassDialog extends AppCompatDialogFragment {
 
     private CustomDialogListener listener;
 
-    public BookClassDialog(String date, String room, String time) {
+    public BookClassDialog(String date, String room, String time , List<String> teacherCourses) {
         dateStr = date;
         roomNoStr = room;
         timeStr = time;
+        this.teacherCourses = teacherCourses;
         listener = null;
     }
 
@@ -96,15 +99,38 @@ public class BookClassDialog extends AppCompatDialogFragment {
         return builder.create();
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    private void initializeVariables(View view) {
+
+        date = view.findViewById(R.id.date);
+
+        time = view.findViewById(R.id.time);
+
+        roomNo = view.findViewById(R.id.room_no);
+
+        programSelector = view.findViewById(R.id.program);
+
+        shiftSelector = view.findViewById(R.id.shift);
+
+        sectionSelector = view.findViewById(R.id.section);
+
+        courseSelector = view.findViewById(R.id.course_code);
+
+    }
+
     private void initCourseArray() {
 
-        ArrayList<String> courseDayList = new ArrayList<>(HelperClass.getCoursesDay().keySet());
+        //ArrayList<String> courseDayList = new ArrayList<>(HelperClass.getCoursesDay().keySet());
 
-        courseDay = courseDayList.toArray(new String[courseDayList.size()]);
+        courseDay = teacherCourses.toArray(new String[teacherCourses.size()]);
 
-        ArrayList<String> courseEveBscList = new ArrayList<>(HelperClass.getCoursesEveningBsc().keySet());
+        /*ArrayList<String> courseEveBscList = new ArrayList<>(HelperClass.getCoursesEveningBsc().keySet());
 
-        coursesEveningBsc = courseEveBscList.toArray(new String[courseEveBscList.size()]);
+        coursesEveningBsc = courseEveBscList.toArray(new String[courseEveBscList.size()]);*/
 
         ArrayList<String> courseEveMscList = new ArrayList<>(HelperClass.getCoursesEveningMsc().keySet());
 
@@ -114,42 +140,32 @@ public class BookClassDialog extends AppCompatDialogFragment {
 
     private void initializeSpinners() {
 
-
         String[] programs = new String[]{"B.Sc. in CSE"};
-
         ArrayAdapter<String> programSelectorAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_items, programs);
-
         programSelectorAdapter.setDropDownViewResource(R.layout.spinner_dropdown_items);
-
         programSelector.setAdapter(programSelectorAdapter);
 
 
         String[] shifts = new String[]{"Day", "Evening"};
-
         final ArrayAdapter<String> shiftSelectorAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_items, shifts);
-
         shiftSelectorAdapter.setDropDownViewResource(R.layout.spinner_dropdown_items);
-
         shiftSelector.setAdapter(shiftSelectorAdapter);
 
 
-        String[] sections = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U"};
-
+        String[] sections = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U" , "R1" , "R2" , "R3" , "R4"};
         ArrayAdapter<String> sectionSelectorAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_items, sections);
-
         sectionSelectorAdapter.setDropDownViewResource(R.layout.spinner_dropdown_items);
-
         sectionSelector.setAdapter(sectionSelectorAdapter);
 
 
-        ArrayAdapter<String> courseCodeSelectorAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_items, courseDay);
+        ArrayAdapter<String> courseCodeSelectorAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_items, teacherCourses);
 
         courseCodeSelectorAdapter.setDropDownViewResource(R.layout.spinner_dropdown_items);
 
         courseSelector.setAdapter(courseCodeSelectorAdapter);
 
 
-        programSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        /*programSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (programSelector.getSelectedItem().toString().equals("M.Sc. in CSE")) {
@@ -174,9 +190,9 @@ public class BookClassDialog extends AppCompatDialogFragment {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        });
+        });*/
 
-        shiftSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        /*shiftSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (shiftSelector.getSelectedItem().toString().equals("Day")) {
@@ -198,25 +214,7 @@ public class BookClassDialog extends AppCompatDialogFragment {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        });
-
-    }
-
-    private void initializeVariables(View view) {
-
-        date = view.findViewById(R.id.date);
-
-        time = view.findViewById(R.id.time);
-
-        roomNo = view.findViewById(R.id.room_no);
-
-        programSelector = view.findViewById(R.id.program);
-
-        shiftSelector = view.findViewById(R.id.shift);
-
-        sectionSelector = view.findViewById(R.id.section);
-
-        courseSelector = view.findViewById(R.id.course_code);
+        });*/
 
     }
 

@@ -166,6 +166,8 @@ public class BookedClasses extends Fragment {
 
     private void cancelBook(String docId)   {
 
+        makeToast("requesting...");
+
         if(docId != null)  {
 
             String jsonString = "{" + "\"docId\"" + ":" + "\"" + docId + "\"}";

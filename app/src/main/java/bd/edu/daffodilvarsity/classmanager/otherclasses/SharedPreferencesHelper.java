@@ -223,8 +223,8 @@ public class SharedPreferencesHelper {
         if (teacherProfileJson == null) {
             return null;
         } else {
-            ProfileObjectTeacher prfile = gson.fromJson(teacherProfileJson,type);
-            return prfile;
+            ProfileObjectTeacher profile = gson.fromJson(teacherProfileJson,type);
+            return profile;
         }
     }
 
@@ -234,12 +234,12 @@ public class SharedPreferencesHelper {
     }
 
     public void saveTeacherProfileToSharedPref(Context context , ProfileObjectTeacher profile)    {
+        if(context!=null)   {
+            Gson gson = new Gson();
 
-        Gson gson = new Gson();
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
-        sharedPreferences.edit().putString(HelperClass.TEACHER_PROFILE,gson.toJson(profile)).apply();
-
+            SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
+            sharedPreferences.edit().putString(HelperClass.TEACHER_PROFILE,gson.toJson(profile)).apply();
+        }
     }
 
     public void removeTeacherProfileFromSharedPref(Context context) {

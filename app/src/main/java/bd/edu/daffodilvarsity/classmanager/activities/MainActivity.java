@@ -25,6 +25,7 @@ import bd.edu.daffodilvarsity.classmanager.fragments.BookClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookedClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.CustomRoutineSearch;
 import bd.edu.daffodilvarsity.classmanager.fragments.EmptyRooms;
+import bd.edu.daffodilvarsity.classmanager.fragments.NotificationStudent;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileStudents;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileTeacher;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
@@ -219,6 +220,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 enableToolbarScrolling(false);
                 checkedNavigationItem = R.id.admin;
                 mFragmentToLaunch = new AdminPanel();
+                break;
+            case R.id.notification_student:
+                checkedNavigationItem = R.id.notification_student;
+                enableToolbarScrolling(true);
+                mFragmentToLaunch = new NotificationStudent();
                 break;
             case R.id.profile_teacher:
                 checkedNavigationItem = R.id.profile_teacher;

@@ -49,6 +49,8 @@ public class HelperClass {
 
     public static final String WORK_SCHEDULER_ID = "work_scheduler_tag";
 
+    public static final String FCM_SUBSCRIPTION_ENABLES = "fcm_subscription";
+
 
     /*private Map<String,String> courcesBscDay;
 
