@@ -30,8 +30,6 @@ public class EachDayClassRepository {
 
     private RoutineClassDetailsDao allClassesDao;
 
-    private SharedPreferencesHelper mSharedPrefHelper = new SharedPreferencesHelper();
-
     private LiveData<List<RoutineClassDetails>> teacherClassListLiveData;
 
     private LiveData<List<RoutineClassDetails>> studentClassListLiveData;
@@ -144,9 +142,9 @@ public class EachDayClassRepository {
 
         final ArrayList<RoutineClassDetails> classesList = new ArrayList<>();
 
-        String shift = mSharedPrefHelper.getShiftFromSharedPreferences(context);
+        String shift = SharedPreferencesHelper.getShiftFromSharedPreferences(context);
 
-        HashMap<String, String> courseHashMap = mSharedPrefHelper.getCoursesAndSectionMapFromSharedPreferences(context);
+        HashMap<String, String> courseHashMap = SharedPreferencesHelper.getCoursesAndSectionMapFromSharedPreferences(context);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 

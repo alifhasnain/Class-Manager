@@ -37,8 +37,6 @@ public class EachDayRoutine extends Fragment {
 
     private EachDayClassViewModel mViewModel;
 
-    private SharedPreferencesHelper mSharedPrefHelper;
-
     private String mDayOfWeek;
 
     private TextView loadingContent;
@@ -147,13 +145,12 @@ public class EachDayRoutine extends Fragment {
         mPullToRefresh.setDistanceToTriggerSync(350);
         mNoClasses = view.findViewById(R.id.no_classes);
 
-        mSharedPrefHelper = new SharedPreferencesHelper();
-        mUserType = mSharedPrefHelper.getUserType(view.getContext());
+        mUserType = SharedPreferencesHelper.getUserType(view.getContext());
     }
 
     private void loadTeacherRoutine() {
 
-        ProfileObjectTeacher profile = mSharedPrefHelper.getTeacherOfflineProfile(getContext());
+        ProfileObjectTeacher profile = SharedPreferencesHelper.getTeacherOfflineProfile(getContext());
 
         if(profile!=null)   {
             mViewModel.loadClassesTeacher(profile.getTeacherInitial(), mDayOfWeek);
@@ -169,14 +166,14 @@ public class EachDayRoutine extends Fragment {
 
         List<String> sectionList = new ArrayList<>();
 
-        HashMap<String, String> courseHashMap = mSharedPrefHelper.getCoursesAndSectionMapFromSharedPreferences(getContext());
+        HashMap<String, String> courseHashMap = SharedPreferencesHelper.getCoursesAndSectionMapFromSharedPreferences(getContext());
 
         for (HashMap.Entry<String, String> entry : courseHashMap.entrySet()) {
             courseCodeList.add(entry.getKey());
             sectionList.add(entry.getValue());
         }
 
-        ProfileObjectStudent profile = mSharedPrefHelper.getStudentOfflineProfile(getContext());
+        ProfileObjectStudent profile = SharedPreferencesHelper.getStudentOfflineProfile(getContext());
 
         mViewModel.loadClassesStudent(courseCodeList, profile.getShift(), sectionList, mDayOfWeek);
         initializeViewModelObserver();

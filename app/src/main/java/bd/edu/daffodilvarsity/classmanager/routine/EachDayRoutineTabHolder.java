@@ -44,8 +44,6 @@ public class EachDayRoutineTabHolder extends Fragment {
 
     private ViewPager mViewPager;
 
-    private SharedPreferencesHelper mSharedPrefHelper;
-
     public EachDayRoutineTabHolder() {
         // Required empty public constructor
     }
@@ -118,7 +116,7 @@ public class EachDayRoutineTabHolder extends Fragment {
 
                             String version = documentSnapshot.get("version").toString();
 
-                            String routineVersionPref = mSharedPrefHelper.getRoutineVersionFromSharedPreferences(getActivity());
+                            String routineVersionPref = SharedPreferencesHelper.getRoutineVersionFromSharedPreferences(getActivity());
 
                             if(!routineVersionPref.equals("00000") && !version.equals(routineVersionPref))   {
                                 makeToast("Downloading new updated routine.");
@@ -154,7 +152,6 @@ public class EachDayRoutineTabHolder extends Fragment {
 
     private void initializeVariables() {
         mViewPager = mView.findViewById(R.id.tab_holder);
-        mSharedPrefHelper = new SharedPreferencesHelper();
     }
 
     private void initializeTabLayout() {

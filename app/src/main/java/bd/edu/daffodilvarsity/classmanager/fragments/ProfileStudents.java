@@ -47,8 +47,6 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "ProfileStudents";
 
-    private SharedPreferencesHelper mSharedPrefHelper;
-
     private ProfileObjectStudent mUserProfile;
 
     private SwipeRefreshLayout pullToRefresh;
@@ -127,9 +125,7 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
 
     private void loadProfileDataFromSharedPref() {
 
-        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
-
-        ProfileObjectStudent profile = sharedPreferencesHelper.getStudentOfflineProfile(getContext());
+        ProfileObjectStudent profile = SharedPreferencesHelper.getStudentOfflineProfile(getContext());
 
         displayData(profile);
 
@@ -155,7 +151,7 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
 
     private void launchEditProfile() {
 
-        mUserProfile = new SharedPreferencesHelper().getStudentOfflineProfile(getContext());
+        mUserProfile = SharedPreferencesHelper.getStudentOfflineProfile(getContext());
         //Convert the profile object to JSON string
         if(mUserProfile!=null)  {
             Gson gson = new Gson();
@@ -169,8 +165,6 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
     }
 
     private void initializeVariables(View view) {
-
-        mSharedPrefHelper = new SharedPreferencesHelper();
 
         pullToRefresh = view.findViewById(R.id.pull_to_refresh);
 
@@ -226,7 +220,7 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //Delete CourseCode and LoadAgain
-                        mSharedPrefHelper.deleteCourseFromSharedPref(getActivity(),courseCode);
+                        SharedPreferencesHelper.deleteCourseFromSharedPref(getActivity(),courseCode);
                         loadCoursesAndSectionFromHashMap();
                     }
                 }).setNegativeButton("Cancel", null);
@@ -237,7 +231,7 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
 
     private void loadCoursesAndSectionFromHashMap() {
 
-        HashMap<String, String> hashMap = mSharedPrefHelper.getCoursesAndSectionMapFromSharedPreferences(getActivity());
+        HashMap<String, String> hashMap = SharedPreferencesHelper.getCoursesAndSectionMapFromSharedPreferences(getActivity());
 
         if (hashMap == null) {
             makeToast("Course List maybe empty");
@@ -303,16 +297,14 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
 
     private void addNewCourse() {
 
-        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
-
-        ProfileObjectStudent profile = sharedPreferencesHelper.getStudentOfflineProfile(getContext());
+        ProfileObjectStudent profile = SharedPreferencesHelper.getStudentOfflineProfile(getContext());
 
         CourseAndSectionSelectorDialog dialog = new CourseAndSectionSelectorDialog(profile.getShift());
 
         dialog.setDialogItemSelectListener(new CourseAndSectionSelectorDialog.OnDialogItemSelectListener() {
             @Override
             public void onItemSelected(String section, String courseCode) {
-                mSharedPrefHelper.addNewCourseOnSharedPreference(getActivity(),courseCode,section);
+                SharedPreferencesHelper.addNewCourseOnSharedPreference(getActivity(),courseCode,section);
                 loadCoursesAndSectionFromHashMap();
             }
         });

@@ -49,8 +49,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     private TextInputLayout mPasswordEditText;
 
-    private SharedPreferencesHelper mSharedPrefHelper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,8 +93,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-
-        mSharedPrefHelper = new SharedPreferencesHelper();
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -146,11 +142,9 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     private void checkIfUserIsSignedInStudent() {
 
-        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
+        String userType = SharedPreferencesHelper.getUserType(this);
 
-        String userType = sharedPreferencesHelper.getUserType(this);
-
-        ProfileObjectStudent profile = sharedPreferencesHelper.getStudentOfflineProfile(this);
+        ProfileObjectStudent profile = SharedPreferencesHelper.getStudentOfflineProfile(this);
 
         if(userType.equals(HelperClass.USER_TYPE_STUDENT) && profile!=null) {
             signInAsStudent();
@@ -158,7 +152,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void loadSavedUserEmail() {
-        String email = new SharedPreferencesHelper().getUserEmail(getApplicationContext());
+        String email = SharedPreferencesHelper.getUserEmail(getApplicationContext());
         if (email != null) {
             mEmailEditText.getEditText().setText(email);
             mPasswordEditText.getEditText().requestFocus();
@@ -166,7 +160,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void checkForOfflineUserInfo() {
-        switch (mSharedPrefHelper.getUserType(this)) {
+        switch (SharedPreferencesHelper.getUserType(this)) {
             case HelperClass.USER_TYPE_ADMIN:
                 signInAsAdminOrTeacher(HelperClass.USER_TYPE_ADMIN);
                 break;
@@ -195,8 +189,8 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
                             saveShiftAndProgramWithSharedPreferences(profile.getProgram(), profile.getShift());
 
-                            if (mSharedPrefHelper.getCoursesAndSectionMapFromSharedPreferences(getApplication()) == null) {
-                                new SharedPreferencesHelper().saveCourseWithSharedPreference(getApplicationContext(),profile.getProgram(), profile.getShift(), profile.getLevel(), profile.getTerm(), profile.getSection());
+                            if (SharedPreferencesHelper.getCoursesAndSectionMapFromSharedPreferences(getApplication()) == null) {
+                                SharedPreferencesHelper.saveCourseWithSharedPreference(getApplicationContext(),profile.getProgram(), profile.getShift(), profile.getLevel(), profile.getTerm(), profile.getSection());
                             }
 
                             signInAsStudent();
@@ -239,7 +233,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void completeProfileStudent() {
-        new SharedPreferencesHelper().setUserType(this,HelperClass.USER_TYPE_STUDENT);
+        SharedPreferencesHelper.setUserType(this,HelperClass.USER_TYPE_STUDENT);
         makeToast("Please complete your profile information");
         startActivity(new Intent(this, CompleteNewProfileStudent.class));
     }
@@ -248,9 +242,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
         showCircularProgressBar(true);
 
-        final SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
-
-        if(sharedPreferencesHelper.getTeacherOfflineProfile(this)==null)    {
+        if(SharedPreferencesHelper.getTeacherOfflineProfile(this)==null)    {
 
             DocumentReference profile = FirebaseFirestore.getInstance().document("teacher_profiles/"+mAuth.getCurrentUser().getEmail());
 
@@ -262,7 +254,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                         showCircularProgressBar(false);
 
                         ProfileObjectTeacher profile = documentSnapshot.toObject(ProfileObjectTeacher.class);
-                        sharedPreferencesHelper.saveTeacherProfileToSharedPref(getApplicationContext(),profile);
+                        SharedPreferencesHelper.saveTeacherProfileToSharedPref(getApplicationContext(),profile);
                         launchMainActivity(userType);
 
                     }   else {
@@ -290,10 +282,10 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         switch (userType)
         {
             case HelperClass.USER_TYPE_ADMIN:
-                new SharedPreferencesHelper().setUserType(this,HelperClass.USER_TYPE_ADMIN);
+                SharedPreferencesHelper.setUserType(this,HelperClass.USER_TYPE_ADMIN);
                 break;
             case HelperClass.USER_TYPE_TEACHER:
-                new SharedPreferencesHelper().setUserType(this,HelperClass.USER_TYPE_TEACHER);
+                SharedPreferencesHelper.setUserType(this,HelperClass.USER_TYPE_TEACHER);
                 break;
         }
         startMainActivity();
@@ -361,7 +353,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
             return;
         }
 
-        new SharedPreferencesHelper().saveUserEmail(getApplicationContext(), sEmail);
+        SharedPreferencesHelper.saveUserEmail(getApplicationContext(), sEmail);
         showCircularProgressBar(true);
 
         mAuth.signInWithEmailAndPassword(sEmail, sPassword).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

@@ -1,4 +1,6 @@
-package bd.edu.daffodilvarsity.classmanager.service;
+package bd.edu.daffodilvarsity.classmanager.notification;
+
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -10,7 +12,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
 
-
+        if (remoteMessage.getData() != null) {
+            Log.e("ERROR", remoteMessage.getData().toString());
+        }
 
     }
 }

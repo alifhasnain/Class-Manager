@@ -157,13 +157,11 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
         profile.setSection(section);
 
-        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
+        SharedPreferencesHelper.saveStudentProfileOffline(this,profile);
 
-        sharedPreferencesHelper.saveStudentProfileOffline(this,profile);
+        SharedPreferencesHelper.saveCourseWithSharedPreference(this,profile.getProgram(), profile.getShift(), level, term, section);
 
-        sharedPreferencesHelper.saveCourseWithSharedPreference(this,profile.getProgram(), profile.getShift(), level, term, section);
-
-        sharedPreferencesHelper.setUserType(this,HelperClass.USER_TYPE_STUDENT);
+        SharedPreferencesHelper.setUserType(this,HelperClass.USER_TYPE_STUDENT);
 
         Intent intent = new Intent(CompleteNewProfileStudent.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

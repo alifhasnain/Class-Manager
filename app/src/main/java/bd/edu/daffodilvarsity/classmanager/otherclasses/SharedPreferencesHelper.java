@@ -14,28 +14,32 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class SharedPreferencesHelper {
 
-    public void setUserType(Context context, String type) {
+    public SharedPreferencesHelper(Context context) {
+
+    }
+
+    public static void setUserType(Context context, String type) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(HelperClass.USER_TYPE, type).apply();
     }
 
-    public String getUserType(Context context) {
+    public static String getUserType(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
         return sharedPreferences.getString(HelperClass.USER_TYPE, "");
     }
 
-    public void removeUserTypeFromSharedPref(Context context) {
+    public static void removeUserTypeFromSharedPref(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
         sharedPreferences.edit().remove(HelperClass.USER_TYPE).apply();
     }
 
-    public String getTeacherInitialFromSharedPref(Context context) {
+    public static String getTeacherInitialFromSharedPref(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, Context.MODE_PRIVATE);
         return sharedPreferences.getString(HelperClass.TEACHER_INITIAL, "");
     }
 
-    public void saveTeacherInitialToSharedPref(Context context, String initial) {
+    public static void saveTeacherInitialToSharedPref(Context context, String initial) {
 
         if (context != null) {
             SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, Context.MODE_PRIVATE);
@@ -45,7 +49,7 @@ public class SharedPreferencesHelper {
 
     }
 
-    public void saveRoutineVersionToSharedPreferences(Context context, String version) {
+    public static void saveRoutineVersionToSharedPreferences(Context context, String version) {
         if (context != null) {
             SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -54,7 +58,7 @@ public class SharedPreferencesHelper {
         }
     }
 
-    public String getRoutineVersionFromSharedPreferences(Context context) {
+    public static String getRoutineVersionFromSharedPreferences(Context context) {
         if (context != null) {
             SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
 
@@ -64,7 +68,7 @@ public class SharedPreferencesHelper {
         }
     }
 
-    public HashMap<String, String> getCoursesAndSectionMapFromSharedPreferences(Context context) {
+    public static HashMap<String, String> getCoursesAndSectionMapFromSharedPreferences(Context context) {
 
         HashMap<String, String> courseHashMap;
 
@@ -82,7 +86,7 @@ public class SharedPreferencesHelper {
         return courseHashMap;
     }
 
-    public void addNewCourseOnSharedPreference(Context context, String courseCode, String section) {
+    public static void addNewCourseOnSharedPreference(Context context, String courseCode, String section) {
 
         HashMap<String, String> courseHashMap = getCoursesAndSectionMapFromSharedPreferences(context);
 
@@ -100,14 +104,14 @@ public class SharedPreferencesHelper {
 
     }
 
-    public String getShiftFromSharedPreferences(Context context) {
+    public static String getShiftFromSharedPreferences(Context context) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, Context.MODE_PRIVATE);
 
         return sharedPreferences.getString(HelperClass.SHIFT, "");
     }
 
-    public void deleteCourseFromSharedPref(Context context, String courseCode) {
+    public static void deleteCourseFromSharedPref(Context context, String courseCode) {
 
         HashMap<String, String> courseHashMap = getCoursesAndSectionMapFromSharedPreferences(context);
 
@@ -125,7 +129,7 @@ public class SharedPreferencesHelper {
 
     }
 
-    public void saveCourseWithSharedPreference(Context context, String program, String shift, String level, String term, String section) {
+    public static void saveCourseWithSharedPreference(Context context, String program, String shift, String level, String term, String section) {
 
         if (context == null) {
             return;
@@ -152,7 +156,7 @@ public class SharedPreferencesHelper {
         editor.putString(HelperClass.COURSES_HASH_MAP, courseMapInJson).apply();
     }
 
-    public void removeCoursesFromSharedPref(Context context) {
+    public static void removeCoursesFromSharedPref(Context context) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
 
@@ -162,7 +166,7 @@ public class SharedPreferencesHelper {
 
     }
 
-    public void saveUserEmail(Context context, String email) {
+    public static void saveUserEmail(Context context, String email) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
 
@@ -172,12 +176,12 @@ public class SharedPreferencesHelper {
 
     }
 
-    public String getUserEmail(Context context) {
+    public static String getUserEmail(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
         return sharedPreferences.getString(HelperClass.USER_EMAIL, null);
     }
 
-    public void saveStudentProfileOffline(Context context, ProfileObjectStudent profile) {
+    public static void saveStudentProfileOffline(Context context, ProfileObjectStudent profile) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
 
@@ -189,7 +193,7 @@ public class SharedPreferencesHelper {
 
     }
 
-    public ProfileObjectStudent getStudentOfflineProfile(Context context) {
+    public static ProfileObjectStudent getStudentOfflineProfile(Context context) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
 
@@ -205,12 +209,12 @@ public class SharedPreferencesHelper {
 
     }
 
-    public void removeStudentProfileFromSharedPref(Context context) {
+    public static void removeStudentProfileFromSharedPref(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
         sharedPreferences.edit().remove(HelperClass.STUDENT_PROFILE).apply();
     }
 
-    public ProfileObjectTeacher getTeacherOfflineProfile(Context context) {
+    public static ProfileObjectTeacher getTeacherOfflineProfile(Context context) {
 
         Gson gson = new Gson();
         Type type = new TypeToken<ProfileObjectTeacher>() {
@@ -228,12 +232,12 @@ public class SharedPreferencesHelper {
         }
     }
 
-    private void removeTeacherOfflineProfile(Context context)  {
+    public static void removeTeacherOfflineProfile(Context context)  {
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
         sharedPreferences.edit().remove(HelperClass.TEACHER_PROFILE).apply();
     }
 
-    public void saveTeacherProfileToSharedPref(Context context , ProfileObjectTeacher profile)    {
+    public static void saveTeacherProfileToSharedPref(Context context , ProfileObjectTeacher profile)    {
         if(context!=null)   {
             Gson gson = new Gson();
 
@@ -242,10 +246,25 @@ public class SharedPreferencesHelper {
         }
     }
 
-    public void removeTeacherProfileFromSharedPref(Context context) {
+    public static void removeTeacherProfileFromSharedPref(Context context) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
         sharedPreferences.edit().remove(HelperClass.TEACHER_PROFILE).apply();
 
+    }
+
+    public static void enableStudentNotification(Context context , boolean status) {
+        if (context != null) {
+            SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
+            sharedPreferences.edit().putBoolean(HelperClass.STUDENT_NOTIFICATION_ENABLED , status).apply();
+        }
+    }
+
+    public static boolean getStudentNotificatinStatus(Context context) {
+        if (context != null) {
+            SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG,MODE_PRIVATE);
+            return sharedPreferences.getBoolean(HelperClass.STUDENT_NOTIFICATION_ENABLED , false);
+        }
+        return false;
     }
 }

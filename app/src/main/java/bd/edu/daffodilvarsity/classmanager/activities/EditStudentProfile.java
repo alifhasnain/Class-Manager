@@ -35,10 +35,6 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
 
     ProfileObjectStudent mUpdatedProfile;
 
-    private FirebaseAuth mAuth;
-
-    private FirebaseFirestore db;
-
     private TextInputLayout mName;
 
     private TextInputLayout mStudentId;
@@ -146,9 +142,6 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
 
     private void initializeVariables() {
 
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-
         mSave = findViewById(R.id.save);
         mSave.setOnClickListener(this);
 
@@ -241,11 +234,9 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
             return;
         }
 
-        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
+        SharedPreferencesHelper.saveStudentProfileOffline(this,mUpdatedProfile);
 
-        sharedPreferencesHelper.saveStudentProfileOffline(this,mUpdatedProfile);
-
-        sharedPreferencesHelper.saveCourseWithSharedPreference(
+        SharedPreferencesHelper.saveCourseWithSharedPreference(
                 this,
                 mUpdatedProfile.getProgram(),
                 mUpdatedProfile.getShift(),

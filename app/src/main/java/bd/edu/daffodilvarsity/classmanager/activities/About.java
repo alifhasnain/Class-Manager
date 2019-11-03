@@ -23,8 +23,6 @@ import bd.edu.daffodilvarsity.classmanager.routine.EachDayClassViewModel;
 
 public class About extends AppCompatActivity implements View.OnClickListener {
 
-    private SharedPreferencesHelper sharedPrefHelper = new SharedPreferencesHelper();
-
     private EachDayClassViewModel mViewModel;
 
     @Override
@@ -54,7 +52,7 @@ public class About extends AppCompatActivity implements View.OnClickListener {
 
                             String version = documentSnapshot.get("version").toString();
 
-                            if (!version.equals(sharedPrefHelper.getRoutineVersionFromSharedPreferences(getApplicationContext()))) {
+                            if (!version.equals(SharedPreferencesHelper.getRoutineVersionFromSharedPreferences(getApplicationContext()))) {
                                 makeToast("Downloading new updated routine.");
                                 mViewModel.loadWholeRoutineFromServer(version);
                             } else {

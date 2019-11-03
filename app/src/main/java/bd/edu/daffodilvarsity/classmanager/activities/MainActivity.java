@@ -25,9 +25,9 @@ import bd.edu.daffodilvarsity.classmanager.fragments.BookClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookedClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.CustomRoutineSearch;
 import bd.edu.daffodilvarsity.classmanager.fragments.EmptyRooms;
-import bd.edu.daffodilvarsity.classmanager.fragments.NotificationStudent;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileStudents;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileTeacher;
+import bd.edu.daffodilvarsity.classmanager.notification.NotificationStudent;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 import bd.edu.daffodilvarsity.classmanager.routine.EachDayRoutineTabHolder;
@@ -35,8 +35,6 @@ import bd.edu.daffodilvarsity.classmanager.routine.EachDayRoutineTabHolder;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private long currentTimeInMillis;
-
-    private SharedPreferencesHelper mSharedPreferencesHelper;
 
     private int checkedNavigationItem;
 
@@ -59,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initializeVariables();
 
-        if (!new SharedPreferencesHelper().getUserType(this).equals(HelperClass.USER_TYPE_STUDENT)) {
+        if (!SharedPreferencesHelper.getUserType(this).equals(HelperClass.USER_TYPE_STUDENT)) {
             if (mAuth.getCurrentUser() != null && !isEmailVerified()) {
                 mAuth.signOut();
             }
@@ -155,14 +153,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mAuth = FirebaseAuth.getInstance();
 
-        if (!new SharedPreferencesHelper().getUserType(this).equals(HelperClass.USER_TYPE_STUDENT)) {
+        if (!SharedPreferencesHelper.getUserType(this).equals(HelperClass.USER_TYPE_STUDENT)) {
             mAuthStateListener = new FirebaseAuth.AuthStateListener() {
                 @Override
                 public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                    if (mAuth.getCurrentUser() == null && new SharedPreferencesHelper().getUserType(getApplicationContext()) != HelperClass.USER_TYPE_STUDENT) {
-                        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
-                        sharedPreferencesHelper.removeUserTypeFromSharedPref(getApplicationContext());
-                        sharedPreferencesHelper.removeTeacherProfileFromSharedPref(getApplicationContext());
+                    if (mAuth.getCurrentUser() == null && SharedPreferencesHelper.getUserType(getApplicationContext()) != HelperClass.USER_TYPE_STUDENT) {
+                        SharedPreferencesHelper.removeUserTypeFromSharedPref(getApplicationContext());
+                        SharedPreferencesHelper.removeTeacherProfileFromSharedPref(getApplicationContext());
                         startActivity(new Intent(MainActivity.this, SignIn.class));
                         finish();
                     }
@@ -170,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             };
         }
 
-        mSharedPreferencesHelper = new SharedPreferencesHelper();
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_view);
         mToolBar = findViewById(R.id.toolbar);
@@ -186,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawerToggle.syncState();
 
-        switch (mSharedPreferencesHelper.getUserType(this)) {
+        switch (SharedPreferencesHelper.getUserType(this)) {
             case HelperClass.USER_TYPE_ADMIN:
                 mNavigationView.inflateMenu(R.menu.drawer_menu_admin);
                 break;
@@ -289,13 +285,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void signOut() {
 
-        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
-
-        if (sharedPreferencesHelper.getUserType(this).equals(HelperClass.USER_TYPE_STUDENT)) {
-            sharedPreferencesHelper.removeStudentProfileFromSharedPref(this);
-            sharedPreferencesHelper.removeUserTypeFromSharedPref(this);
-            sharedPreferencesHelper.removeCoursesFromSharedPref(this);
-            sharedPreferencesHelper.removeTeacherProfileFromSharedPref(this);
+        if (SharedPreferencesHelper.getUserType(this).equals(HelperClass.USER_TYPE_STUDENT)) {
+            SharedPreferencesHelper.removeStudentProfileFromSharedPref(this);
+            SharedPreferencesHelper.removeUserTypeFromSharedPref(this);
+            SharedPreferencesHelper.removeCoursesFromSharedPref(this);
+            SharedPreferencesHelper.removeTeacherProfileFromSharedPref(this);
             startActivity(new Intent(this,SignIn.class));
             finish();
         } else {

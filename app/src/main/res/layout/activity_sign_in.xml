@@ -42,7 +42,6 @@
             android:layout_marginEnd="8dp"
             android:hint="E-MAIL"
             android:textColorHint="@color/white"
-            app:boxStrokeWidth="5dp"
             app:errorTextAppearance="@color/google_blue"
             app:layout_constraintBottom_toTopOf="@id/guideline"
             app:layout_constraintEnd_toEndOf="parent"

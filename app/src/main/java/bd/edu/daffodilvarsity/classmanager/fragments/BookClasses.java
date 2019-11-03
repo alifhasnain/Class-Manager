@@ -59,8 +59,6 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
     private static final String TAG = "BookClasses";
 
-    private SharedPreferencesHelper sharedPrefHelper;
-
     private List<String> teacherCourses = new ArrayList<>();
 
     private BookClassViewModel mViewModel;
@@ -120,7 +118,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
         mViewModel = ViewModelProviders.of(this).get(BookClassViewModel.class);
 
-        ProfileObjectTeacher teacherProfile = sharedPrefHelper.getTeacherOfflineProfile(getActivity());
+        ProfileObjectTeacher teacherProfile = SharedPreferencesHelper.getTeacherOfflineProfile(getActivity());
 
         if(teacherProfile!=null)    {
             mViewModel.loadTeacherCourses(teacherProfile.getTeacherInitial());
@@ -176,8 +174,6 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
     private void initializeVariablesAndOnClickListeners(View view) {
 
-        sharedPrefHelper = new SharedPreferencesHelper();
-
         mTimeSpinner = view.findViewById(R.id.time);
         mSearchBtn = view.findViewById(R.id.search);
         mSearchBtn.setOnClickListener(this);
@@ -206,7 +202,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if(documentSnapshot.exists())   {
                     ProfileObjectTeacher profile = documentSnapshot.toObject(ProfileObjectTeacher.class);
-                    sharedPrefHelper.saveTeacherProfileToSharedPref(getActivity(),profile);
+                    SharedPreferencesHelper.saveTeacherProfileToSharedPref(getActivity(),profile);
 
                 }   else {
                     makeToast("Profile doesn't exist in teacher list.\nContact admin.");
@@ -249,7 +245,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
                 ClassDetails selectedClass = mEmptyClasses.get(position);
 
-                String teacherInitial = sharedPrefHelper.getTeacherOfflineProfile(getContext()).getTeacherInitial();
+                String teacherInitial = SharedPreferencesHelper.getTeacherOfflineProfile(getContext()).getTeacherInitial();
 
                 finishBooking(selectedClass,teacherInitial);
 

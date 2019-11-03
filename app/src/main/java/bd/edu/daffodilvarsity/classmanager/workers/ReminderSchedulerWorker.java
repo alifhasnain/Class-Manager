@@ -44,15 +44,12 @@ public class ReminderSchedulerWorker extends Worker {
         List<RoutineClassDetails> classes = new ArrayList<>();
 
         EachDayClassRepository repo = new EachDayClassRepository((Application) getApplicationContext());
+        ProfileObjectStudent studentProfile = SharedPreferencesHelper.getStudentOfflineProfile(getApplicationContext());
 
-        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper();
-
-        ProfileObjectStudent studentProfile = sharedPreferencesHelper.getStudentOfflineProfile(getApplicationContext());
-
-        String userType = sharedPreferencesHelper.getUserType(getApplicationContext());
+        String userType = SharedPreferencesHelper.getUserType(getApplicationContext());
 
         if (userType.equals(HelperClass.USER_TYPE_STUDENT)) {
-            HashMap<String, String> courseAndSectionHashMap = sharedPreferencesHelper.getCoursesAndSectionMapFromSharedPreferences(getApplicationContext());
+            HashMap<String, String> courseAndSectionHashMap = SharedPreferencesHelper.getCoursesAndSectionMapFromSharedPreferences(getApplicationContext());
 
             List<String> courseList = new ArrayList<>();
             List<String> sectionList = new ArrayList<>();
@@ -66,7 +63,7 @@ public class ReminderSchedulerWorker extends Worker {
 
         } else if (userType.equals(HelperClass.USER_TYPE_ADMIN) || userType.equals(HelperClass.USER_TYPE_TEACHER)) {
 
-            ProfileObjectTeacher profileTeacher = sharedPreferencesHelper.getTeacherOfflineProfile(getApplicationContext());
+            ProfileObjectTeacher profileTeacher = SharedPreferencesHelper.getTeacherOfflineProfile(getApplicationContext());
 
             classes = repo.getTodaysClasses(profileTeacher.getTeacherInitial());
 

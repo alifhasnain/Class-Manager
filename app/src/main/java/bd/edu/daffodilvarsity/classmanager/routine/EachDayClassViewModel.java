@@ -39,8 +39,6 @@ import static bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass.NOTIF
 
 public class EachDayClassViewModel extends AndroidViewModel {
 
-    private SharedPreferencesHelper mSharedPrefHelper = new SharedPreferencesHelper();
-
     private LiveData<List<RoutineClassDetails>> classesListLiveData;
 
     private EachDayClassRepository dataRepo;
@@ -119,7 +117,7 @@ public class EachDayClassViewModel extends AndroidViewModel {
                 cancelAlarms();
 
                 dataRepo.saveJsonRoutineToRoomDatabase(dayJsonString, eveningJsonString);
-                mSharedPrefHelper.saveRoutineVersionToSharedPreferences(getApplication(), version);
+                SharedPreferencesHelper.saveRoutineVersionToSharedPreferences(getApplication(), version);
                 downloadInProgress = false;
                 showDownloadNotificationProgress(false,"Download Complete");
             }

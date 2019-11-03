@@ -122,7 +122,7 @@ public class ProfileTeacher extends Fragment {
             public void onSuccess(List<DocumentSnapshot> documentSnapshotsList) {
                 if(documentSnapshotsList.get(0).exists())   {
                     mProfile = documentSnapshotsList.get(0).toObject(ProfileObjectTeacher.class);
-                    new SharedPreferencesHelper().saveTeacherProfileToSharedPref(getContext(),mProfile);
+                    SharedPreferencesHelper.saveTeacherProfileToSharedPref(getContext(),mProfile);
                 }
                 if (documentSnapshotsList.get(1).exists())  {
                     bookedClassesThisMonth = documentSnapshotsList.get(1).getLong("counter").intValue();

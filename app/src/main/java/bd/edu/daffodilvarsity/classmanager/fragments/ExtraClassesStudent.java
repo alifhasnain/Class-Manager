@@ -31,8 +31,6 @@ public class ExtraClassesStudent extends Fragment {
 
     private ArrayList<BookedClassDetailsUser> mExtraClasses = new ArrayList<>();
 
-    private SharedPreferencesHelper mSharedPrefHelper;
-
     private ExtraClassesStudentViewModel mViewModel;
 
     private RecyclerView mRecyclerView;
@@ -65,7 +63,7 @@ public class ExtraClassesStudent extends Fragment {
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mViewModel.loadData(mSharedPrefHelper.getCoursesAndSectionMapFromSharedPreferences(getActivity()));
+                mViewModel.loadData(SharedPreferencesHelper.getCoursesAndSectionMapFromSharedPreferences(getActivity()));
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -82,7 +80,7 @@ public class ExtraClassesStudent extends Fragment {
 
         mViewModel = ViewModelProviders.of(this).get(ExtraClassesStudentViewModel.class);
 
-        mViewModel.loadData(mSharedPrefHelper.getCoursesAndSectionMapFromSharedPreferences(getActivity()));
+        mViewModel.loadData(SharedPreferencesHelper.getCoursesAndSectionMapFromSharedPreferences(getActivity()));
 
         mViewModel.getExtraClassesList().observe(getViewLifecycleOwner(), new Observer<ArrayList<BookedClassDetailsUser>>() {
             @Override
@@ -108,8 +106,6 @@ public class ExtraClassesStudent extends Fragment {
     }
 
     private void initializeVariables(View view) {
-
-        mSharedPrefHelper = new SharedPreferencesHelper();
 
         mRecyclerView = view.findViewById(R.id.extra_classes_recycler_view);
         mPullToRefresh = view.findViewById(R.id.pull_to_refresh);
