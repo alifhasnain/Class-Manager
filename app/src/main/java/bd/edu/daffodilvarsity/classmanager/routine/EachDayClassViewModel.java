@@ -50,40 +50,6 @@ public class EachDayClassViewModel extends AndroidViewModel {
         dataRepo = new EachDayClassRepository(application);
     }
 
-    /*public void loadWholeStudentRoutineFromServer() {
-        dataRepo.loadWholeRoutineFromServer(getApplication());
-    }
-
-    public void loadWholeTeacherRoutineFromServer() {
-        FirebaseFirestore.getInstance()
-                .document("teacher_profiles/" + FirebaseAuth.getInstance().getCurrentUser().getEmail())
-                .get(Source.SERVER)
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-
-                            ProfileObjectTeacher profile = documentSnapshot.toObject(ProfileObjectTeacher.class);
-
-                            String initial = profile.getTeacherInitial();
-
-                            dataRepo.loadWholeRoutineFromServer(initial);
-
-                            mSharedPrefHelper.saveTeacherInitialToSharedPref(getApplication(), initial);
-
-                        } else if (!documentSnapshot.exists()) {
-                            toastMsg.setValue("Your profile doesn't exist in database.\nPlease contact admin");
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        toastMsg.setValue("Failed to load please check your internet connection.");
-                    }
-                });
-    }*/
-
     public void loadWholeRoutineFromServer(final String version) {
 
         if(downloadInProgress)  {

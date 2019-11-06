@@ -121,33 +121,33 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="5dp"
-                android:orientation="horizontal"
                 android:gravity="center"
+                android:orientation="horizontal"
                 android:weightSum="10">
 
                 <TextView
                     android:id="@+id/class_time"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="6"
                     android:layout_gravity="center"
-                    android:gravity="start|center"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_color_black"
+                    android:layout_weight="6"
                     android:drawableStart="@drawable/ic_time"
-                    android:drawablePadding="2dp" />
+                    android:drawablePadding="2dp"
+                    android:gravity="start|center"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/room_no"
                     android:layout_width="0dp"
-                    android:layout_weight="4"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:gravity="start|center"
-                    android:textSize="16sp"
+                    android:layout_weight="4"
                     android:drawableStart="@drawable/ic_home"
                     android:drawablePadding="6dp"
-                    android:textColor="@color/text_color_black"/>
+                    android:gravity="start|center"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 

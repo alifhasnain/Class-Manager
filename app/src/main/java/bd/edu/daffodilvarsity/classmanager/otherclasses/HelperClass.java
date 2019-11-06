@@ -584,7 +584,7 @@ public class HelperClass {
         return coursesEveningBsc;
     }
 
-    public static LinkedHashMap<String, String> getCoursesEveningMsc() {
+    /*public static LinkedHashMap<String, String> getCoursesEveningMsc() {
 
         LinkedHashMap<String, String> coursesEveningMsc = new LinkedHashMap<>();
 
@@ -630,7 +630,7 @@ public class HelperClass {
         coursesEveningMsc.put("CSE622", "Interactive Multimedia Design and Development");
 
         return coursesEveningMsc;
-    }
+    }*/
 
     public static String getCourseNameFromCourseCode(String shift, String courseCode) {
 

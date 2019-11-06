@@ -45,7 +45,6 @@ import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.AvailableClassesRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.dialogs.BookClassDialog;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsServer;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
@@ -132,6 +131,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
             public void onChanged(List<String> strings) {
                 teacherCourses.clear();
                 teacherCourses.addAll(strings);
+                teacherCourses.add(0,"Undefined");
             }
         });
 
@@ -254,31 +254,6 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
     }
 
-    /*private void checkIfProfileExistThenFinishBook(final ClassDetails selectedClass) {
-
-        String mail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-
-        DocumentReference profileRef = FirebaseFirestore.getInstance().document("/teacher_profiles/"+mail);
-
-        profileRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if(documentSnapshot.exists())   {
-                    sharedPrefHelper.saveTeacherProfileToSharedPref(getActivity(),documentSnapshot.toObject(ProfileObjectTeacher.class));
-                    finishBooking(selectedClass,sharedPrefHelper.getTeacherInitialFromSharedPref(getContext()));
-                }
-                else {
-                    makeToast("Your document doesn't exist in database.Please contact admin.");
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                makeToast("Failed to load data. Please check your internet connection.");
-            }
-        });
-    }*/
-
     private void finishBooking(ClassDetails selectedClass, String initial) {
 
         final BookedClassDetailsServer bcdServer = new BookedClassDetailsServer();
@@ -336,24 +311,6 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
             }
         });
 
-    }
-
-    private void saveData(BookedClassDetailsUser bcd) {
-
-        DocumentReference docRef = FirebaseFirestore.getInstance().document("/booked_classes/" + mFinalDate.getTimeInMillis() + "x" + bcd.getRoomNo() + "x" + bcd.getTime() + "/");
-
-        docRef.set(bcd).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                makeToast("Success!");
-                loadEmptyClassList();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                makeToast("Failed");
-            }
-        });
     }
 
     private void initializeSpinners() {

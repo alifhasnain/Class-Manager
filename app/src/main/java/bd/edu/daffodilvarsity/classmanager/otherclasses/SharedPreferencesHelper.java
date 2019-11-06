@@ -104,13 +104,6 @@ public class SharedPreferencesHelper {
 
     }
 
-    public static String getShiftFromSharedPreferences(Context context) {
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, Context.MODE_PRIVATE);
-
-        return sharedPreferences.getString(HelperClass.SHIFT, "");
-    }
-
     public static void deleteCourseFromSharedPref(Context context, String courseCode) {
 
         HashMap<String, String> courseHashMap = getCoursesAndSectionMapFromSharedPreferences(context);

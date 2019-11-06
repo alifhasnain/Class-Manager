@@ -14,11 +14,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 
 public class BookClassDialog extends AppCompatDialogFragment {
 
@@ -43,12 +41,6 @@ public class BookClassDialog extends AppCompatDialogFragment {
     private Spinner courseSelector;
 
     private List<String> teacherCourses;
-
-    private String[] courseDay;
-
-    private String[] coursesEveningBsc;
-
-    private String[] coursesEveningMsc;
 
     private CustomDialogListener listener;
 
@@ -126,15 +118,15 @@ public class BookClassDialog extends AppCompatDialogFragment {
 
         //ArrayList<String> courseDayList = new ArrayList<>(HelperClass.getCoursesDay().keySet());
 
-        courseDay = teacherCourses.toArray(new String[teacherCourses.size()]);
+        //courseDay = teacherCourses.toArray(new String[teacherCourses.size()]);
 
         /*ArrayList<String> courseEveBscList = new ArrayList<>(HelperClass.getCoursesEveningBsc().keySet());
 
         coursesEveningBsc = courseEveBscList.toArray(new String[courseEveBscList.size()]);*/
 
-        ArrayList<String> courseEveMscList = new ArrayList<>(HelperClass.getCoursesEveningMsc().keySet());
+        //ArrayList<String> courseEveMscList = new ArrayList<>(HelperClass.getCoursesEveningMsc().keySet());
 
-        coursesEveningMsc = courseEveMscList.toArray(new String[courseEveMscList.size()]);
+        //coursesEveningMsc = courseEveMscList.toArray(new String[courseEveMscList.size()]);
 
     }
 

@@ -3,6 +3,7 @@ package bd.edu.daffodilvarsity.classmanager.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -15,9 +16,17 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.fragments.AdminPanel;
@@ -29,6 +38,7 @@ import bd.edu.daffodilvarsity.classmanager.fragments.ProfileStudents;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileTeacher;
 import bd.edu.daffodilvarsity.classmanager.notification.NotificationStudent;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 import bd.edu.daffodilvarsity.classmanager.routine.EachDayRoutineTabHolder;
 
@@ -57,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initializeVariables();
 
-        if (!SharedPreferencesHelper.getUserType(this).equals(HelperClass.USER_TYPE_STUDENT)) {
+        if (isUserTeacher()) {
             if (mAuth.getCurrentUser() != null && !isEmailVerified()) {
                 mAuth.signOut();
             }
@@ -88,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onStart() {
         super.onStart();
 
+        subscribeToTopics();
+
         if (mAuthStateListener != null) {
             mAuth.addAuthStateListener(mAuthStateListener);
         }
@@ -105,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onDrawerClosed(@NonNull View drawerView) {
+
                 switch (checkedNavigationItem) {
                     default:
                         if (mFragmentToLaunch != null) {
@@ -153,15 +166,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mAuth = FirebaseAuth.getInstance();
 
-        if (!SharedPreferencesHelper.getUserType(this).equals(HelperClass.USER_TYPE_STUDENT)) {
+        if (isUserTeacher()) {
             mAuthStateListener = new FirebaseAuth.AuthStateListener() {
                 @Override
                 public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                    if (mAuth.getCurrentUser() == null && SharedPreferencesHelper.getUserType(getApplicationContext()) != HelperClass.USER_TYPE_STUDENT) {
+                    if (mAuth.getCurrentUser() == null) {
+
                         SharedPreferencesHelper.removeUserTypeFromSharedPref(getApplicationContext());
                         SharedPreferencesHelper.removeTeacherProfileFromSharedPref(getApplicationContext());
-                        startActivity(new Intent(MainActivity.this, SignIn.class));
-                        finish();
+
+                        Intent intent = new Intent(MainActivity.this, SignIn.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
                     }
                 }
             };
@@ -219,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.notification_student:
                 checkedNavigationItem = R.id.notification_student;
-                enableToolbarScrolling(true);
+                enableToolbarScrolling(false);
                 mFragmentToLaunch = new NotificationStudent();
                 break;
             case R.id.profile_teacher:
@@ -261,12 +277,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 signOut();
                 break;
             case R.id.report_bug:
-                String[] emails = new String[1];
-                emails[0] = "hasnain.alif20@gmail.com";
-                sendMail(emails, "Bug in Class Manager App", "");
+                sendMail(new String[]{"hasnain.alif20@gmail.com"}, "Bug in Class Manager App", "");
                 break;
             case R.id.about:
-                startActivity(new Intent(this,About.class));
+                startActivity(new Intent(this, About.class));
                 break;
         }
 
@@ -285,12 +299,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void signOut() {
 
-        if (SharedPreferencesHelper.getUserType(this).equals(HelperClass.USER_TYPE_STUDENT)) {
+        if (isUserStudent()) {
             SharedPreferencesHelper.removeStudentProfileFromSharedPref(this);
             SharedPreferencesHelper.removeUserTypeFromSharedPref(this);
             SharedPreferencesHelper.removeCoursesFromSharedPref(this);
             SharedPreferencesHelper.removeTeacherProfileFromSharedPref(this);
-            startActivity(new Intent(this,SignIn.class));
+            startActivity(new Intent(this, SignIn.class));
             finish();
         } else {
             try {
@@ -307,9 +321,52 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         intent.putExtra(Intent.EXTRA_EMAIL, email);
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, body);
-        if (intent.resolveActivity(this.getPackageManager()) != null) {
-            this.startActivity(intent);
+
+        try {
+            startActivity(Intent.createChooser(intent, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
         }
+
+
+    }
+
+    private void subscribeToTopics() {
+
+        if (SharedPreferencesHelper.getStudentNotificatinStatus(this) && isUserStudent()) {
+
+            HashMap<String,String> courseAndSection = SharedPreferencesHelper.getCoursesAndSectionMapFromSharedPreferences(this);
+
+            ProfileObjectStudent profile = SharedPreferencesHelper.getStudentOfflineProfile(this);
+
+            String shift = profile.getShift();
+
+            List<Task<Void>> subscribeTaskList = new ArrayList<>();
+
+            for (HashMap.Entry<String, String> entry : courseAndSection.entrySet()) {
+                subscribeTaskList.add(FirebaseMessaging.getInstance().subscribeToTopic(shift + "-" + entry.getKey() + "-" + entry.getValue()));
+                Log.e("ERROR",shift + "-" + entry.getKey() + "-" + entry.getValue());
+            }
+
+            Task<List<Void>> allTasks = Tasks.whenAllSuccess(subscribeTaskList);
+
+            allTasks.addOnSuccessListener(new OnSuccessListener<List<Void>>() {
+                @Override
+                public void onSuccess(List<Void> voids) {
+                    Log.e("ERROR" , "Successfully subscribed");
+                }
+            });
+
+        }
+
+    }
+
+    private boolean isUserStudent() {
+        return SharedPreferencesHelper.getUserType(getApplicationContext()).equals(HelperClass.USER_TYPE_STUDENT);
+    }
+
+    private boolean isUserTeacher() {
+        return SharedPreferencesHelper.getUserType(getApplicationContext()).equals(HelperClass.USER_TYPE_TEACHER);
     }
 
     private void makeToast(String text) {

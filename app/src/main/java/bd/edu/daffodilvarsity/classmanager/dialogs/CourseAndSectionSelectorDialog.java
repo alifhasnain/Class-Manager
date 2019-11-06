@@ -107,7 +107,7 @@ public class CourseAndSectionSelectorDialog extends AppCompatDialogFragment {
              coursesMap = HelperClass.getCoursesDay();
         }
         else if(shift.equals("Evening"))    {
-             coursesMap = HelperClass.getCoursesDay();
+             coursesMap = HelperClass.getCoursesEveningBsc();
         }
 
         for(Map.Entry<String,String> entry : coursesMap.entrySet()) {

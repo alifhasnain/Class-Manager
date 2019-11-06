@@ -23,6 +23,8 @@ public class BaseApplication extends Application {
 
     public static final String DOWNLOAD_PROGRESS_CHANNEL_ID = "routine_download_progress";
 
+    public static final String FCM_NOTIFICATION_CHANNEL_ID = "fcm_notification_channel";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -65,9 +67,17 @@ public class BaseApplication extends Application {
             channel2.setDescription("This channel shows the download progress of routine");
             channel2.setSound(null,null);
 
+            NotificationChannel channel3 = new NotificationChannel(
+                    FCM_NOTIFICATION_CHANNEL_ID,
+                    "Firebase Cloud Messaging Channel",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel3.setDescription("This channel shows notification received from Firebase Cloud Messaging.");
+
             List<NotificationChannel> channelList = new ArrayList<>();
             channelList.add(channel1);
             channelList.add(channel2);
+            channelList.add(channel3);
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannels(channelList);

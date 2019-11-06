@@ -1,15 +1,12 @@
 package bd.edu.daffodilvarsity.classmanager.routine;
 
 import android.app.Application;
-import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -20,11 +17,9 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 
 public class EachDayClassRepository {
 
@@ -137,95 +132,6 @@ public class EachDayClassRepository {
                     }
                 });
     }
-
-    public void loadWholeRoutineFromServer(Context context)    {
-
-        final ArrayList<RoutineClassDetails> classesList = new ArrayList<>();
-
-        String shift = SharedPreferencesHelper.getShiftFromSharedPreferences(context);
-
-        HashMap<String, String> courseHashMap = SharedPreferencesHelper.getCoursesAndSectionMapFromSharedPreferences(context);
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        List<Task<QuerySnapshot>> taskList = new ArrayList<>();
-
-        for(HashMap.Entry<String,String> entry : courseHashMap.entrySet()) {
-
-            String courseCode = entry.getKey();
-            String section = entry.getValue();
-
-            taskList.add(db.collection("main_campus")
-                    .whereEqualTo("courseCode",courseCode)
-                    .whereEqualTo("section",section)
-                    .whereEqualTo("shift",shift)
-                    .get()
-            );
-        }
-
-        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(taskList);
-
-        allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
-            @Override
-            public void onSuccess(List<QuerySnapshot> querySnapshots) {
-                for(QuerySnapshot qs : querySnapshots)  {
-
-                    for(DocumentSnapshot ds : qs)   {
-
-                        ClassDetails classObj = ds.toObject(ClassDetails.class);
-
-                        RoutineClassDetails rcdObj = new RoutineClassDetails(
-                                classObj.getRoom(),
-                                classObj.getCourseCode(),
-                                classObj.getCourseName(),
-                                classObj.getTeacherInitial(),
-                                classObj.getTime(),
-                                classObj.getDayOfWeek(),
-                                classObj.getShift(),
-                                classObj.getSection(),
-                                classObj.getPriority()
-                        );
-
-                        classesList.add(rcdObj);
-                    }
-
-                }
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        allClassesDao.deleteAllClasses();
-                        allClassesDao.insertListOfItem(classesList);
-                    }
-                }).start();
-            }
-        });
-    }
-
-    /*public void loadWholeRoutineFromServer()    {
-
-        StorageReference rootStorage = FirebaseStorage.getInstance().getReference();
-        StorageReference dayRoutine = rootStorage.child("/main_campus/routine_day.txt");
-        final StorageReference eveningRoutine = rootStorage.child("/main_campus/routine_evening.txt");
-
-        final long MAX_DOWNLOAD_SIZE = 1024*1024;
-
-        Task<byte[]> dayRoutineTask = dayRoutine.getBytes(MAX_DOWNLOAD_SIZE);
-        Task<byte[]> eveningRoutineTask = eveningRoutine.getBytes(MAX_DOWNLOAD_SIZE);
-
-        Task<List<byte[]>> allDownloadTask = Tasks.whenAllSuccess(dayRoutineTask,eveningRoutineTask);
-
-        allDownloadTask.addOnSuccessListener(new OnSuccessListener<List<byte[]>>() {
-            @Override
-            public void onSuccess(List<byte[]> byteArrayList) {
-                String dayJsonString = new String(byteArrayList.get(0),StandardCharsets.UTF_8);
-                String eveningJsonString = new String(byteArrayList.get(1),StandardCharsets.UTF_8);
-
-                saveJsonRoutineToRoomDatabase(dayJsonString,eveningJsonString);
-
-            }
-        });
-
-    }*/
 
     public void saveJsonRoutineToRoomDatabase(final String dayJsonString, final String eveningJsonString) {
 

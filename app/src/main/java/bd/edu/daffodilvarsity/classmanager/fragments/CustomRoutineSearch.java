@@ -177,7 +177,7 @@ public class CustomRoutineSearch extends Fragment implements View.OnClickListene
         closeKeyboard();
 
 
-        String teacherInitial = teacherInitialEditText.getText().toString().trim();
+        String teacherInitial = teacherInitialEditText.getText().toString().trim().toUpperCase();
 
         String dayOfWeek = daySelector.getSelectedItem().toString().trim();
 

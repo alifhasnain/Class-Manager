@@ -141,8 +141,11 @@ public class EachDayRoutine extends Fragment {
         progressBar = view.findViewById(R.id.progress_bar);
         loadingContent = view.findViewById(R.id.loading_content);
         recyclerView = view.findViewById(R.id.recycler_view);
+
         mPullToRefresh = view.findViewById(R.id.swipe_to_refresh);
-        mPullToRefresh.setDistanceToTriggerSync(350);
+        mPullToRefresh.setDistanceToTriggerSync(250);
+        mPullToRefresh.setColorSchemeResources(R.color.google_blue,R.color.google_red,R.color.google_yellow);
+
         mNoClasses = view.findViewById(R.id.no_classes);
 
         mUserType = SharedPreferencesHelper.getUserType(view.getContext());

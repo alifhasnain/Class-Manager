@@ -135,7 +135,7 @@ public class About extends AppCompatActivity implements View.OnClickListener {
                 makeToast("No Instagram Account!");
                 break;
             case R.id.send_mail_saleheen:
-                sendMail("smsaleheen18@gmail.com\n");
+                sendMail("smsaleheen18@gmail.com");
                 break;
         }
     }
@@ -176,7 +176,7 @@ public class About extends AppCompatActivity implements View.OnClickListener {
     private void sendMail(String email) {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:"));
-        intent.putExtra(Intent.EXTRA_EMAIL, email);
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
         if (intent.resolveActivity(this.getPackageManager()) != null) {
             this.startActivity(intent);
         }
