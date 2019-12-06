@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classmanager.viewmodels;
+package bd.edu.daffodilvarsity.classmanager.CustomRoutineSearch;
 
 import android.app.Application;
 
@@ -8,14 +8,19 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
+import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetailsDao;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetailsDatabase;
 
 public class CustomRoutineSearchViewModel extends AndroidViewModel {
 
-    private MutableLiveData<ArrayList<RoutineClassDetails>> classesListLiveData = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<RoutineClassDetails>> teacherClassesLiveData = new MutableLiveData<>();
+
+    private MutableLiveData<ArrayList<RoutineClassDetails>> studentClassesLiveData = new MutableLiveData<>();
 
     private MutableLiveData<String> toast = new MutableLiveData<>();
 
@@ -27,64 +32,55 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
         allClassesDao = db.routineClassDetailsDao();
     }
 
-    /*public void loadClasses(String teacherInitial, String day) {
-
-        FirebaseFirestore.getInstance().collection("/main_campus/")
-                .whereEqualTo("teacherInitial", teacherInitial)
-                .whereEqualTo("dayOfWeek", day)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                        ArrayList<ClassDetails> classesList = new ArrayList<>();
-
-                        for(DocumentSnapshot ds : queryDocumentSnapshots)   {
-                            classesList.add(ds.toObject(ClassDetails.class));
-                        }
-
-                        Collections.sort(classesList, new Comparator<ClassDetails>() {
-                            @Override
-                            public int compare(ClassDetails o1, ClassDetails o2) {
-                                return Float.compare(o1.getPriority(),o2.getPriority());
-                            }
-                        });
-
-                        classesListLiveData.setValue(classesList);
-
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        toast.setValue("Failed to load.Please check your internet connection.");
-                    }
-                });
-
-    }*/
-
-    public void loadClasses(final String teacherInitial, final String day)  {
+    public void loadTeacherClasses(final String teacherInitial, final String day)  {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 if(day.equals("All"))   {
                     ArrayList<RoutineClassDetails> classes = (ArrayList<RoutineClassDetails>) allClassesDao.getClassesWithInitial(teacherInitial);
-                    classesListLiveData.postValue(getModifiedClassList(classes));
+                    teacherClassesLiveData.postValue(getSortedClassList(classes));
                 }
                 else {
                     ArrayList<RoutineClassDetails> classes = (ArrayList<RoutineClassDetails>) allClassesDao.getClassesWithInitial(teacherInitial,day);
-                    classesListLiveData.postValue(classes);
+                    teacherClassesLiveData.postValue(classes);
                 }
 
             }
         }).start();
     }
 
-    public LiveData<ArrayList<RoutineClassDetails>> getClasses()    {
-        return classesListLiveData;
+    public void loadStudentClasses(String level, String term , final String shift, final String section) {
+
+        HelperClass helperClass = HelperClass.getInstance();
+
+        final ArrayList<String> courseList = helperClass.getCourseList(HelperClass.PROGRAM_BSC,shift,level,term);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<RoutineClassDetails> studentRoutines = (ArrayList<RoutineClassDetails>) allClassesDao.getClassesStudent(shift,section,courseList);
+                studentClassesLiveData.postValue(getSortedClassList(studentRoutines));
+            }
+        }).start();
+
     }
 
-    private ArrayList<RoutineClassDetails> getModifiedClassList(ArrayList<RoutineClassDetails> classesList)   {
+    public LiveData<ArrayList<RoutineClassDetails>> getTeacherClasses()    {
+        return teacherClassesLiveData;
+    }
+
+    public LiveData<ArrayList<RoutineClassDetails>> getStudentClasses() {
+        return studentClassesLiveData;
+    }
+
+    private ArrayList<RoutineClassDetails> getSortedClassList(ArrayList<RoutineClassDetails> classesList)   {
+
+        Collections.sort(classesList, new Comparator<RoutineClassDetails>() {
+            @Override
+            public int compare(RoutineClassDetails t1, RoutineClassDetails t2) {
+                return Float.compare(t1.getPriority(), t2.getPriority());
+            }
+        });
 
         ArrayList<RoutineClassDetails> modifiedList = new ArrayList<>();
 
@@ -118,7 +114,6 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
                     break;
             }
         }
-
 
 
         if(saturday.size()>0)   {

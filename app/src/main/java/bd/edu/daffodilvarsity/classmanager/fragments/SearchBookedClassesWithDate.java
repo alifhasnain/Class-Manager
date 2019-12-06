@@ -163,6 +163,13 @@ public class SearchBookedClassesWithDate extends Fragment implements View.OnClic
             @Override
             public void onDeleteClicked(int position) {
 
+                long currentTime = System.currentTimeMillis()/1000;
+
+                if (currentTime >= mBookedClassesList.get(position).getReservationDate().getSeconds()) {
+                    makeToast("This day has already past.So book cancellation is not possible.");
+                    return;
+                }
+
                 Gson gson = new Gson();
 
                 String jsonString = gson.toJson(mBookedClassesList.get(position));

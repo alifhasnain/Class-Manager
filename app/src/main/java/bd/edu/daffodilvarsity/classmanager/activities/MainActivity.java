@@ -28,11 +28,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import bd.edu.daffodilvarsity.classmanager.CustomRoutineSearch.CustomRoutineSearchTabHolder;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.fragments.AdminPanel;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookedClasses;
-import bd.edu.daffodilvarsity.classmanager.fragments.CustomRoutineSearch;
 import bd.edu.daffodilvarsity.classmanager.fragments.EmptyRooms;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileStudents;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileTeacher;
@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.custom_room_search:
                 checkedNavigationItem = R.id.custom_room_search;
-                mFragmentToLaunch = new CustomRoutineSearch();
+                mFragmentToLaunch = new CustomRoutineSearchTabHolder();
                 enableToolbarScrolling(true);
                 break;
             case R.id.empty_rooms:
@@ -274,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mFragmentToLaunch = new BookedClasses();
                 break;
             case R.id.sign_out:
+                makeToast("Signing out...");
                 signOut();
                 break;
             case R.id.report_bug:
@@ -345,7 +346,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             for (HashMap.Entry<String, String> entry : courseAndSection.entrySet()) {
                 subscribeTaskList.add(FirebaseMessaging.getInstance().subscribeToTopic(shift + "-" + entry.getKey() + "-" + entry.getValue()));
-                Log.e("ERROR",shift + "-" + entry.getKey() + "-" + entry.getValue());
             }
 
             Task<List<Void>> allTasks = Tasks.whenAllSuccess(subscribeTaskList);
@@ -353,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             allTasks.addOnSuccessListener(new OnSuccessListener<List<Void>>() {
                 @Override
                 public void onSuccess(List<Void> voids) {
-                    Log.e("ERROR" , "Successfully subscribed");
+                    Log.e("SUCCESS" , "Successfully subscribed");
                 }
             });
 

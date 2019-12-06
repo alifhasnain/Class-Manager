@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classmanager.fragments;
+package bd.edu.daffodilvarsity.classmanager.CustomRoutineSearch;
 
 
 import android.content.Context;
@@ -26,15 +26,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.adapters.CustomRoutineSearchRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
-import bd.edu.daffodilvarsity.classmanager.viewmodels.CustomRoutineSearchViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CustomRoutineSearch extends Fragment implements View.OnClickListener {
+public class CustomRoutineSearchTeacher extends Fragment implements View.OnClickListener {
 
     private CustomRoutineSearchViewModel mViewModel;
 
@@ -42,7 +40,7 @@ public class CustomRoutineSearch extends Fragment implements View.OnClickListene
 
     private RecyclerView mRecyclerView;
 
-    private CustomRoutineSearchRecyclerViewAdapter mAdapter;
+    private CustomRoutineTeacherRecyclerViewAdapter mAdapter;
 
     private Spinner daySelector;
 
@@ -56,7 +54,7 @@ public class CustomRoutineSearch extends Fragment implements View.OnClickListene
 
     private TextView mEmptyIcon;
 
-    public CustomRoutineSearch() {
+    public CustomRoutineSearchTeacher() {
         // Required empty public constructor
     }
 
@@ -124,7 +122,7 @@ public class CustomRoutineSearch extends Fragment implements View.OnClickListene
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mAdapter = new CustomRoutineSearchRecyclerViewAdapter(mClassesList);
+        mAdapter = new CustomRoutineTeacherRecyclerViewAdapter(mClassesList);
 
         mRecyclerView.setAdapter(mAdapter);
 
@@ -136,7 +134,7 @@ public class CustomRoutineSearch extends Fragment implements View.OnClickListene
 
         mViewModel = ViewModelProviders.of(this).get(CustomRoutineSearchViewModel.class);
 
-        mViewModel.getClasses().observe(getViewLifecycleOwner(), new Observer<ArrayList<RoutineClassDetails>>() {
+        mViewModel.getTeacherClasses().observe(getViewLifecycleOwner(), new Observer<ArrayList<RoutineClassDetails>>() {
             @Override
             public void onChanged(ArrayList<RoutineClassDetails> classList) {
 
@@ -181,7 +179,7 @@ public class CustomRoutineSearch extends Fragment implements View.OnClickListene
 
         String dayOfWeek = daySelector.getSelectedItem().toString().trim();
 
-        mViewModel.loadClasses(teacherInitial, dayOfWeek);
+        mViewModel.loadTeacherClasses(teacherInitial, dayOfWeek);
 
     }
 

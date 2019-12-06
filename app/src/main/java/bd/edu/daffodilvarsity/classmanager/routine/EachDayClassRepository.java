@@ -87,7 +87,7 @@ public class EachDayClassRepository {
         }
     }
 
-    /*public LiveData<List<RoutineClassDetails>> getClasses()    {
+    /*public LiveData<List<RoutineClassDetails>> getTeacherClasses()    {
         return classesListLiveData;
     }*/
 

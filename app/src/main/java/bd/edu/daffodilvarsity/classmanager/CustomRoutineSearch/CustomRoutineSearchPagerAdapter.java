@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classmanager.adapters;
+package bd.edu.daffodilvarsity.classmanager.CustomRoutineSearch;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,24 +8,25 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
 
-public class EachDayRoutinePagerAdapter extends FragmentPagerAdapter {
+public class CustomRoutineSearchPagerAdapter extends FragmentPagerAdapter {
 
-    private final ArrayList<Fragment> mFragmentList = new ArrayList<>();
-    private final ArrayList<String> mFragmentTitleList = new ArrayList<>();
+    private ArrayList<Fragment> mFragmentList = new ArrayList<>();
 
-    public EachDayRoutinePagerAdapter(@NonNull FragmentManager fm) {
+    private ArrayList<String> mTitles = new ArrayList<>();
+
+    public CustomRoutineSearchPagerAdapter(@NonNull FragmentManager fm) {
         super(fm,FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
 
-    public void addFragment(Fragment fragment , String title)  {
+    public void addFragment(Fragment fragment, String title) {
         mFragmentList.add(fragment);
-        mFragmentTitleList.add(title);
+        mTitles.add(title);
     }
 
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return mFragmentTitleList.get(position);
+        return mTitles.get(position);
     }
 
     @NonNull

@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classmanager.adapters;
+package bd.edu.daffodilvarsity.classmanager.CustomRoutineSearch;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
 
-public class CustomRoutineSearchRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CustomRoutineTeacherRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<RoutineClassDetails> classesList;
 
-    public CustomRoutineSearchRecyclerViewAdapter(ArrayList<RoutineClassDetails> classesList) {
+    public CustomRoutineTeacherRecyclerViewAdapter(ArrayList<RoutineClassDetails> classesList) {
         this.classesList = classesList;
     }
 
@@ -28,7 +28,7 @@ public class CustomRoutineSearchRecyclerViewAdapter extends RecyclerView.Adapter
 
         if(viewType==1) {
 
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_routine_list_item,parent,false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_routine_teacher_list_item,parent,false);
 
             return new ViewHolder1(view);
 

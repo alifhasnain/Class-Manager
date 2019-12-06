@@ -50,6 +50,7 @@ public class SearchBookedClassesWithDateRecyclerViewAdapter extends RecyclerView
         holder.email.setText(classList.get(position).getTeacherEmail());
         holder.teacherInitial.setText(classList.get(position).getTeacherInitial());
         holder.whenBooked.setText(getFormattedDate(classList.get(position).getReservationDate()));
+
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

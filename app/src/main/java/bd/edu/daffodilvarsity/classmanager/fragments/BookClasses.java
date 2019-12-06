@@ -195,6 +195,10 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
     private void updateTeacherProfileFromServer()   {
 
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            return;
+        }
+
         DocumentReference profile = FirebaseFirestore.getInstance().document("teacher_profiles/"+FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
         profile.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

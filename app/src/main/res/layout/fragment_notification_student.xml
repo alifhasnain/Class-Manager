@@ -43,7 +43,7 @@
                     android:layout_weight="8"
                     android:drawableStart="@drawable/ic_push_notification"
                     android:drawablePadding="8dp"
-                    android:text="Toggle Notification"
+                    android:text="Notification"
                     android:textColor="@color/text_color_black"
                     android:textSize="20sp" />
 

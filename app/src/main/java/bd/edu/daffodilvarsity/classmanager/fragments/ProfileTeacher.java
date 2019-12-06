@@ -105,6 +105,11 @@ public class ProfileTeacher extends Fragment {
 
     private void loadProfileInfo() {
 
+        if (mAuth.getCurrentUser() == null) {
+            makeToast("Not Logged In.");
+            return;
+        }
+
         String currentUserEmail = mAuth.getCurrentUser().getEmail();
 
         DocumentReference teacherProfiles = db.document("/teacher_profiles/"+currentUserEmail);

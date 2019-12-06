@@ -34,6 +34,9 @@ public interface RoutineClassDetailsDao {
     @RawQuery
     List<RoutineClassDetails> getTodaysClassesStudent(SupportSQLiteQuery query);
 
+    @Query("SELECT * FROM RoutineClassDetails WHERE shift=:shift AND section=:section AND courseCode IN (:courseCodes)")
+    List<RoutineClassDetails> getClassesStudent(String shift,String section,List<String> courseCodes);
+
     //For displaying notification
     @Query("SELECT * FROM RoutineClassDetails WHERE teacherInitial=:teacherInitial AND dayOfWeek=:dayOfWeek AND notificationEnabled=1")
     List<RoutineClassDetails> getTodaysClassesTeacher(String teacherInitial,String dayOfWeek);

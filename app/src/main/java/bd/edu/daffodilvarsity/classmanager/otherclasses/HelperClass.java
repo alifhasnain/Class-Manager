@@ -130,9 +130,9 @@ public class HelperClass {
                         case "Term 1":
                             return L1T1EveningBsc();
                         case "Term 2":
-                            return L1T2DayBsc();
+                            return L1T2EveningBsc();
                         case "Term 3":
-                            return L1T3DayBsc();
+                            return L1T3EveningBsc();
                     }
                     break;
                 case "Level 2":
