@@ -14,7 +14,7 @@
         android:background="@color/colorPrimary"
         app:tabIndicatorColor="@color/colorAccent"
         app:tabIndicatorHeight="3dp"
-        app:tabMode="scrollable"
+        app:tabMode="fixed"
         app:tabPaddingEnd="20dp"
         app:tabPaddingStart="20dp"
         app:tabSelectedTextColor="@color/white"

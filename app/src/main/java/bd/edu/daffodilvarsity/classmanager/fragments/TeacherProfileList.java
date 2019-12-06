@@ -1,6 +1,8 @@
 package bd.edu.daffodilvarsity.classmanager.fragments;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -98,11 +100,27 @@ public class TeacherProfileList extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         mAdapter.addOnDeleteClickListener(new TeacherProfileListRecyclerViewAdapter.OnDeleteClickListener() {
+
             @Override
-            public void onDeleteClickListener(String docId, int position) {
-                mViewModel.deleteProfile(teacherList.get(position));
-                teacherList.remove(position);
-                mAdapter.notifyDataSetChanged();
+            public void onDeleteClickListener(String docId, final int position) {
+
+                String dialogString = "Are you sure to delete " + teacherList.get(position).getName() + " (" + teacherList.get(position).getEmail() + ")" + " this profile?";
+
+                AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                        .setTitle("Please confirm")
+                        .setMessage(dialogString)
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mViewModel.deleteProfile(teacherList.get(position));
+                                teacherList.remove(position);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton("Cancel",null)
+                        .create();
+
+                alertDialog.show();
             }
         });
 

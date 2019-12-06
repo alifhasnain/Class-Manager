@@ -33,6 +33,7 @@ import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.fragments.AdminPanel;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookedClasses;
+import bd.edu.daffodilvarsity.classmanager.fragments.CRList;
 import bd.edu.daffodilvarsity.classmanager.fragments.EmptyRooms;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileStudents;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileTeacher;
@@ -261,6 +262,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.cr_list:
                 enableToolbarScrolling(true);
+                mFragmentToLaunch = new CRList();
                 break;
             case R.id.sign_out:
                 makeToast("Signing out...");
