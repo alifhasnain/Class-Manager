@@ -46,8 +46,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private long currentTimeInMillis;
 
-    private int checkedNavigationItem;
-
     private FirebaseAuth mAuth;
 
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -118,17 +116,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDrawerClosed(@NonNull View drawerView) {
 
-                switch (checkedNavigationItem) {
-                    default:
-                        if (mFragmentToLaunch != null) {
-                            getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                                    .replace(R.id.fragment_container, mFragmentToLaunch, "classes")
-                                    .commit();
-                        }
-                        break;
+                if (mFragmentToLaunch != null) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                            .replace(R.id.fragment_container, mFragmentToLaunch, "classes")
+                            .commit();
                 }
+
             }
 
             @Override
@@ -230,48 +225,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
             case R.id.admin:
                 enableToolbarScrolling(false);
-                checkedNavigationItem = R.id.admin;
                 mFragmentToLaunch = new AdminPanel();
                 break;
             case R.id.notification_student:
-                checkedNavigationItem = R.id.notification_student;
                 enableToolbarScrolling(false);
                 mFragmentToLaunch = new NotificationStudent();
                 break;
             case R.id.profile_teacher:
-                checkedNavigationItem = R.id.profile_teacher;
                 enableToolbarScrolling(false);
                 mFragmentToLaunch = new ProfileTeacher();
                 break;
             case R.id.profile_student:
-                checkedNavigationItem = R.id.profile_student;
                 enableToolbarScrolling(false);
                 mFragmentToLaunch = new ProfileStudents();
                 break;
             case R.id.classes:
-                checkedNavigationItem = R.id.classes;
                 enableToolbarScrolling(true);
                 mFragmentToLaunch = new EachDayRoutineTabHolder();
                 break;
             case R.id.book_classes:
-                checkedNavigationItem = R.id.book_classes;
                 enableToolbarScrolling(true);
                 mFragmentToLaunch = new BookClasses();
                 break;
             case R.id.custom_room_search:
-                checkedNavigationItem = R.id.custom_room_search;
                 mFragmentToLaunch = new CustomRoutineSearchTabHolder();
                 enableToolbarScrolling(true);
                 break;
             case R.id.empty_rooms:
-                checkedNavigationItem = R.id.empty_rooms;
                 enableToolbarScrolling(true);
                 mFragmentToLaunch = new EmptyRooms();
                 break;
             case R.id.booked_classroom:
-                checkedNavigationItem = R.id.booked_classroom;
                 enableToolbarScrolling(true);
                 mFragmentToLaunch = new BookedClasses();
+                break;
+            case R.id.cr_list:
+                enableToolbarScrolling(true);
                 break;
             case R.id.sign_out:
                 makeToast("Signing out...");

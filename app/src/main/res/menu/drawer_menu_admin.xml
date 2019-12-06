@@ -33,6 +33,12 @@
             android:id="@+id/booked_classroom"
             android:icon="@drawable/ic_menu_booked_classes"
             android:title="Booked Classrooms" />
+
+        <item
+            android:id="@+id/cr_list"
+            android:icon="@drawable/ic_menu_cr"
+            android:title="CR List"/>
+
     </group>
 
     <group
