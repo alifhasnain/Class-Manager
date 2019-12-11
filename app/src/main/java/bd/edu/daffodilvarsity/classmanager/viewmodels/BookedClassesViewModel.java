@@ -10,7 +10,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
-import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 
 public class BookedClassesViewModel extends ViewModel {
 
@@ -31,71 +29,58 @@ public class BookedClassesViewModel extends ViewModel {
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-    public void loadDataFromServer()    {
+    public void loadDataFromServer() {
 
-        DocumentReference userProfile = db.document("/teacher_profiles/"+mAuth.getCurrentUser().getEmail()+"/");
+        if (mAuth.getCurrentUser() == null) {
+            toastMsgLiveData.setValue("Not signed in.");
+            return;
+        }
 
-        userProfile.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if(documentSnapshot.exists())   {
-                    ProfileObjectTeacher profile = documentSnapshot.toObject(ProfileObjectTeacher.class);
-                    loadBookedClasses(profile.getTeacherInitial());
-                }
-                else    {
-                    loadBookedClasses("xxxxxxxxxxxx");
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                toastMsgLiveData.setValue("Failed to load data. Please check your internet connection.");
-            }
-        });
-
-    }
-
-    private void loadBookedClasses(String teacherInitial) {
+        String teacherEmail = mAuth.getCurrentUser().getEmail();
 
         final ArrayList<BookedClassDetailsUser> bookedClassesList = new ArrayList<>();
 
         CollectionReference bookedClassesRef = db.collection("/booked_classes/");
 
-        Timestamp timestamp = new Timestamp(Calendar.getInstance().getTime());
+        Calendar currentTime = Calendar.getInstance();
+        currentTime.add(Calendar.HOUR_OF_DAY, -21);
 
-        bookedClassesRef.whereEqualTo("teacherInitial",teacherInitial)
-                .whereGreaterThanOrEqualTo("reservationDate",timestamp)
+        Timestamp timestamp = new Timestamp(currentTime.getTime());
+
+        bookedClassesRef.whereEqualTo("teacherEmail", teacherEmail)
+                .whereGreaterThanOrEqualTo("reservationDate", timestamp)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                for(DocumentSnapshot ds : queryDocumentSnapshots)   {
+                        for (DocumentSnapshot ds : queryDocumentSnapshots) {
 
-                    BookedClassDetailsUser bcd = ds.toObject(BookedClassDetailsUser.class);
+                            BookedClassDetailsUser bcd = ds.toObject(BookedClassDetailsUser.class);
 
-                    bcd.setDocId(ds.getId());
+                            bcd.setDocId(ds.getId());
 
-                    bookedClassesList.add(bcd);
+                            bookedClassesList.add(bcd);
 
-                }
+                        }
 
-                bookedClassesLiveData.setValue(bookedClassesList);
+                        bookedClassesLiveData.setValue(bookedClassesList);
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 toastMsgLiveData.setValue("Failed to load data. Please check your internet connection.");
             }
         });
+
     }
 
-    public LiveData<ArrayList<BookedClassDetailsUser>> getBookedClassList()   {
+    public LiveData<ArrayList<BookedClassDetailsUser>> getBookedClassList() {
         return bookedClassesLiveData;
     }
 
-    public LiveData<String> displayToast()    {
+    public LiveData<String> displayToast() {
         return toastMsgLiveData;
     }
 
