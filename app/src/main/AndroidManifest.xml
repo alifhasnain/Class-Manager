@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.AddCR"></activity>
+        <activity android:name=".activities.EditTeacherProfile"></activity>
+        <activity android:name=".activities.AddCR" />
         <activity android:name=".activities.About" />
         <activity
             android:name=".activities.EditStudentProfile"

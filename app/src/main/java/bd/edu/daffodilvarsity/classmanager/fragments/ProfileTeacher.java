@@ -1,9 +1,13 @@
 package bd.edu.daffodilvarsity.classmanager.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -21,10 +25,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
 
 import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.R;
+import bd.edu.daffodilvarsity.classmanager.activities.EditTeacherProfile;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 
@@ -70,6 +76,7 @@ public class ProfileTeacher extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile_teacher, container, false);
+        setHasOptionsMenu(true);
 
         initializeVariables(view);
 
@@ -103,6 +110,22 @@ public class ProfileTeacher extends Fragment {
         classBookedThisMonth = view.findViewById(R.id.booked_class_number);
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.profile_teacher_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (R.id.edit_profile == item.getItemId() && mProfile != null) {
+            Intent intent = new Intent(getContext(), EditTeacherProfile.class);
+            String jsonProfile = new Gson().toJson(mProfile);
+            intent.putExtra("profile", jsonProfile);
+            startActivity(intent);
+        }
+        return true;
+    }
+
     private void loadProfileInfo() {
 
         if (mAuth.getCurrentUser() == null) {
@@ -112,7 +135,7 @@ public class ProfileTeacher extends Fragment {
 
         String currentUserEmail = mAuth.getCurrentUser().getEmail();
 
-        DocumentReference teacherProfiles = db.document("/teacher_profiles/"+currentUserEmail);
+        DocumentReference teacherProfiles = db.document("/teacher_profiles/" + currentUserEmail);
 
         Task<DocumentSnapshot> taskGetProfileInfo = teacherProfiles.get();
 
@@ -120,16 +143,16 @@ public class ProfileTeacher extends Fragment {
 
         Task<DocumentSnapshot> taskGetBookCount = bookInfo.get();
 
-        Task<List<DocumentSnapshot>> allTask = Tasks.whenAllSuccess(taskGetProfileInfo,taskGetBookCount);
+        Task<List<DocumentSnapshot>> allTask = Tasks.whenAllSuccess(taskGetProfileInfo, taskGetBookCount);
 
         allTask.addOnSuccessListener(new OnSuccessListener<List<DocumentSnapshot>>() {
             @Override
             public void onSuccess(List<DocumentSnapshot> documentSnapshotsList) {
-                if(documentSnapshotsList.get(0).exists())   {
+                if (documentSnapshotsList.get(0).exists()) {
                     mProfile = documentSnapshotsList.get(0).toObject(ProfileObjectTeacher.class);
-                    SharedPreferencesHelper.saveTeacherProfileToSharedPref(getContext(),mProfile);
+                    SharedPreferencesHelper.saveTeacherProfileToSharedPref(getContext(), mProfile);
                 }
-                if (documentSnapshotsList.get(1).exists())  {
+                if (documentSnapshotsList.get(1).exists()) {
                     bookedClassesThisMonth = documentSnapshotsList.get(1).getLong("counter").intValue();
                 }
 
@@ -140,8 +163,9 @@ public class ProfileTeacher extends Fragment {
             @Override
             public void onFailure(@NonNull Exception e) {
                 pullToRefresh.setRefreshing(false);
-                makeToast("Failed to load. Please check  your internet connection.");
-                Log.e(TAG,"Error:",e);
+                makeToast("Please check  your internet connection.");
+                mProfile = SharedPreferencesHelper.getTeacherOfflineProfile(getContext());
+                displayProfileInfo();
             }
         });
 
@@ -157,12 +181,12 @@ public class ProfileTeacher extends Fragment {
             contactNo.setText(mProfile.getContactNo());
             classBookedThisMonth.setText(String.valueOf(bookedClassesThisMonth));
         } catch (Exception e) {
-            Log.e(TAG,"Crash Log : ",e);
+            Log.e(TAG, "Crash Log : ", e);
         }
     }
 
-    private void makeToast(String msg)    {
-        if(getContext()!=null)  {
+    private void makeToast(String msg) {
+        if (getContext() != null) {
             Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
         }
     }
