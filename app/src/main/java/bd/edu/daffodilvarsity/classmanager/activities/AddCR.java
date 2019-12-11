@@ -153,6 +153,7 @@ public class AddCR extends AppCompatActivity implements View.OnClickListener {
     private boolean validateData() {
         if (name.getEditText().getText().toString().isEmpty()) {
             makeToast("Name can't be empty.");
+            return false;
         }
         return true;
     }

@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -45,6 +46,8 @@ public class CRList extends Fragment {
 
     private RecyclerView recyclerView;
 
+    private TextView emptyList;
+
     public CRList() {
         // Required empty public constructor
     }
@@ -72,6 +75,11 @@ public class CRList extends Fragment {
     private void refreshRecyclerView() {
 
         mAdapter.setDataAndRefresh(mCRList);
+        if (mAdapter.getItemCount() == 0) {
+            emptyList.setVisibility(View.VISIBLE);
+        } else {
+            emptyList.setVisibility(View.GONE);
+        }
 
     }
 
@@ -94,31 +102,48 @@ public class CRList extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(mAdapter);
 
+        emptyList = view.findViewById(R.id.empty_list);
+
         mAdapter.addActionEventListener(new CRListAdapter.ActionEventListener() {
             @Override
             public void onSendEmailClicked(CRObj obj) {
-                sendMail(obj.getEmail());
+                if (isEmptyOrNull(obj.getEmail())) {
+                    makeToast("No email is attached.");
+                } else {
+                    sendMail(obj.getEmail());
+                }
             }
 
             @Override
             public void onSendMessageClicked(CRObj obj) {
-                sendMessage(obj.getPhoneNo());
+                if (isEmptyOrNull(obj.getPhoneNo())) {
+                    makeToast("No contact no is attached.");
+                } else {
+                    sendMessage(obj.getPhoneNo());
+                }
             }
 
             @Override
             public void onDialClicked(final CRObj obj) {
-                AlertDialog dialog = new  AlertDialog.Builder(getContext())
-                        .setTitle("Please confirm")
-                        .setMessage("Do you want to call " + obj.getName() + " from section " + obj.getSection() + " course " + obj.getCourseCode() + "?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                phoneCall(obj.getPhoneNo());
-                            }
-                        })
-                        .setNegativeButton("No",null)
-                        .create();
-                dialog.show();
+
+                if (isEmptyOrNull(obj.getPhoneNo())) {
+                    makeToast("No contact no is attached.");
+                }
+                else {
+                    AlertDialog dialog = new  AlertDialog.Builder(getContext())
+                            .setTitle("Please confirm")
+                            .setMessage("Do you want to call " + obj.getName() + " from section " + obj.getSection() + " course " + obj.getCourseCode() + "?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    phoneCall(obj.getPhoneNo());
+                                }
+                            })
+                            .setNegativeButton("No",null)
+                            .create();
+                    dialog.show();
+                }
+
             }
 
             @Override
@@ -174,6 +199,13 @@ public class CRList extends Fragment {
         Intent intent = new Intent(Intent.ACTION_DIAL);
         intent.setData(Uri.parse("tel:"+contactNo));
         startActivity(intent);
+    }
+
+    private boolean isEmptyOrNull(String string) {
+        if (string == null || string.isEmpty()) {
+            return true;
+        }
+        return false;
     }
 
     private void makeToast(String text) {
