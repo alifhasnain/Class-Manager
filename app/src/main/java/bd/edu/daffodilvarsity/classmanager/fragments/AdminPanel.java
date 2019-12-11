@@ -12,7 +12,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.adapters.AdminPanelPagerAdapter;
+import bd.edu.daffodilvarsity.classmanager.adapters.viewPagerAdapters.AdminPanelPagerAdapter;
 
 /**
  * A simple {@link Fragment} subclass.

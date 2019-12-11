@@ -25,7 +25,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.adapters.TeacherProfileListRecyclerViewAdapter;
+import bd.edu.daffodilvarsity.classmanager.adapters.recyclerViewAdapters.TeacherProfileListRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 import bd.edu.daffodilvarsity.classmanager.viewmodels.TeacherProfileListViewModel;
 

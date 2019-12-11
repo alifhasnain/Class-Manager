@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classmanager.adapters;
+package bd.edu.daffodilvarsity.classmanager.adapters.recyclerViewAdapters;
 
 import android.content.res.Resources;
 import android.graphics.Color;

@@ -31,7 +31,7 @@ import java.util.GregorianCalendar;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.activities.CancelBookByAdmin;
-import bd.edu.daffodilvarsity.classmanager.adapters.SearchBookedClassesWithDateRecyclerViewAdapter;
+import bd.edu.daffodilvarsity.classmanager.adapters.recyclerViewAdapters.SearchBookedClassesWithDateRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.viewmodels.SearchBookedClassesWithDateViewModel;
 

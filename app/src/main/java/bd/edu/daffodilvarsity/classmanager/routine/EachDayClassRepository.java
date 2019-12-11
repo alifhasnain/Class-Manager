@@ -234,7 +234,7 @@ public class EachDayClassRepository {
         return allClassesDao.getTodaysClassesTeacher(initial,getDayOfWeek());
     }
 
-    public List<String> loadTeacherCourses(String initial)  {
+    public List<String> getTeacherCourses(String initial)  {
         return allClassesDao.getCoursesWithInitial(initial);
     }
 

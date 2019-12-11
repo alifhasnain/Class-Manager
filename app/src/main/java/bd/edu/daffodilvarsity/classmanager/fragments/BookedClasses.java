@@ -29,7 +29,7 @@ import com.google.firebase.functions.HttpsCallableResult;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.adapters.BookedClassesRecyclerViewAdapter;
+import bd.edu.daffodilvarsity.classmanager.adapters.recyclerViewAdapters.BookedClassesRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.viewmodels.BookedClassesViewModel;
 

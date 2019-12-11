@@ -22,7 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.adapters.EmptyRoomsRecyclerViewAdapter;
+import bd.edu.daffodilvarsity.classmanager.adapters.recyclerViewAdapters.EmptyRoomsRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.viewmodels.EmptyRoomsViewModel;
 

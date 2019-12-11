@@ -255,12 +255,12 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
                         ProfileObjectTeacher profile = documentSnapshot.toObject(ProfileObjectTeacher.class);
                         SharedPreferencesHelper.saveTeacherProfileToSharedPref(getApplicationContext(),profile);
-                        launchMainActivity(userType);
+                        saveUserTypeAndLaunchMainActivity(userType);
 
                     }   else {
                         makeToast("Profile doesn't exist in teacher list.\nContact admin.");
                         showCircularProgressBar(false);
-                        launchMainActivity(userType);
+                        saveUserTypeAndLaunchMainActivity(userType);
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -271,14 +271,13 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                 }
             });
         }   else    {
-            Log.e("ERROR","Offline Profile Null");
             showCircularProgressBar(false);
-            launchMainActivity(userType);
+            saveUserTypeAndLaunchMainActivity(userType);
         }
 
     }
 
-    private void launchMainActivity(String userType)    {
+    private void saveUserTypeAndLaunchMainActivity(String userType)    {
         switch (userType)
         {
             case HelperClass.USER_TYPE_ADMIN:
@@ -304,7 +303,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        finish();
     }
 
     @Override

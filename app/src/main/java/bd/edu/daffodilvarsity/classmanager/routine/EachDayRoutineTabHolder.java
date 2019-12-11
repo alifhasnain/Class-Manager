@@ -28,7 +28,7 @@ import java.util.Calendar;
 import java.util.LinkedHashMap;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.adapters.EachDayRoutinePagerAdapter;
+import bd.edu.daffodilvarsity.classmanager.adapters.viewPagerAdapters.EachDayRoutinePagerAdapter;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 
 /**

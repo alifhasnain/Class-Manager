@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mAuth = FirebaseAuth.getInstance();
 
-        if (isUserTeacher()) {
+        if (isUserTeacher() || isUserAdmin()) {
             mAuthStateListener = new FirebaseAuth.AuthStateListener() {
                 @Override
                 public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -265,7 +265,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mFragmentToLaunch = new CRList();
                 break;
             case R.id.sign_out:
-                makeToast("Signing out...");
                 signOut();
                 break;
             case R.id.report_bug:
@@ -358,6 +357,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private boolean isUserTeacher() {
         return SharedPreferencesHelper.getUserType(getApplicationContext()).equals(HelperClass.USER_TYPE_TEACHER);
+    }
+
+    private boolean isUserAdmin() {
+        return SharedPreferencesHelper.getUserType(getApplicationContext()).equals(HelperClass.USER_TYPE_ADMIN);
     }
 
     private void makeToast(String text) {

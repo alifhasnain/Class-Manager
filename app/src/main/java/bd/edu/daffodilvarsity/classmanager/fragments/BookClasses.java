@@ -42,7 +42,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.adapters.AvailableClassesRecyclerViewAdapter;
+import bd.edu.daffodilvarsity.classmanager.adapters.recyclerViewAdapters.AvailableClassesRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.dialogs.BookClassDialog;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsServer;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;

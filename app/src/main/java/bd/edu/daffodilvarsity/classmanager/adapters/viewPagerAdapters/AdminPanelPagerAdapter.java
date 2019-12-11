@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classmanager.adapters;
+package bd.edu.daffodilvarsity.classmanager.adapters.viewPagerAdapters;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

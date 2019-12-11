@@ -47,7 +47,7 @@ public class BookClassViewModel extends AndroidViewModel {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                coursesListTeacher.postValue(dataRepo.loadTeacherCourses(initial));
+                coursesListTeacher.postValue(dataRepo.getTeacherCourses(initial));
             }
         }).start();
     }

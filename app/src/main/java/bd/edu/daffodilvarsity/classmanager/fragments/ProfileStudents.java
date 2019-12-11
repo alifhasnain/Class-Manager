@@ -35,7 +35,7 @@ import java.util.HashMap;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.activities.EditStudentProfile;
-import bd.edu.daffodilvarsity.classmanager.adapters.CourseListRecyclerViewAdapter;
+import bd.edu.daffodilvarsity.classmanager.adapters.recyclerViewAdapters.CourseListRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.dialogs.CourseAndSectionSelectorDialog;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
