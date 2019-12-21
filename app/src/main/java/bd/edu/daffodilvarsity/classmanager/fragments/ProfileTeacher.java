@@ -3,7 +3,6 @@ package bd.edu.daffodilvarsity.classmanager.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +32,7 @@ import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.activities.EditTeacherProfile;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -181,7 +181,7 @@ public class ProfileTeacher extends Fragment {
             contactNo.setText(mProfile.getContactNo());
             classBookedThisMonth.setText(String.valueOf(bookedClassesThisMonth));
         } catch (Exception e) {
-            Log.e(TAG, "Crash Log : ", e);
+            Timber.e(e);
         }
     }
 

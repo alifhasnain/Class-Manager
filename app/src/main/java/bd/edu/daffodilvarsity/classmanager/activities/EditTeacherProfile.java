@@ -23,6 +23,7 @@ import java.util.Map;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
+import timber.log.Timber;
 
 public class EditTeacherProfile extends AppCompatActivity {
 
@@ -85,7 +86,7 @@ public class EditTeacherProfile extends AppCompatActivity {
             designation.getEditText().setText(mProfile.getDesignation());
             contactNo.getEditText().setText(mProfile.getContactNo());
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
     }
 

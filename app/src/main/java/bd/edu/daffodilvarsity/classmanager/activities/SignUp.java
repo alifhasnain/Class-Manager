@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
 import bd.edu.daffodilvarsity.classmanager.R;
+import timber.log.Timber;
 
 public class SignUp extends AppCompatActivity implements View.OnClickListener {
 
@@ -76,7 +77,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
         try {
             mAuth.addAuthStateListener(mAuthStateListener);
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
     }
 
@@ -85,9 +86,8 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
         super.onPause();
         try {
             mAuth.removeAuthStateListener(mAuthStateListener);
-        }
-        catch (NullPointerException e)  {
-            e.printStackTrace();
+        } catch (NullPointerException e) {
+            Timber.e(e);
         }
     }
 
@@ -155,11 +155,9 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
 
                     if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                         makeSnackBar("User already exist.\nTry resetting password.");
-                    }
-                    else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                    } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                         makeSnackBar("Invalid Credential");
-                    }
-                    else if(task.getException() instanceof FirebaseAuthWeakPasswordException)   {
+                    } else if (task.getException() instanceof FirebaseAuthWeakPasswordException) {
                         makeToast("Password is weak.");
                     }
                 }
@@ -174,8 +172,8 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Fade fade = new Fade();
-        fade.excludeTarget(findViewById(R.id.root_layout),true);
-        fade.excludeTarget(findViewById(R.id.diu_logo),true);
+        fade.excludeTarget(findViewById(R.id.root_layout), true);
+        fade.excludeTarget(findViewById(R.id.diu_logo), true);
         getWindow().setEnterTransition(fade);
 
         AnimationDrawable gradientAnimation = (AnimationDrawable) findViewById(R.id.root_layout).getBackground();
@@ -197,8 +195,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
                     makeToast("Verification Email is sent confirm registration and Sign In");
                     mEmailEditText.getEditText().setText("");
                     mPasswordEditText.getEditText().setText("");
-                }
-                else if(!task.isSuccessful())   {
+                } else if (!task.isSuccessful()) {
                     showCircularProgressBar(false);
                 }
                 signOut();
@@ -222,9 +219,8 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
     private void signOut() {
         try {
             mAuth.signOut();
-        }
-        catch (Exception e)  {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Timber.e(e);
         }
     }
 
@@ -240,11 +236,11 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 
-    private void makeSnackBar(String text)  {
+    private void makeSnackBar(String text) {
 
         View activityView = findViewById(R.id.root_layout);
 
-        mSnackbar = Snackbar.make(activityView,text, Snackbar.LENGTH_INDEFINITE);
+        mSnackbar = Snackbar.make(activityView, text, Snackbar.LENGTH_INDEFINITE);
 
         mSnackbar.setAction("Done", new View.OnClickListener() {
             @Override

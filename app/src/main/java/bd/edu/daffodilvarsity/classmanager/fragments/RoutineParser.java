@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +51,7 @@ import de.siegmar.fastcsv.reader.CsvReader;
 import de.siegmar.fastcsv.reader.CsvRow;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -586,7 +586,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
 
             }
         } catch (Exception e) {
-            Log.e("CSV Parser Error Log", "Exception", e);
+            Timber.e(e);
             Toast.makeText(getContext(), "Parse Error!", Toast.LENGTH_SHORT).show();
         }
 
@@ -653,7 +653,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
             }
 
         } catch (IOException e) {
-            Log.e("CSV Parser Error Log", "Exception", e);
+            Timber.e(e);
             Toast.makeText(getContext(), "Parse Error!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -679,7 +679,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
         try {
             res = getContext().getResources().getString(resId);
         } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
 
         if(res!=null)   {

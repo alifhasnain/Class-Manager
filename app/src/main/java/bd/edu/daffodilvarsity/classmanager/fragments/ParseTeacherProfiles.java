@@ -3,7 +3,6 @@ package bd.edu.daffodilvarsity.classmanager.fragments;
 
 import android.Manifest;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +36,7 @@ import de.siegmar.fastcsv.reader.CsvReader;
 import de.siegmar.fastcsv.reader.CsvRow;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -154,7 +154,7 @@ public class ParseTeacherProfiles extends Fragment implements View.OnClickListen
             }
 
         } catch (IOException e) {
-            Log.e("Parse Error", "Error ", e);
+            Timber.e(e);
             makeToast("Error while parsing.");
         }
 

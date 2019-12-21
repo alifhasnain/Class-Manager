@@ -13,6 +13,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
+import timber.log.Timber;
 
 public class TeacherProfileListViewModel extends ViewModel {
 
@@ -70,7 +71,7 @@ public class TeacherProfileListViewModel extends ViewModel {
                         }
                     });
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
     }
 

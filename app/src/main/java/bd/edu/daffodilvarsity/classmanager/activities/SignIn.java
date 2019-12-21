@@ -2,10 +2,8 @@ package bd.edu.daffodilvarsity.classmanager.activities;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.util.Patterns;
 import android.view.View;
@@ -36,6 +34,7 @@ import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
+import timber.log.Timber;
 
 public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
@@ -121,7 +120,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             checkForOfflineUserInfo();
-                            Log.e("", "Error : ", e);
+                            Timber.e(e);
                             showCircularProgressBar(false);
                         }
                     });
@@ -170,7 +169,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    private void checkIfStudentProfileExistInDatabase() {
+    /*private void checkIfStudentProfileExistInDatabase() {
 
         showCircularProgressBar(true);
 
@@ -211,25 +210,13 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                     }
                 });
 
-    }
+    }*/
 
     private void initializeOnClickListeners() {
         findViewById(R.id.sign_in).setOnClickListener(this);
         findViewById(R.id.sign_up).setOnClickListener(this);
         findViewById(R.id.forgot_pass).setOnClickListener(this);
         findViewById(R.id.sign_in_as_student).setOnClickListener(this);
-    }
-
-    private void saveShiftAndProgramWithSharedPreferences(String program, String shift) {
-
-        SharedPreferences sharedPreferences = getSharedPreferences(HelperClass.SHARED_PREFERENCE_TAG, MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putString(HelperClass.PROGRAM, program).apply();
-
-        editor.putString(HelperClass.SHIFT, shift).apply();
-
     }
 
     private void completeProfileStudent() {
@@ -407,7 +394,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         try {
             mAuth.signOut();
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
     }
 

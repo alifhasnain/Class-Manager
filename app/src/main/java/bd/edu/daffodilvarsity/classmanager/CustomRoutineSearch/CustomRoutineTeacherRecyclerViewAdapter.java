@@ -1,6 +1,5 @@
 package bd.edu.daffodilvarsity.classmanager.CustomRoutineSearch;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +56,6 @@ public class CustomRoutineTeacherRecyclerViewAdapter extends RecyclerView.Adapte
             case 2:
                 ViewHolder2 holder2 = (ViewHolder2) holder;
                 holder2.dayOfWeek.setText(classesList.get(position).getDayOfWeek());
-                Log.e("ERROR",classesList.get(position).getDayOfWeek());
                 break;
         }
     }

@@ -154,7 +154,6 @@ public class RoutineClassDetails {
             return false;
         }
         RoutineClassDetails compareObj = (RoutineClassDetails) obj;
-        //Log.e("ERROR", this.notificationEnabled + " AND " + compareObj.isNotificationEnabled());
         return (this.id == compareObj.getId() && this.room.equals(compareObj.getRoom()) && this.courseCode.equals(compareObj.getCourseCode()) && this.courseName.equals(compareObj.getCourseName()) && this.teacherInitial.equals(compareObj.getTeacherInitial()) && this.time.equals(compareObj.getTime()) && this.shift.equals(compareObj.getShift()) && this.dayOfWeek.equals(compareObj.getDayOfWeek()) && this.section.equals(compareObj.getSection()) && this.priority == compareObj.getPriority() && this.notificationEnabled == compareObj.isNotificationEnabled());
     }
 

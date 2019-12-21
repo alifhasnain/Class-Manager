@@ -1,7 +1,6 @@
 package bd.edu.daffodilvarsity.classmanager.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -26,6 +25,7 @@ import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
+import timber.log.Timber;
 
 public class EditStudentProfile extends AppCompatActivity implements View.OnClickListener {
 
@@ -93,7 +93,7 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
         profileRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if(documentSnapshot.exists())   {
+                if (documentSnapshot.exists()) {
                     mUserProfile = documentSnapshot.toObject(ProfileObjectStudent.class);
                     initializeReceivedData();
                     mPullToRefresh.setRefreshing(false);
@@ -136,7 +136,7 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
             mCse.setClickable(false);
 
         } catch (Exception e) {
-            Log.e("Error", "Exception", e);
+            Timber.e(e);
         }
     }
 
@@ -167,7 +167,7 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
 
         String[] term = new String[]{"Term 1", "Term 2", "Term 3"};
 
-        String[] section = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U" , "R1" , "R2" , "R3" , "R4"};
+        String[] section = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "R1", "R2", "R3", "R4"};
 
         ArrayAdapter<String> levelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, level);
 
@@ -229,12 +229,12 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
 
         mUpdatedProfile.setSection(section);
 
-        if(mUpdatedProfile.getShift().equals(HelperClass.SHIFT_EVENING) && level.equals("Level 4"))    {
+        if (mUpdatedProfile.getShift().equals(HelperClass.SHIFT_EVENING) && level.equals("Level 4")) {
             makeToast("Evening shift can't have Level 4");
             return;
         }
 
-        SharedPreferencesHelper.saveStudentProfileOffline(this,mUpdatedProfile);
+        SharedPreferencesHelper.saveStudentProfileOffline(this, mUpdatedProfile);
 
         SharedPreferencesHelper.saveCourseWithSharedPreference(
                 this,

@@ -3,7 +3,6 @@ package bd.edu.daffodilvarsity.classmanager.fragments;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +49,7 @@ import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 import bd.edu.daffodilvarsity.classmanager.viewmodels.BookClassViewModel;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -299,7 +299,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
                                     makeToast(httpsCallableResult.getData().toString());
                                 }
                                 catch (Exception e) {
-                                    Log.e("Error",e.getMessage());
+                                    Timber.e(e);
                                 }
                                 loadEmptyClassList();
                             }

@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +38,7 @@ import bd.edu.daffodilvarsity.classmanager.adapters.recyclerViewAdapters.CourseL
 import bd.edu.daffodilvarsity.classmanager.dialogs.CourseAndSectionSelectorDialog;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -276,7 +276,7 @@ public class ProfileStudents extends Fragment implements View.OnClickListener {
             @Override
             public void onFailure(@NonNull Exception e) {
                 pullToRefresh.setRefreshing(false);
-                Log.e(TAG, "Error : ", e);
+                Timber.e(e);
                 makeToast("Error while loading. Please check your internet connection.");
             }
         });

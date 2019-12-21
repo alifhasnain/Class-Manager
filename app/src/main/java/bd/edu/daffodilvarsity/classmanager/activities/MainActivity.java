@@ -3,7 +3,6 @@ package bd.edu.daffodilvarsity.classmanager.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -42,6 +41,7 @@ import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 import bd.edu.daffodilvarsity.classmanager.routine.EachDayRoutineTabHolder;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -301,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             try {
                 mAuth.signOut();
             } catch (Exception e) {
-                //Log.e(TAG, "Error : ", e);
+                Timber.e(e);
             }
         }
     }
@@ -326,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (SharedPreferencesHelper.getStudentNotificatinStatus(this) && isUserStudent()) {
 
-            HashMap<String,String> courseAndSection = SharedPreferencesHelper.getCoursesAndSectionMapFromSharedPreferences(this);
+            HashMap<String, String> courseAndSection = SharedPreferencesHelper.getCoursesAndSectionMapFromSharedPreferences(this);
 
             ProfileObjectStudent profile = SharedPreferencesHelper.getStudentOfflineProfile(this);
 
@@ -343,7 +343,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             allTasks.addOnSuccessListener(new OnSuccessListener<List<Void>>() {
                 @Override
                 public void onSuccess(List<Void> voids) {
-                    Log.e("SUCCESS" , "Successfully subscribed");
+                    Timber.e("Subscribed To Topics.");
                 }
             });
 

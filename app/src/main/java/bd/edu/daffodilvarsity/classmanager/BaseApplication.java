@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.workers.ReminderSchedulerWorker;
+import timber.log.Timber;
 
 
 public class BaseApplication extends Application {
@@ -28,6 +29,10 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
 
         createNotificationChannels();
 

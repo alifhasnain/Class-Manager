@@ -20,6 +20,7 @@ import java.util.List;
 import bd.edu.daffodilvarsity.classmanager.DiffUtilCallbacks.EachDayRoutineDiffCallback;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
+import timber.log.Timber;
 
 public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<EachDayRoutineRecyclerViewAdapter.ViewHolder> {
 
@@ -88,10 +89,8 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
                 }
             });
 
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
+        } catch (NullPointerException | Resources.NotFoundException e) {
+            Timber.e(e);
         }
 
     }
@@ -103,8 +102,7 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
 
     private int getRandomColor(int position) {
 
-        switch (position)
-        {
+        switch (position) {
             case 0:
             case 5:
                 return Color.parseColor("#00BCD4");
@@ -116,7 +114,7 @@ public class EachDayRoutineRecyclerViewAdapter extends RecyclerView.Adapter<Each
                 return Color.parseColor("#AB47BC");
             case 3:
             case 8:
-            return Color.parseColor("#7E57C2");
+                return Color.parseColor("#7E57C2");
             case 4:
             case 9:
                 return Color.parseColor("#29B6F6");

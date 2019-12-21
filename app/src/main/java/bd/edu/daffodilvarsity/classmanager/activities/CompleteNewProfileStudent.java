@@ -19,6 +19,7 @@ import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
+import timber.log.Timber;
 
 public class CompleteNewProfileStudent extends AppCompatActivity implements View.OnClickListener {
 
@@ -63,8 +64,8 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
         super.onBackPressed();
         try {
             mAuth.signOut();
-        } catch (Exception e)   {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Timber.e(e);
         }
     }
 
@@ -93,7 +94,7 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
         String[] term = new String[]{"Term 1", "Term 2", "Term 3"};
 
-        String[] section = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U" , "R1" , "R2" , "R3" , "R4"};
+        String[] section = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "R1", "R2", "R3", "R4"};
 
         ArrayAdapter<String> levelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, level);
 
@@ -133,7 +134,7 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
         profile.setId(id);
 
-        if(mBsc.isChecked())    {
+        if (mBsc.isChecked()) {
             profile.setProgram(HelperClass.PROGRAM_BSC);
         }
 
@@ -157,11 +158,15 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
 
         profile.setSection(section);
 
-        SharedPreferencesHelper.saveStudentProfileOffline(this,profile);
+        SharedPreferencesHelper.saveStudentProfileOffline(this, profile);
 
-        SharedPreferencesHelper.saveCourseWithSharedPreference(this,profile.getProgram(), profile.getShift(), level, term, section);
+        sleep(100);
 
-        SharedPreferencesHelper.setUserType(this,HelperClass.USER_TYPE_STUDENT);
+        SharedPreferencesHelper.saveCourseWithSharedPreference(this, profile.getProgram(), profile.getShift(), level, term, section);
+
+        sleep(100);
+
+        SharedPreferencesHelper.setUserType(this, HelperClass.USER_TYPE_STUDENT);
 
         Intent intent = new Intent(CompleteNewProfileStudent.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -252,6 +257,14 @@ public class CompleteNewProfileStudent extends AppCompatActivity implements View
             case R.id.save:
                 checkInformationAndSave();
                 break;
+        }
+    }
+
+    private void sleep(int s) {
+        try {
+            Thread.sleep(s);
+        } catch (InterruptedException e) {
+            Timber.e(e);
         }
     }
 

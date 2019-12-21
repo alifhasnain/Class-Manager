@@ -3,7 +3,6 @@ package bd.edu.daffodilvarsity.classmanager.CustomRoutineSearch;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,7 @@ import java.util.ArrayList;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -220,7 +220,7 @@ public class CustomRoutineSearchTeacher extends Fragment implements View.OnClick
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         } catch (Exception e) {
-            Log.e("TAG","Error : ", e);
+            Timber.e(e);
         }
     }
 

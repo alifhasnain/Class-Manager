@@ -5,7 +5,6 @@ import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
@@ -27,6 +26,7 @@ import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectTeacher;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 import bd.edu.daffodilvarsity.classmanager.routine.EachDayClassRepository;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
+import timber.log.Timber;
 
 import static android.content.Context.ALARM_SERVICE;
 import static bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass.NOTIFICATION_ALARM_REQ_CODE;
@@ -74,7 +74,6 @@ public class ReminderSchedulerWorker extends Worker {
 
         Date date = new Date();
         date.setTime(minTime);
-        Log.e("ERROR", date.toString());
 
         if ((minTime - System.currentTimeMillis()) >= 14400000) {
             //If time is greater than 4 hour then cancel alarm
@@ -205,7 +204,7 @@ public class ReminderSchedulerWorker extends Worker {
             return calendar;
 
         } catch (ParseException e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
         return null;
     }

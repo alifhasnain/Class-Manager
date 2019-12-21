@@ -4,7 +4,6 @@ package bd.edu.daffodilvarsity.classmanager.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +31,7 @@ import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.adapters.recyclerViewAdapters.BookedClassesRecyclerViewAdapter;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.BookedClassDetailsUser;
 import bd.edu.daffodilvarsity.classmanager.viewmodels.BookedClassesViewModel;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -181,7 +181,7 @@ public class BookedClasses extends Fragment {
                                 makeToast(httpsCallableResult.getData().toString());
                             }
                             catch (Exception e) {
-                                Log.e("Error",e.getMessage());
+                                Timber.e(e);
                             }
 
                             loadBookedClasses();
