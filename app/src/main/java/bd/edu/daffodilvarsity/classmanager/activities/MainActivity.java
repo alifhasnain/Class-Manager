@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.internal.NavigationMenuView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -73,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         setUpNavigationDrawer();
+
+        disableNavigationViewScrollbars();
 
         if (savedInstanceState == null) {
             setUpHomeFragment();
@@ -320,6 +323,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
+    }
+
+    private void disableNavigationViewScrollbars() {
+        if (mNavigationView != null) {
+            NavigationMenuView navigationMenuView = (NavigationMenuView) mNavigationView.getChildAt(0);
+            if (navigationMenuView != null) {
+                navigationMenuView.setVerticalScrollBarEnabled(false);
+            }
+        }
     }
 
     private void subscribeToTopics() {
