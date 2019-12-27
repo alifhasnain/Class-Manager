@@ -197,43 +197,6 @@ public class BookedClasses extends Fragment {
         }
     }
 
-    /*private void cancelBook(final BookedClassDetailsUser bcd) {
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.runTransaction(new Transaction.Function<Void>() {
-            @Nullable
-            @Override
-            public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
-                DocumentReference bookCount = db.document("book_room_count/"+ FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                DocumentReference bookedClass = db.document("booked_classes/" + bcd.getDocId());
-
-                DocumentSnapshot bookCountSnapshot = transaction.get(bookCount);
-                double bookCountDouble = bookCountSnapshot.getDouble("counter")+1;
-
-                if(bookCountDouble>=0)  {
-                    transaction.update(bookCount,"counter",bookCountDouble);
-                }
-
-                transaction.delete(bookedClass);
-
-                return null;
-            }
-        })
-        .addOnSuccessListener(new OnSuccessListener<Object>() {
-            @Override
-            public void onSuccess(Object o) {
-                makeToast("Successfully canceled");
-                loadBookedClasses();
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("ERROR",e.toString());
-                makeToast("Failed to cancel.");
-            }
-        });
-    }*/
-
     private void loadBookedClasses()    {
 
         mBookedClasses.clear();

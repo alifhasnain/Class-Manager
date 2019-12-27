@@ -207,7 +207,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
 
             if (allEmptyClassDetails.size() > 0 || allNonEmptyClassDetails.size() > 0) {
 
-                filesToUpload = allEmptyClassDetails.size() + allNonEmptyClassDetails.size();
+                filesToUpload = allEmptyClassDetails.size();
 
                 uploadAll.setEnabled(true);
 
@@ -226,7 +226,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
 
             if (allEmptyClassDetails.size() > 0 || allNonEmptyClassDetails.size() > 0) {
 
-                filesToUpload = allEmptyClassDetails.size() + allNonEmptyClassDetails.size();
+                filesToUpload = allEmptyClassDetails.size();
 
                 uploadAll.setEnabled(true);
 
@@ -239,13 +239,13 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
 
     private void upload() {
 
-        CollectionReference allNonEmptyClassesRef = db.collection("/main_campus/");
+        //CollectionReference allNonEmptyClassesRef = db.collection("/main_campus/");
         CollectionReference allEmptyClassesRef = db.collection("/main_campus_empty_classes/");
 
         uploadProgressBar.setMax(filesToUpload);
         uploadAll.setEnabled(false);
 
-        for (int i = 0; i < allNonEmptyClassDetails.size(); i++) {
+        /*for (int i = 0; i < allNonEmptyClassDetails.size(); i++) {
 
             allNonEmptyClassesRef.add(allNonEmptyClassDetails.get(i)).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
@@ -267,7 +267,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                 }
             });
 
-        }
+        }*/
 
         for (int i = 0; i < allEmptyClassDetails.size(); i++) {
 
