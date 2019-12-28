@@ -19,17 +19,13 @@
             android:layout_weight="9"
             android:hint="Search By Initial" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/search_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
-            android:background="@color/colorAccent"
-            android:text="Search"
-            android:textColor="@color/white" />
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:text="Search"/>
 
     </LinearLayout>
 

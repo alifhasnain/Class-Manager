@@ -6,7 +6,7 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackgroundBorderless"
-    app:cardBackgroundColor="@color/google_blue"
+    app:cardBackgroundColor="@color/colorPrimary"
     app:cardElevation="3dp"
     app:cardUseCompatPadding="true">
 

@@ -87,9 +87,9 @@
             android:textColor="@color/semi_transparent_black"
             android:textSize="18sp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_select_file"
-            style="@style/Widget.AppCompat.Button.Colored"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
@@ -104,7 +104,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/parse_file"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
@@ -143,11 +143,12 @@
         android:enabled="false"
         android:text="Upload All" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/upload_json"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
         android:text="Upload JSON File" />
 
 </LinearLayout>

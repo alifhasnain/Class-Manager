@@ -70,6 +70,11 @@ public class GiveTeacherClaim extends Fragment implements View.OnClickListener {
 
         String emailStr = email.getEditText().getText().toString();
 
+        if (emailStr.isEmpty()) {
+            makeToast("Please insert an eamil.");
+            return;
+        }
+
         String jsonEmail = "{\"email\" : " + "\"" + emailStr + "\"" + "}";
 
         makeToast("Processing...");

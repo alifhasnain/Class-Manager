@@ -11,6 +11,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
         android:weightSum="10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,12 +33,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="4.5" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/search"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Search"
-            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_weight="3" />
 
     </LinearLayout>

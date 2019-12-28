@@ -17,7 +17,7 @@
         android:paddingTop="3dp"
         android:paddingBottom="3dp"
         android:orientation="vertical"
-        android:background="@color/google_blue">
+        android:background="@color/colorPrimary">
 
         <TextView
             android:id="@+id/day_of_week"
