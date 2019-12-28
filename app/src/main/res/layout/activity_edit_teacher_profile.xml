@@ -104,6 +104,9 @@
         <Button
             android:id="@+id/save"
             android:text="Save"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
             android:background="@color/colorPrimary"
             android:textColor="@color/white"
             android:layout_width="match_parent"
