@@ -19,13 +19,9 @@
         <activity android:name=".activities.EditTeacherProfile" />
         <activity android:name=".activities.AddCR" />
         <activity android:name=".activities.About" />
-        <activity
-            android:name=".activities.EditStudentProfile"
-            android:theme="@style/AppTheme" />
+        <activity android:name=".activities.EditStudentProfile" />
         <activity android:name=".activities.CancelBookByAdmin" />
-        <activity
-            android:name=".activities.CompleteNewProfileStudent"
-            android:theme="@style/AppTheme" />
+        <activity android:name=".activities.CompleteNewProfileStudent" />
         <activity
             android:name=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -40,7 +36,6 @@
             android:theme="@style/AppTheme.NoActionbar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
