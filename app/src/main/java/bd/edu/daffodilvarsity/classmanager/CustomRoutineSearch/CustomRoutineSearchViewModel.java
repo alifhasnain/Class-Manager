@@ -15,6 +15,7 @@ import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetailsDao;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetailsDatabase;
+import timber.log.Timber;
 
 public class CustomRoutineSearchViewModel extends AndroidViewModel {
 
@@ -32,16 +33,15 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
         allClassesDao = db.routineClassDetailsDao();
     }
 
-    public void loadTeacherClasses(final String teacherInitial, final String day)  {
+    public void loadTeacherClasses(final String teacherInitial, final String day) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if(day.equals("All"))   {
+                if (day.equals("All")) {
                     ArrayList<RoutineClassDetails> classes = (ArrayList<RoutineClassDetails>) allClassesDao.getClassesWithInitial(teacherInitial);
                     teacherClassesLiveData.postValue(getSortedClassList(classes));
-                }
-                else {
-                    ArrayList<RoutineClassDetails> classes = (ArrayList<RoutineClassDetails>) allClassesDao.getClassesWithInitial(teacherInitial,day);
+                } else {
+                    ArrayList<RoutineClassDetails> classes = (ArrayList<RoutineClassDetails>) allClassesDao.getClassesWithInitial(teacherInitial, day);
                     teacherClassesLiveData.postValue(classes);
                 }
 
@@ -49,23 +49,28 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
         }).start();
     }
 
-    public void loadStudentClasses(String level, String term , final String shift, final String section) {
+    public void loadStudentClasses(String level, String term, final String shift, final String section) {
 
         HelperClass helperClass = HelperClass.getInstance();
 
-        final ArrayList<String> courseList = helperClass.getCourseList(HelperClass.PROGRAM_BSC,shift,level,term);
+        final ArrayList<String> courseList = helperClass.getCourseList(HelperClass.PROGRAM_BSC, shift, level, term);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ArrayList<RoutineClassDetails> studentRoutines = (ArrayList<RoutineClassDetails>) allClassesDao.getClassesStudent(shift,section,courseList);
-                studentClassesLiveData.postValue(getSortedClassList(studentRoutines));
+                try {
+                    ArrayList<RoutineClassDetails> studentRoutines = new ArrayList<>(allClassesDao.getClassesStudent(shift, section, courseList));
+                    studentClassesLiveData.postValue(getSortedClassList(studentRoutines));
+                } catch (NullPointerException e) {
+                    studentClassesLiveData.postValue(new ArrayList<RoutineClassDetails>());
+                    Timber.e(e);
+                }
             }
         }).start();
 
     }
 
-    public LiveData<ArrayList<RoutineClassDetails>> getTeacherClasses()    {
+    public LiveData<ArrayList<RoutineClassDetails>> getTeacherClasses() {
         return teacherClassesLiveData;
     }
 
@@ -73,7 +78,7 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
         return studentClassesLiveData;
     }
 
-    private ArrayList<RoutineClassDetails> getSortedClassList(ArrayList<RoutineClassDetails> classesList)   {
+    private ArrayList<RoutineClassDetails> getSortedClassList(ArrayList<RoutineClassDetails> classesList) {
 
         Collections.sort(classesList, new Comparator<RoutineClassDetails>() {
             @Override
@@ -91,9 +96,8 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
         ArrayList<RoutineClassDetails> wednesday = new ArrayList<>();
         ArrayList<RoutineClassDetails> thursday = new ArrayList<>();
 
-        for(RoutineClassDetails rcd : classesList)  {
-            switch (rcd.getDayOfWeek())
-            {
+        for (RoutineClassDetails rcd : classesList) {
+            switch (rcd.getDayOfWeek()) {
                 case "Saturday":
                     saturday.add(rcd);
                     break;
@@ -116,46 +120,46 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
         }
 
 
-        if(saturday.size()>0)   {
+        if (saturday.size() > 0) {
             RoutineClassDetails routineClassDetails = new RoutineClassDetails();
             routineClassDetails.setPriority(1000f);
             routineClassDetails.setDayOfWeek("Saturday");
-            saturday.add(0,routineClassDetails);
+            saturday.add(0, routineClassDetails);
             modifiedList.addAll(saturday);
         }
-        if(sunday.size()>0) {
+        if (sunday.size() > 0) {
             RoutineClassDetails routineClassDetails = new RoutineClassDetails();
             routineClassDetails.setPriority(1000f);
             routineClassDetails.setDayOfWeek("Sunday");
-            sunday.add(0,routineClassDetails);
+            sunday.add(0, routineClassDetails);
             modifiedList.addAll(sunday);
         }
-        if(monday.size()>0) {
+        if (monday.size() > 0) {
             RoutineClassDetails routineClassDetails = new RoutineClassDetails();
             routineClassDetails.setPriority(1000f);
             routineClassDetails.setDayOfWeek("Monday");
-            monday.add(0,routineClassDetails);
+            monday.add(0, routineClassDetails);
             modifiedList.addAll(monday);
         }
-        if(tuesday.size()>0) {
+        if (tuesday.size() > 0) {
             RoutineClassDetails routineClassDetails = new RoutineClassDetails();
             routineClassDetails.setPriority(1000f);
             routineClassDetails.setDayOfWeek("Tuesday");
-            tuesday.add(0,routineClassDetails);
+            tuesday.add(0, routineClassDetails);
             modifiedList.addAll(tuesday);
         }
-        if(wednesday.size()>0) {
+        if (wednesday.size() > 0) {
             RoutineClassDetails routineClassDetails = new RoutineClassDetails();
             routineClassDetails.setPriority(1000f);
             routineClassDetails.setDayOfWeek("Wednesday");
-            wednesday.add(0,routineClassDetails);
+            wednesday.add(0, routineClassDetails);
             modifiedList.addAll(wednesday);
         }
-        if(thursday.size()>0) {
+        if (thursday.size() > 0) {
             RoutineClassDetails routineClassDetails = new RoutineClassDetails();
             routineClassDetails.setPriority(1000f);
             routineClassDetails.setDayOfWeek("Thursday");
-            thursday.add(0,routineClassDetails);
+            thursday.add(0, routineClassDetails);
             modifiedList.addAll(thursday);
         }
 
