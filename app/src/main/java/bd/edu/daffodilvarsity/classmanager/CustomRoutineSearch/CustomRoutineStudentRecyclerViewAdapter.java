@@ -27,11 +27,11 @@ public class CustomRoutineStudentRecyclerViewAdapter extends RecyclerView.Adapte
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == 1) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_routine_student_list_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_custom_routine_student, parent, false);
             return new ViewHolder1(view);
 
         } else {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_routine_list_item_divider, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_divider_custom_routine, parent, false);
             return new ViewHolder2(view);
         }
     }

@@ -9,10 +9,12 @@ import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -42,8 +44,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
-    private FirebaseFirestore db;
-
     private TextInputLayout mEmailEditText;
 
     private TextInputLayout mPasswordEditText;
@@ -56,6 +56,8 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         startGradientAnimation();
 
         initializeVariables();
+
+        styleProgressBar();
 
         loadSavedUserEmail();
 
@@ -80,10 +82,9 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
     @Override
     public void onBackPressed() {
         LinearLayout progressBarHolder = findViewById(R.id.progress_bar_holder);
-        if(progressBarHolder.getVisibility() == View.VISIBLE)   {
+        if (progressBarHolder.getVisibility() == View.VISIBLE) {
             progressBarHolder.setVisibility(View.GONE);
-        }
-        else    {
+        } else {
             super.onBackPressed();
         }
     }
@@ -91,7 +92,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
     private void initializeVariables() {
 
         mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -110,7 +110,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                             } else if (result.getClaims().get("teacher") != null) {
                                 showCircularProgressBar(false);
                                 signInAsAdminOrTeacher(HelperClass.USER_TYPE_TEACHER);
-                            } else if(result.getClaims().get("student") != null)    {
+                            } else if (result.getClaims().get("student") != null) {
                                 showCircularProgressBar(false);
                                 makeToast("Only teachers can sign in.\nIf you are a teacher but your data doesn't exist please contact to the department.");
                             }
@@ -145,7 +145,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
         ProfileObjectStudent profile = SharedPreferencesHelper.getStudentOfflineProfile(this);
 
-        if(userType.equals(HelperClass.USER_TYPE_STUDENT) && profile!=null) {
+        if (userType.equals(HelperClass.USER_TYPE_STUDENT) && profile != null) {
             signInAsStudent();
         }
     }
@@ -168,6 +168,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                 break;
         }
     }
+
 
     /*private void checkIfStudentProfileExistInDatabase() {
 
@@ -211,7 +212,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                 });
 
     }*/
-
     private void initializeOnClickListeners() {
         findViewById(R.id.sign_in).setOnClickListener(this);
         findViewById(R.id.sign_up).setOnClickListener(this);
@@ -220,7 +220,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void completeProfileStudent() {
-        SharedPreferencesHelper.setUserType(this,HelperClass.USER_TYPE_STUDENT);
+        SharedPreferencesHelper.setUserType(this, HelperClass.USER_TYPE_STUDENT);
         makeToast("Please complete your profile information");
         startActivity(new Intent(this, CompleteNewProfileStudent.class));
     }
@@ -229,22 +229,22 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
         showCircularProgressBar(true);
 
-        if(SharedPreferencesHelper.getTeacherOfflineProfile(this)==null)    {
+        if (SharedPreferencesHelper.getTeacherOfflineProfile(this) == null) {
 
-            DocumentReference profile = FirebaseFirestore.getInstance().document("teacher_profiles/"+mAuth.getCurrentUser().getEmail());
+            DocumentReference profile = FirebaseFirestore.getInstance().document("teacher_profiles/" + mAuth.getCurrentUser().getEmail());
 
             profile.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if(documentSnapshot.exists())   {
+                    if (documentSnapshot.exists()) {
 
                         showCircularProgressBar(false);
 
                         ProfileObjectTeacher profile = documentSnapshot.toObject(ProfileObjectTeacher.class);
-                        SharedPreferencesHelper.saveTeacherProfileToSharedPref(getApplicationContext(),profile);
+                        SharedPreferencesHelper.saveTeacherProfileToSharedPref(getApplicationContext(), profile);
                         saveUserTypeAndLaunchMainActivity(userType);
 
-                    }   else {
+                    } else {
                         makeToast("Profile doesn't exist in teacher list.\nContact admin.");
                         showCircularProgressBar(false);
                         saveUserTypeAndLaunchMainActivity(userType);
@@ -257,31 +257,30 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                     showCircularProgressBar(false);
                 }
             });
-        }   else    {
+        } else {
             showCircularProgressBar(false);
             saveUserTypeAndLaunchMainActivity(userType);
         }
 
     }
 
-    private void saveUserTypeAndLaunchMainActivity(String userType)    {
-        switch (userType)
-        {
+    private void saveUserTypeAndLaunchMainActivity(String userType) {
+        switch (userType) {
             case HelperClass.USER_TYPE_ADMIN:
-                SharedPreferencesHelper.setUserType(this,HelperClass.USER_TYPE_ADMIN);
+                SharedPreferencesHelper.setUserType(this, HelperClass.USER_TYPE_ADMIN);
                 break;
             case HelperClass.USER_TYPE_TEACHER:
-                SharedPreferencesHelper.setUserType(this,HelperClass.USER_TYPE_TEACHER);
+                SharedPreferencesHelper.setUserType(this, HelperClass.USER_TYPE_TEACHER);
                 break;
         }
         startMainActivity();
     }
 
+
     /*private void signInAsTeacher() {
         new SharedPreferencesHelper().setUserType(this,HelperClass.USER_TYPE_TEACHER);
         startMainActivity();
     }*/
-
     private void signInAsStudent() {
         startMainActivity();
     }
@@ -377,6 +376,17 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                 }
             }
         });
+
+    }
+
+    private void styleProgressBar() {
+
+        CircularProgressDrawable progressDrawable = new CircularProgressDrawable(this);
+        progressDrawable.setColorSchemeColors(4359668, 14369847, 16036864, 1023320);
+        progressDrawable.setStrokeWidth(8f);
+
+        ProgressBar progressBar = findViewById(R.id.circular_progress_bar);
+        progressBar.setIndeterminateDrawable(progressDrawable);
 
     }
 

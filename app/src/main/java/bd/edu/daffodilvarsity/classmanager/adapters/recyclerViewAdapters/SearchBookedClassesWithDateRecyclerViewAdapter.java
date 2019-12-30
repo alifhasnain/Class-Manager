@@ -37,7 +37,7 @@ public class SearchBookedClassesWithDateRecyclerViewAdapter extends RecyclerView
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_booked_classes_with_day_list_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_search_booked_classes_with_day,parent,false);
 
         return new ViewHolder(view);
 

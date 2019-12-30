@@ -33,7 +33,7 @@ public class TeacherProfileListRecyclerViewAdapter extends RecyclerView.Adapter<
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.teacher_profile_list_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_teacher_profile,parent,false);
 
         return new ViewHolder(view);
 

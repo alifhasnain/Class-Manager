@@ -32,6 +32,7 @@ import bd.edu.daffodilvarsity.classmanager.broadcastreceiver.NotificationReceive
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 import bd.edu.daffodilvarsity.classmanager.workers.ReminderSchedulerWorker;
+import timber.log.Timber;
 
 import static android.content.Context.ALARM_SERVICE;
 import static bd.edu.daffodilvarsity.classmanager.BaseApplication.DOWNLOAD_PROGRESS_CHANNEL_ID;
@@ -90,6 +91,7 @@ public class EachDayClassViewModel extends AndroidViewModel {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                Timber.e(e);
                 downloadInProgress = false;
                 showDownloadNotificationProgress(false,"Download Failed");
             }
@@ -135,6 +137,7 @@ public class EachDayClassViewModel extends AndroidViewModel {
             public void onFailure(@NonNull Exception e) {
                 downloadInProgress = false;
                 showDownloadNotificationProgress(false,"Download Failed");
+                Timber.e(e);
             }
         });
     }

@@ -24,7 +24,7 @@ public class EmptyRoomsRecyclerViewAdapter extends RecyclerView.Adapter<EmptyRoo
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_room_list_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_empty_room,parent,false);
 
         return new ViewHolder(view);
 
