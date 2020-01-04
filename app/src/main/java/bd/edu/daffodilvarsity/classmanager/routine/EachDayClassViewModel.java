@@ -18,18 +18,17 @@ import androidx.work.WorkManager;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.broadcastreceiver.NotificationReceiver;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.RoutineObj;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 import bd.edu.daffodilvarsity.classmanager.workers.ReminderSchedulerWorker;
 import timber.log.Timber;
@@ -52,6 +51,81 @@ public class EachDayClassViewModel extends AndroidViewModel {
     }
 
     public void loadWholeRoutineFromServer(final String version) {
+
+        if(downloadInProgress)  {
+            makeToast("Download is already in progress");
+            return;
+        }
+        else {
+            downloadInProgress = true;
+        }
+
+        DocumentReference routineRef = FirebaseFirestore.getInstance().document("/routine/routine");
+
+        showDownloadNotificationProgress(true,"Downloading...");
+
+        routineRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                RoutineObj routine = documentSnapshot.toObject(RoutineObj.class);
+
+                makeToast("Downloaded!");
+                cancelAlarms();
+
+                dataRepo.saveJsonRoutineToRoomDatabase(routine.getDay(), routine.getEvening());
+                SharedPreferencesHelper.saveRoutineVersionToSharedPreferences(getApplication(), version);
+                downloadInProgress = false;
+                showDownloadNotificationProgress(false,"Download Complete");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Timber.e(e);
+                downloadInProgress = false;
+                showDownloadNotificationProgress(false,"Download Failed");
+            }
+        });
+
+    }
+
+    public void loadWholeRoutineFromServer() {
+        if(downloadInProgress)  {
+            makeToast("Download is already in progress");
+            return;
+        }
+        else {
+            downloadInProgress = true;
+        }
+
+        DocumentReference routineRef = FirebaseFirestore.getInstance().document("/routine/routine");
+
+        showDownloadNotificationProgress(true,"Downloading...");
+
+        routineRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                RoutineObj routine = documentSnapshot.toObject(RoutineObj.class);
+
+                makeToast("Downloaded!");
+                cancelAlarms();
+
+                dataRepo.saveJsonRoutineToRoomDatabase(routine.getDay(), routine.getEvening());
+                downloadInProgress = false;
+                showDownloadNotificationProgress(false,"Download Complete");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Timber.e(e);
+                downloadInProgress = false;
+                showDownloadNotificationProgress(false,"Download Failed");
+            }
+        });
+    }
+
+    /*public void loadWholeRoutineFromServer(final String version) {
 
         if(downloadInProgress)  {
             makeToast("Download is already in progress");
@@ -112,6 +186,13 @@ public class EachDayClassViewModel extends AndroidViewModel {
         StorageReference dayRoutine = rootStorage.child("/main_campus/routine_day.txt");
         StorageReference eveningRoutine = rootStorage.child("/main_campus/routine_evening.txt");
 
+        dayRoutine.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Timber.tag("Link").e(uri.toString());
+            }
+        });
+
         final long MAX_DOWNLOAD_SIZE = 1024 * 1024;
 
         Task<byte[]> dayRoutineTask = dayRoutine.getBytes(MAX_DOWNLOAD_SIZE);
@@ -139,8 +220,13 @@ public class EachDayClassViewModel extends AndroidViewModel {
                 showDownloadNotificationProgress(false,"Download Failed");
                 Timber.e(e);
             }
+        }).addOnCanceledListener(new OnCanceledListener() {
+            @Override
+            public void onCanceled() {
+                makeToast("Download Canceled!");
+            }
         });
-    }
+    }*/
 
     public void showDownloadNotificationProgress(boolean downloading , String message)  {
 
@@ -194,7 +280,9 @@ public class EachDayClassViewModel extends AndroidViewModel {
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), NOTIFICATION_ALARM_REQ_CODE, intent, 0);
 
-        alarmManager.cancel(pendingIntent);
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+        }
 
     }
 

@@ -30,6 +30,10 @@ public class SearchBookedClassesWithRangeViewModel extends ViewModel {
 
     private MutableLiveData<ArrayList<BookedClassDetailsUser>> classesLiveData = new MutableLiveData<>();
 
+    private MutableLiveData<ArrayList<BookedClassDetailsUser>> allClasses = new MutableLiveData<>();
+
+    private MutableLiveData<String> toastLiveData = new MutableLiveData<>();
+
     public void fetchData(Timestamp start, Timestamp end) {
 
         if (loadingInProgress) {
@@ -115,7 +119,53 @@ public class SearchBookedClassesWithRangeViewModel extends ViewModel {
 
     }
 
+    public void fetchAllData(Timestamp start , Timestamp end) {
+
+        if (loadingInProgress) {
+            toastLiveData.setValue("Already in progress");
+            return;
+        } else {
+            loadingInProgress = true;
+        }
+
+        this.start = start;
+        this.end = end;
+
+        db.collection("/booked_classes/")
+                .whereGreaterThanOrEqualTo("reservationDate", start)
+                .whereLessThanOrEqualTo("reservationDate", end)
+                .orderBy("reservationDate")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        ArrayList<BookedClassDetailsUser> tempList = new ArrayList<>();
+                        for (DocumentSnapshot ds : queryDocumentSnapshots) {
+                            tempList.add(ds.toObject(BookedClassDetailsUser.class));
+                        }
+                        allClasses.setValue(tempList);
+                        loadingInProgress = false;
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        loadingInProgress = false;
+                        toastLiveData.setValue("Failed to load please try again");
+                        Timber.e(e);
+                    }
+                });
+    }
+
     public MutableLiveData<ArrayList<BookedClassDetailsUser>> getClassesLiveData() {
         return classesLiveData;
+    }
+
+    public MutableLiveData<ArrayList<BookedClassDetailsUser>> getAllClasses() {
+        return allClasses;
+    }
+
+    public MutableLiveData<String> getToastMessage() {
+        return toastLiveData;
     }
 }

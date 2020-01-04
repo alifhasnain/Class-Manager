@@ -112,7 +112,7 @@ public class ProfileTeacher extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_teacher_menu, menu);
+        inflater.inflate(R.menu.menu_profile_teacher, menu);
     }
 
     @Override

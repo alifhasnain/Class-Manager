@@ -30,10 +30,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -303,10 +299,6 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
             makeToast("No classes on the list.");
             return;
         }
-        if (routineVersion.getText().toString().equals("")) {
-            makeToast("Please identify semester with routine version");
-            return;
-        }
 
         AlertDialog alertDialog = new AlertDialog.Builder(getContext())
                 .setTitle("Are you sure to proceed?")
@@ -314,7 +306,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                 .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        uploadToFirebaseStorage(allClasses);
+                        uploadToFirebase(allClasses);
                     }
                 })
                 .setNegativeButton("Cancel", null)
@@ -323,13 +315,52 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
 
     }
 
-    private void uploadToFirebaseStorage(ArrayList<ClassDetails> allClasses) {
+    private void uploadToFirebase(ArrayList<ClassDetails> allClasses) {
+        String allClassesJsonString = getJsonRoutine(allClasses);
 
-        Type type = new TypeToken<ArrayList<ClassDetails>>() {
-        }.getType();
-        Gson gson = new Gson();
+        String campus = mCampusSelector.getSelectedItem().toString();
+        String shift = mShiftSelector.getSelectedItem().toString();
 
-        String allClassesJsonString = gson.toJson(allClasses, type);
+        DocumentReference routineDoc = FirebaseFirestore.getInstance().document("/routine/routine");
+
+        uploadJson.setEnabled(false);
+
+        if (campus.equals("Main Campus") && shift.equals("Day")) {
+            routineDoc.update("day", allClassesJsonString).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    makeToast("Successfully saved!");
+                    uploadJson.setEnabled(true);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    makeToast("Failed to save.\nPlease try again.");
+                    uploadJson.setEnabled(true);
+                    Timber.e(e);
+                }
+            });
+        } else if (campus.equals("Main Campus") && shift.equals("Evening")) {
+            routineDoc.update("evening", allClassesJsonString).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    makeToast("Successfully saved!");
+                    uploadJson.setEnabled(true);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    makeToast("Failed to save.\nPlease try again.");
+                    uploadJson.setEnabled(true);
+                    Timber.e(e);
+                }
+            });
+        }
+    }
+
+    /*private void uploadToFirebaseStorage(ArrayList<ClassDetails> allClasses) {
+
+        String allClassesJsonString = getJsonRoutine(allClasses);
 
         byte[] allClassByteArray = allClassesJsonString.getBytes(StandardCharsets.UTF_8);
 
@@ -364,7 +395,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                 uploadJson.setEnabled(true);
             }
         });
-    }
+    }*/
 
     private void readRoutineDay(File file, String startDay, String endDay, String shift) {
 
@@ -730,6 +761,13 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                 checkAndUploadToFirebaseStorage();
                 break;
         }
+    }
+
+    private String getJsonRoutine(ArrayList<ClassDetails> classes) {
+        Type type = new TypeToken<ArrayList<ClassDetails>>() {
+        }.getType();
+        Gson gson = new Gson();
+        return gson.toJson(classes, type);
     }
 
     private void makeToast(String txt) {
