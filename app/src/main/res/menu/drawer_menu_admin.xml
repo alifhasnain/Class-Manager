@@ -2,60 +2,136 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-    <group android:checkableBehavior="single">
 
-        <item
-            android:id="@+id/admin"
-            android:icon="@drawable/ic_menu_admin"
-            android:title="Admin" />
+    <item android:title="General">
+        <menu>
 
-        <item
-            android:id="@+id/profile_teacher"
-            android:icon="@drawable/ic_menu_profile"
-            android:title="Profile" />
-        <item
-            android:id="@+id/classes"
-            android:icon="@drawable/ic_menu_schedule"
-            android:title="Classes" />
-        <item
-            android:id="@+id/empty_rooms"
-            android:icon="@drawable/ic_menu_empty_rooms"
-            android:title="Empty Rooms"/>
-        <item
-            android:id="@+id/custom_room_search"
-            android:icon="@drawable/ic_search"
-            android:title="Custom Search"/>
-        <item
-            android:id="@+id/book_classes"
-            android:icon="@drawable/ic_menu_book_class"
-            android:title="Book Classroom" />
-        <item
-            android:id="@+id/booked_classroom"
-            android:icon="@drawable/ic_menu_booked_classes"
-            android:title="Booked Classrooms" />
+            <group android:checkableBehavior="single">
 
-        <item
-            android:id="@+id/cr_list"
-            android:icon="@drawable/ic_menu_cr"
-            android:title="CR List"/>
+                <item
+                    android:id="@+id/profile_teacher"
+                    android:icon="@drawable/ic_menu_profile"
+                    android:title="Profile" />
+                <item
+                    android:id="@+id/classes"
+                    android:icon="@drawable/ic_menu_schedule"
+                    android:title="Classes" />
+                <item
+                    android:id="@+id/empty_rooms"
+                    android:icon="@drawable/ic_menu_empty_rooms"
+                    android:title="Empty Rooms" />
+                <item
+                    android:id="@+id/custom_room_search"
+                    android:icon="@drawable/ic_search"
+                    android:title="Custom Search" />
+                <item
+                    android:id="@+id/book_classes"
+                    android:icon="@drawable/ic_menu_book_class"
+                    android:title="Book Classroom" />
+                <item
+                    android:id="@+id/booked_classroom"
+                    android:icon="@drawable/ic_menu_booked_classes"
+                    android:title="Booked Classrooms" />
 
-    </group>
+                <item
+                    android:id="@+id/cr_list"
+                    android:icon="@drawable/ic_menu_cr"
+                    android:title="CR List" />
 
-    <group
-        android:id="@+id/bellow_group"
-        android:checkableBehavior="none">
-        <item
-            android:id="@+id/sign_out"
-            android:icon="@drawable/ic_menu_sign_out"
-            android:title="Log Out" />
-        <item
-            android:id="@+id/report_bug"
-            android:icon="@drawable/ic_menu_bug_report"
-            android:title="Report a bug" />
-        <item
-            android:id="@+id/about"
-            android:icon="@drawable/ic_menu_about"
-            android:title="About" />
-    </group>
+            </group>
+
+        </menu>
+    </item>
+
+    <item android:title="Admin">
+
+        <menu>
+
+            <group android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/parse_routine"
+                    android:icon="@drawable/ic_menu_parse_routine"
+                    android:title="Parse Routine" />
+
+                <item
+                    android:id="@+id/parse_teacher_profile"
+                    android:icon="@drawable/ic_menu_parse_teacher_profile"
+                    android:title="Parse Teacher Profile" />
+
+                <item
+                    android:id="@+id/add_teacher_profile"
+                    android:icon="@drawable/ic_menu_add_teacher"
+                    android:title="Add Teacher Profile" />
+
+                <item
+                    android:id="@+id/give_teacher_claim"
+                    android:icon="@drawable/ic_menu_grant_teacher_claim"
+                    android:title="Grant Teacher Claim" />
+
+                <item
+                    android:id="@+id/teacher_profiles_list"
+                    android:icon="@drawable/ic_menu_cr"
+                    android:title="Teacher Profiles List" />
+
+                <item
+                    android:id="@+id/miscellaneous"
+                    android:icon="@drawable/ic_menu_miscellaneous"
+                    android:title="Miscellaneous" />
+
+            </group>
+
+        </menu>
+
+    </item>
+
+    <item android:title="Query (Admin)">
+
+        <menu>
+
+            <group
+                android:id="@+id/admin_search_actions"
+                android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/search_booked_classes_date"
+                    android:icon="@drawable/ic_search"
+                    android:title="Booked Classes (Date)" />
+
+                <item
+                    android:id="@+id/search_booked_classes_range"
+                    android:icon="@drawable/ic_search"
+                    android:title="Booked Classes (Range)" />
+
+            </group>
+
+        </menu>
+
+    </item>
+
+    <item android:title="Others">
+
+        <menu>
+
+            <group
+                android:id="@+id/bellow_group"
+                android:checkableBehavior="none">
+                <item
+                    android:id="@+id/sign_out"
+                    android:icon="@drawable/ic_menu_sign_out"
+                    android:title="Log Out" />
+                <item
+                    android:id="@+id/report_bug"
+                    android:icon="@drawable/ic_menu_bug_report"
+                    android:title="Report a bug" />
+                <item
+                    android:id="@+id/about"
+                    android:icon="@drawable/ic_menu_about"
+                    android:title="About" />
+            </group>
+
+        </menu>
+
+    </item>
 
 </menu>

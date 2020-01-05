@@ -30,13 +30,20 @@ import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.CustomRoutineSearch.CustomRoutineSearchTabHolder;
 import bd.edu.daffodilvarsity.classmanager.R;
-import bd.edu.daffodilvarsity.classmanager.fragments.AdminPanel;
+import bd.edu.daffodilvarsity.classmanager.fragments.AddTeacherProfile;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookedClasses;
 import bd.edu.daffodilvarsity.classmanager.fragments.CRList;
 import bd.edu.daffodilvarsity.classmanager.fragments.EmptyRooms;
+import bd.edu.daffodilvarsity.classmanager.fragments.GiveTeacherClaim;
+import bd.edu.daffodilvarsity.classmanager.fragments.MiscellaneousAdminAction;
+import bd.edu.daffodilvarsity.classmanager.fragments.ParseTeacherProfiles;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileStudents;
 import bd.edu.daffodilvarsity.classmanager.fragments.ProfileTeacher;
+import bd.edu.daffodilvarsity.classmanager.fragments.RoutineParser;
+import bd.edu.daffodilvarsity.classmanager.fragments.SearchBookedClassesWithDate;
+import bd.edu.daffodilvarsity.classmanager.fragments.SearchBookedClassesWithRange;
+import bd.edu.daffodilvarsity.classmanager.fragments.TeacherProfileList;
 import bd.edu.daffodilvarsity.classmanager.notification.NotificationStudent;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ProfileObjectStudent;
@@ -227,10 +234,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.admin:
-                enableToolbarScrolling(false);
-                mFragmentToLaunch = new AdminPanel();
-                break;
             case R.id.notification_student:
                 enableToolbarScrolling(false);
                 mFragmentToLaunch = new NotificationStudent();
@@ -266,6 +269,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.cr_list:
                 enableToolbarScrolling(true);
                 mFragmentToLaunch = new CRList();
+                break;
+            case R.id.parse_teacher_profile:
+                mFragmentToLaunch = new ParseTeacherProfiles();
+                enableToolbarScrolling(false);
+                break;
+            case R.id.parse_routine:
+                mFragmentToLaunch = new RoutineParser();
+                enableToolbarScrolling(false);
+                break;
+            case R.id.add_teacher_profile:
+                mFragmentToLaunch = new AddTeacherProfile();
+                enableToolbarScrolling(false);
+                break;
+            case R.id.give_teacher_claim:
+                mFragmentToLaunch = new GiveTeacherClaim();
+                enableToolbarScrolling(false);
+                break;
+            case R.id.teacher_profiles_list:
+                mFragmentToLaunch = new TeacherProfileList();
+                enableToolbarScrolling(true);
+                break;
+            case R.id.miscellaneous:
+                mFragmentToLaunch = new MiscellaneousAdminAction();
+                enableToolbarScrolling(false);
+                break;
+            case R.id.search_booked_classes_date:
+                mFragmentToLaunch = new SearchBookedClassesWithDate();
+                enableToolbarScrolling(true);
+                break;
+            case R.id.search_booked_classes_range:
+                mFragmentToLaunch = new SearchBookedClassesWithRange();
+                enableToolbarScrolling(true);
                 break;
             case R.id.sign_out:
                 signOut();
