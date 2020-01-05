@@ -82,6 +82,7 @@ public class AddCR extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void run() {
                 final List<String> courseList = repo.getTeacherCourses(profile.getTeacherInitial());
+                courseList.add(0,"Undifined");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
