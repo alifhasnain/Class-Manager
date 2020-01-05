@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Source;
 
+import bd.edu.daffodilvarsity.classmanager.BuildConfig;
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 import bd.edu.daffodilvarsity.classmanager.routine.EachDayClassViewModel;
@@ -25,6 +27,8 @@ public class About extends AppCompatActivity implements View.OnClickListener {
 
     private EachDayClassViewModel mViewModel;
 
+    private TextView version;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +36,12 @@ public class About extends AppCompatActivity implements View.OnClickListener {
 
         initializeVariables();
 
+        initializeData();
+
+    }
+
+    private void initializeData() {
+        version.setText(BuildConfig.VERSION_NAME);
     }
 
     @Override
@@ -76,6 +86,8 @@ public class About extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void initializeVariables() {
+
+        version = findViewById(R.id.version);
 
         findViewById(R.id.check_routine_update).setOnClickListener(this);
 
