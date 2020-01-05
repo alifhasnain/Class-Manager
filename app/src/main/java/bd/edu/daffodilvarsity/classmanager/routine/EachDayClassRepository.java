@@ -238,6 +238,10 @@ public class EachDayClassRepository {
         return allClassesDao.getCoursesWithInitial(initial);
     }
 
+    public List<String> getTeacherSections(String inital) {
+        return allClassesDao.getTeacherSectionsWithInitial(inital);
+    }
+
     private String getDayOfWeek()  {
 
         Calendar calendar = Calendar.getInstance();

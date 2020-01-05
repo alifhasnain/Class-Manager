@@ -56,4 +56,8 @@ public interface RoutineClassDetailsDao {
     //For getting course list with teacher initial
     @Query("SELECT DISTINCT courseCode FROM RoutineClassDetails WHERE teacherInitial=:teacherInitial")
     List<String> getCoursesWithInitial(String teacherInitial);
+
+    @Query("SELECT DISTINCT section FROM RoutineClassDetails WHERE teacherInitial=:teacherInitial ORDER BY section")
+    List<String> getTeacherSectionsWithInitial(String teacherInitial);
+
 }

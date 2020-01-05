@@ -56,9 +56,9 @@ import timber.log.Timber;
  */
 public class BookClasses extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
-    private static final String TAG = "BookClasses";
-
     private List<String> teacherCourses = new ArrayList<>();
+
+    private List<String> teacherSections = new ArrayList<>();
 
     private BookClassViewModel mViewModel;
 
@@ -85,8 +85,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
     private Calendar mFinalDate;
 
     private DateFormat mDateFormater = new SimpleDateFormat("EEE, d MMM, yyyy");
-
-
+    
 
     public BookClasses() {
         // Required empty public constructor
@@ -121,8 +120,10 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
         if(teacherProfile!=null)    {
             mViewModel.loadTeacherCourses(teacherProfile.getTeacherInitial());
+            mViewModel.loadTeacherSections(teacherProfile.getTeacherInitial());
         }   else    {
             makeToast("Loading profile from database.");
+            updateTeacherProfileFromServer();
         }
 
 
@@ -132,6 +133,15 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
                 teacherCourses.clear();
                 teacherCourses.addAll(strings);
                 teacherCourses.add(0,"Undefined");
+            }
+        });
+
+        mViewModel.getTeacherSection().observe(getViewLifecycleOwner(), new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> strings) {
+                teacherSections.clear();
+                teacherSections.addAll(strings);
+                teacherSections.add(0,"Undefined");
             }
         });
 
@@ -161,8 +171,6 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
     @Override
     public void onStart() {
         super.onStart();
-
-        updateTeacherProfileFromServer();
 
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -196,6 +204,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
     private void updateTeacherProfileFromServer()   {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            makeToast("Not Signed in.");
             return;
         }
 
@@ -207,7 +216,8 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
                 if(documentSnapshot.exists())   {
                     ProfileObjectTeacher profile = documentSnapshot.toObject(ProfileObjectTeacher.class);
                     SharedPreferencesHelper.saveTeacherProfileToSharedPref(getActivity(),profile);
-
+                    mViewModel.loadTeacherCourses(profile.getTeacherInitial());
+                    mViewModel.loadTeacherSections(profile.getTeacherInitial());
                 }   else {
                     makeToast("Profile doesn't exist in teacher list.\nContact admin.");
                 }
@@ -271,7 +281,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
         bcdServer.setReservationDate(new int[]{year, month, dayOfMonth});
         bcdServer.setPriority(selectedClass.getPriority());
 
-        BookClassDialog bookClassDialog = new BookClassDialog(mDateFormater.format(mFinalDate.getTime()),bcdServer.getRoomNo(),bcdServer.getTime(),teacherCourses);
+        BookClassDialog bookClassDialog = new BookClassDialog(mDateFormater.format(mFinalDate.getTime()),bcdServer.getRoomNo(),bcdServer.getTime(),teacherCourses,teacherSections);
 
         bookClassDialog.show(getChildFragmentManager(),"custom_dialog");
 

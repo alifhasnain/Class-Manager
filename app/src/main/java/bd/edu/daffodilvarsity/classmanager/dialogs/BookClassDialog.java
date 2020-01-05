@@ -42,13 +42,16 @@ public class BookClassDialog extends AppCompatDialogFragment {
 
     private List<String> teacherCourses;
 
+    private List<String> teacherSections;
+
     private CustomDialogListener listener;
 
-    public BookClassDialog(String date, String room, String time , List<String> teacherCourses) {
+    public BookClassDialog(String date, String room, String time , List<String> teacherCourses , List<String> teacherSections) {
         dateStr = date;
         roomNoStr = room;
         timeStr = time;
         this.teacherCourses = teacherCourses;
+        this.teacherSections = teacherSections;
         listener = null;
     }
 
@@ -144,8 +147,7 @@ public class BookClassDialog extends AppCompatDialogFragment {
         shiftSelector.setAdapter(shiftSelectorAdapter);
 
 
-        String[] sections = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U" , "R1" , "R2" , "R3" , "R4"};
-        ArrayAdapter<String> sectionSelectorAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_items, sections);
+        ArrayAdapter<String> sectionSelectorAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_items, teacherSections);
         sectionSelectorAdapter.setDropDownViewResource(R.layout.spinner_dropdown_items);
         sectionSelector.setAdapter(sectionSelectorAdapter);
 

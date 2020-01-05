@@ -535,7 +535,7 @@ public class HelperClass {
 
         LinkedHashMap<String, String> coursesEveningBsc = new LinkedHashMap<>();
 
-        coursesEveningBsc.put("MAT121", "Mathematics II: Linear algebraand Coordinate Geometry");
+        coursesEveningBsc.put("MAT121", "Mathematics II: Linear algebra and Coordinate Geometry");
         coursesEveningBsc.put("CSE131", "Discrete Mathematics");
         coursesEveningBsc.put("ENG113", "English Language-I");
         coursesEveningBsc.put("PHY123", "Physics- II: Electricity, Magnetism and Modern Physics");

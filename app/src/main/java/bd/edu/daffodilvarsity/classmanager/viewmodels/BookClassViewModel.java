@@ -38,6 +38,8 @@ public class BookClassViewModel extends AndroidViewModel {
 
     private MutableLiveData<List<String>> coursesListTeacher = new MutableLiveData<>();
 
+    private MutableLiveData<List<String>> sectionListTeacher = new MutableLiveData<>();
+
     public BookClassViewModel(@NonNull Application application) {
         super(application);
         dataRepo = new EachDayClassRepository(application);
@@ -48,6 +50,15 @@ public class BookClassViewModel extends AndroidViewModel {
             @Override
             public void run() {
                 coursesListTeacher.postValue(dataRepo.getTeacherCourses(initial));
+            }
+        }).start();
+    }
+
+    public void loadTeacherSections(final String initial) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                sectionListTeacher.postValue(dataRepo.getTeacherSections(initial));
             }
         }).start();
     }
@@ -129,6 +140,10 @@ public class BookClassViewModel extends AndroidViewModel {
 
     public LiveData<List<String>> getTeacherCourses()   {
         return coursesListTeacher;
+    }
+
+    public LiveData<List<String>> getTeacherSection() {
+        return sectionListTeacher;
     }
 
     public LiveData<String> showToast() {
