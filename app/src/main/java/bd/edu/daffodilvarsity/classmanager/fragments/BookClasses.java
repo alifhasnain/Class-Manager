@@ -85,7 +85,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
     private Calendar mFinalDate;
 
     private DateFormat mDateFormater = new SimpleDateFormat("EEE, d MMM, yyyy");
-    
+
 
     public BookClasses() {
         // Required empty public constructor
@@ -239,7 +239,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
         mSelectedDate = new GregorianCalendar(year,month,dayOfMonth);
 
-        mFinalDate = mSelectedDate;
+        mFinalDate = (Calendar) mSelectedDate.clone();
 
         mPickedTimeText.setText(mDateFormater.format(mFinalDate.getTime()));
 
@@ -351,7 +351,7 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
         showProgressbar(true);
 
-        mFinalDate = mSelectedDate;
+        mFinalDate = (Calendar) mSelectedDate.clone();
 
         String dayOfWeek = getDayOfWeek(mFinalDate);
 
@@ -376,9 +376,8 @@ public class BookClasses extends Fragment implements View.OnClickListener, DateP
 
         mSelectedDate.set(year,month,dayOfMonth);
 
-        DateFormat dateFormat = new SimpleDateFormat("EEE, d MMM, yyyy");
+        mPickedTimeText.setText(mDateFormater.format(mSelectedDate.getTime()));
 
-        mPickedTimeText.setText(dateFormat.format(mSelectedDate.getTime()));
     }
 
     private String getDayOfWeek(Calendar calendar) {

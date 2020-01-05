@@ -179,7 +179,7 @@ public class ProfileTeacher extends Fragment {
             designation.setText(mProfile.getDesignation());
             teacherId.setText(mProfile.getId());
             contactNo.setText(mProfile.getContactNo());
-            classBookedThisMonth.setText(String.valueOf(bookedClassesThisMonth));
+            classBookedThisMonth.setText(bookedClassesThisMonth + "/12");
         } catch (Exception e) {
             Timber.e(e);
         }
