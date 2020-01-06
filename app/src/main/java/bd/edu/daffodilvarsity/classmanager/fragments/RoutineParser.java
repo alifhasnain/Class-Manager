@@ -3,7 +3,6 @@ package bd.edu.daffodilvarsity.classmanager.fragments;
 
 import android.Manifest;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -42,6 +41,7 @@ import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.R;
 import bd.edu.daffodilvarsity.classmanager.otherclasses.ClassDetails;
+import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import de.siegmar.fastcsv.reader.CsvParser;
 import de.siegmar.fastcsv.reader.CsvReader;
 import de.siegmar.fastcsv.reader.CsvRow;
@@ -446,7 +446,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                     } else if (!cd1.getCourseCode().isEmpty()) {
                         cd1.setSection(splitSection(cd1.getCourseCode()));
                         cd1.setCourseCode(splitCourseCode(cd1.getCourseCode()));
-                        cd1.setCourseName(getStringResourceByName(cd1.getCourseCode()));
+                        cd1.setCourseName(getCourseName(cd1.getCourseCode()));
 
                         allNonEmptyClassDetails.add(cd1);
 
@@ -461,7 +461,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                     } else if (!cd2.getCourseCode().isEmpty()) {
                         cd2.setSection(splitSection(cd2.getCourseCode()));
                         cd2.setCourseCode(splitCourseCode(cd2.getCourseCode()));
-                        cd2.setCourseName(getStringResourceByName(cd2.getCourseCode()));
+                        cd2.setCourseName(getCourseName(cd2.getCourseCode()));
 
                         allNonEmptyClassDetails.add(cd2);
                     }
@@ -476,7 +476,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                     } else if (!cd3.getCourseCode().isEmpty()) {
                         cd3.setSection(splitSection(cd3.getCourseCode()));
                         cd3.setCourseCode(splitCourseCode(cd3.getCourseCode()));
-                        cd3.setCourseName(getStringResourceByName(cd3.getCourseCode()));
+                        cd3.setCourseName(getCourseName(cd3.getCourseCode()));
 
                         allNonEmptyClassDetails.add(cd3);
 
@@ -492,7 +492,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                     } else if (!cd4.getCourseCode().isEmpty()) {
                         cd4.setSection(splitSection(cd4.getCourseCode()));
                         cd4.setCourseCode(splitCourseCode(cd4.getCourseCode()));
-                        cd4.setCourseName(getStringResourceByName(cd4.getCourseCode()));
+                        cd4.setCourseName(getCourseName(cd4.getCourseCode()));
 
                         allNonEmptyClassDetails.add(cd4);
 
@@ -508,7 +508,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                     } else if (!cd5.getCourseCode().isEmpty()) {
                         cd5.setSection(splitSection(cd5.getCourseCode()));
                         cd5.setCourseCode(splitCourseCode(cd5.getCourseCode()));
-                        cd5.setCourseName(getStringResourceByName(cd5.getCourseCode()));
+                        cd5.setCourseName(getCourseName(cd5.getCourseCode()));
 
                         allNonEmptyClassDetails.add(cd5);
 
@@ -524,7 +524,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                     } else if (!cd6.getCourseCode().isEmpty()) {
                         cd6.setSection(splitSection(cd6.getCourseCode()));
                         cd6.setCourseCode(splitCourseCode(cd6.getCourseCode()));
-                        cd6.setCourseName(getStringResourceByName(cd6.getCourseCode()));
+                        cd6.setCourseName(getCourseName(cd6.getCourseCode()));
 
                         allNonEmptyClassDetails.add(cd6);
 
@@ -552,7 +552,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                     } else if (!e1.getCourseCode().isEmpty()) {
                         e1.setSection(splitSection(e1.getCourseCode()));
                         e1.setCourseCode(splitCourseCode(e1.getCourseCode()));
-                        e1.setCourseName(getStringResourceByName(e1.getCourseCode()));
+                        e1.setCourseName(getCourseName(e1.getCourseCode()));
 
                         allNonEmptyClassDetails.add(e1);
                     }
@@ -567,7 +567,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                     } else if (!e2.getCourseCode().isEmpty()) {
                         e2.setSection(splitSection(e2.getCourseCode()));
                         e2.setCourseCode(splitCourseCode(e2.getCourseCode()));
-                        e2.setCourseName(getStringResourceByName(e2.getCourseCode()));
+                        e2.setCourseName(getCourseName(e2.getCourseCode()));
 
                         allNonEmptyClassDetails.add(e2);
                     }
@@ -582,7 +582,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                     } else if (!e3.getCourseCode().isEmpty()) {
                         e3.setSection(splitSection(e3.getCourseCode()));
                         e3.setCourseCode(splitCourseCode(e3.getCourseCode()));
-                        e3.setCourseName(getStringResourceByName(e3.getCourseCode()));
+                        e3.setCourseName(getCourseName(e3.getCourseCode()));
 
                         allNonEmptyClassDetails.add(e3);
                     }
@@ -597,7 +597,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
                     } else if (!e4.getCourseCode().isEmpty()) {
                         e4.setSection(splitSection(e4.getCourseCode()));
                         e4.setCourseCode(splitCourseCode(e4.getCourseCode()));
-                        e4.setCourseName(getStringResourceByName(e4.getCourseCode()));
+                        e4.setCourseName(getCourseName(e4.getCourseCode()));
 
                         allNonEmptyClassDetails.add(e4);
                     }
@@ -695,7 +695,11 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
         }
     }
 
-    private String getStringResourceByName(String resName) {
+    private String getCourseName(String resName) {
+        return HelperClass.getCourseNameFromCourseCode("Day",resName);
+    }
+
+    /*private String getCourseName(String resName) {
         String packageName = "bd.edu.daffodilvarsity.classmanager";
         int resId = getContext().getResources().getIdentifier(resName, "string", packageName);
 
@@ -711,7 +715,7 @@ public class RoutineParser extends Fragment implements EasyPermissions.Permissio
             return res;
         }
         return "";
-    }
+    }*/
 
     private boolean hasStoragePermission() {
         String[] perms = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
