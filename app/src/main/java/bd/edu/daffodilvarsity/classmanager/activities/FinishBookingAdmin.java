@@ -112,7 +112,7 @@ public class FinishBookingAdmin extends AppCompatActivity implements View.OnClic
 
         makeToast("Please wait while processing");
 
-        String teacherEmail = email.getEditText().getText().toString();
+        String teacherEmail = email.getEditText().getText().toString().trim();
 
         DocumentReference profileRef = FirebaseFirestore.getInstance().document("/teacher_profiles/" + teacherEmail);
 
