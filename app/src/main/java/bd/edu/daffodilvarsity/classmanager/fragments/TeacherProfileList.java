@@ -143,7 +143,7 @@ public class TeacherProfileList extends Fragment {
             mViewModel.loadTeacherProfiles();
         }
         else {
-            mViewModel.loadTeacherProfilesWithSubstring(searchQueryText.getText().toString());
+            mViewModel.loadTeacherProfilesWithSubstring(searchQueryText.getText().toString().trim().toUpperCase());
         }
     }
 

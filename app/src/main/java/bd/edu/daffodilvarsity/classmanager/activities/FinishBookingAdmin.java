@@ -209,9 +209,9 @@ public class FinishBookingAdmin extends AppCompatActivity implements View.OnClic
 
         BookedClassDetailsUser bcd = new BookedClassDetailsUser();
 
-        bcd.setTeacherEmail(email.getEditText().getText().toString());
+        bcd.setTeacherEmail(email.getEditText().getText().toString().trim());
 
-        bcd.setTeacherInitial(teacherInitial.getEditText().getText().toString());
+        bcd.setTeacherInitial(teacherInitial.getEditText().getText().toString().trim().toUpperCase());
 
         bcd.setReservationDate(getReservationDateTimestamp());
 
@@ -221,9 +221,9 @@ public class FinishBookingAdmin extends AppCompatActivity implements View.OnClic
 
         bcd.setRoomNo(mClass.getRoom());
 
-        bcd.setCourseCode(courseCode.getEditText().getText().toString());
+        bcd.setCourseCode(courseCode.getEditText().getText().toString().trim().toUpperCase());
 
-        bcd.setSection(section.getEditText().getText().toString());
+        bcd.setSection(section.getEditText().getText().toString().trim().toUpperCase());
 
         bcd.setShift(mClass.getShift());
 
