@@ -169,6 +169,8 @@ public class HelperClass {
         courseCodes.add("MAT111");
         courseCodes.add("ENG113");
         courseCodes.add("PHY113");
+        courseCodes.add("PHY114");
+        courseCodes.add("GED111");
 
         return courseCodes;
     }
@@ -180,9 +182,9 @@ public class HelperClass {
         courseCodes.add("MAT121");
         courseCodes.add("CSE122");
         courseCodes.add("CSE123");
-        courseCodes.add("PHY123");
-        courseCodes.add("PHY124");
         courseCodes.add("ENG123");
+        courseCodes.add("CSE124");
+        courseCodes.add("GED121");
 
         return courseCodes;
     }
@@ -196,7 +198,8 @@ public class HelperClass {
         courseCodes.add("CSE133");
         courseCodes.add("CSE134");
         courseCodes.add("CSE135");
-        courseCodes.add("MAT131");
+        courseCodes.add("CSE136");
+        courseCodes.add("GED131");
 
         return courseCodes;
     }
@@ -208,9 +211,10 @@ public class HelperClass {
         courseCodes.add("MAT211");
         courseCodes.add("CSE212");
         courseCodes.add("CSE213");
-        courseCodes.add("CSE214");
-        courseCodes.add("CSE215");
-        courseCodes.add("ED201");
+        courseCodes.add("CSE221-0");
+        courseCodes.add("CSE222-0");
+        courseCodes.add("CSE216");
+        courseCodes.add("ACT211");
 
         return courseCodes;
     }
@@ -301,6 +305,8 @@ public class HelperClass {
         courseCodes.add("CSE421");
         courseCodes.add("CSE422");
         courseCodes.add("CSE423");
+        courseCodes.add("CSE450");
+        courseCodes.add("CSE499");
 
         return courseCodes;
     }
@@ -310,6 +316,8 @@ public class HelperClass {
         ArrayList<String> courseCodes = new ArrayList<>();
 
         courseCodes.add("CSE498");
+        courseCodes.add("CSE444");
+        courseCodes.add("CSE499");
 
         return courseCodes;
     }
@@ -470,63 +478,82 @@ public class HelperClass {
         LinkedHashMap<String, String> coursesDay = new LinkedHashMap<>();
 
         coursesDay.put("CSE112", "Computer Fundamentals");
-        coursesDay.put("MAT111", "Mathematics-I: Differential and Integral Calculus");
+        coursesDay.put("MAT111", "Basic Mathematics");
         coursesDay.put("ENG113", "Basic Functional English and English Spoken");
-        coursesDay.put("PHY113", "Physics-I: Mechanics, Heat and Thermodynamics,Waves and Oscillation, Optics");
-        coursesDay.put("MAT121", "Mathematics -II: Complex Variable, linear Algebra and Coordinate Geometry");
+        coursesDay.put("PHY113", "Basic Physics");
+        coursesDay.put("PHY114", "Basic Physics Lab");
+        coursesDay.put("GED111", "History of Bangladesh and Bangla Language");
+
+        coursesDay.put("MAT121", "Complex Variable, linear Algebra and Coordinate Geometry");
         coursesDay.put("CSE122", "Programming and Problem Solving");
         coursesDay.put("CSE123", "Problem Solving Lab");
-        coursesDay.put("PHY123", "Physics-II: Electricity, Magnetism and Modern Physics");
-        coursesDay.put("PHY124", "Physics-II Lab");
         coursesDay.put("ENG123", "Writing and Comprehension");
+        coursesDay.put("CSE124", "Business Application Design");
+        coursesDay.put("GED121", "Bangladesh Studies");
+
         coursesDay.put("CSE131", "Discrete Mathematics");
         coursesDay.put("CSE132", "Electrical Circuits");
         coursesDay.put("CSE133", "Electrical Circuits Lab");
         coursesDay.put("CSE134", "Data Structure");
         coursesDay.put("CSE135", "Data Structure Lab");
-        coursesDay.put("MAT131", "Ordinary and Partial Differential Equations");
+        coursesDay.put("CSE136", "Software Project I");
+        coursesDay.put("GED131", "Art of Living");
+
+
         coursesDay.put("MAT211", "Engineering Mathematics");
-        coursesDay.put("CSE212", "Digital Electronics");
-        coursesDay.put("CSE213", "Digital Electronics Lab");
-        coursesDay.put("CSE214", "Object Oriented Programming");
-        coursesDay.put("CSE215", "Object Oriented Programming Lab");
-        coursesDay.put("GED201", "Bangladesh Studies");
+        coursesDay.put("CSE212", "Basic Electronics");
+        coursesDay.put("CSE213", "Basic Electronics Lab");
+        coursesDay.put("CSE221-0", "Object Oriented Programming");
+        coursesDay.put("CSE222-0", "Object Oriented Programming Lab");
+        coursesDay.put("CSE216", "Software Project II");
+        coursesDay.put("ACT211", "Financial and managerial Accounting ");
+
         coursesDay.put("CSE221", "Algorithms");
         coursesDay.put("CSE222", "Algorithms Lab");
         coursesDay.put("STA133", "Statistics and Probability");
         coursesDay.put("CSE224", "Electronic Devices and Circuits");
         coursesDay.put("CSE225", "Electronic Devices and Circuits Lab");
+
         coursesDay.put("CSE231", "Microprocessor and Assembly Language");
         coursesDay.put("CSE232", "Microprocessor and Assembly Language Lab");
         coursesDay.put("CSE233", "Data Communication");
         coursesDay.put("CSE234", "Numerical Methods");
         coursesDay.put("CSE235", "Introduction to Bio-Informatics");
+
         coursesDay.put("CSE311", "Database Management System");
         coursesDay.put("CSE312", "Database Management System Lab");
         coursesDay.put("CSE313", "Computer Networks");
         coursesDay.put("CSE314", "Computer Networks Lab");
-        coursesDay.put("ECO314", "Economics");
+        coursesDay.put("GED321", "Art of Living");
+
         coursesDay.put("CSE321", "System Analysis and Design");
         coursesDay.put("CSE322", "Computer Architecture and Organization");
         coursesDay.put("CSE323", "Operating Systems");
         coursesDay.put("CSE324", "Operating Systems Lab");
-        coursesDay.put("GED321", "Art of Living");
+        coursesDay.put("ECO314", "Economics");
+
         coursesDay.put("CSE331", "Compiler Design");
         coursesDay.put("CSE332", "Compiler Design Lab");
         coursesDay.put("CSE333", "Software Engineering");
         coursesDay.put("CSE334", "Wireless Programming");
-        coursesDay.put("ACT301", "Financial and Managerial Accounting 2");
+        coursesDay.put("ACT301", "Financial and Managerial Accounting");
+
         coursesDay.put("CSE412", "Artificial Intelligence");
         coursesDay.put("CSE413", "Artificial Intelligence Lab");
         coursesDay.put("CSE414", "Simulation and Modelling");
         coursesDay.put("CSE415", "Simulation and Modelling Lab");
         coursesDay.put("CSE417", "Web Engineering");
         coursesDay.put("CSE418", "Web Engineering Lab");
+
         coursesDay.put("CSE421", "Computer Graphics");
         coursesDay.put("CSE422", "Computer Graphics Lab");
         coursesDay.put("CSE423", "Embedded Systems");
-        coursesDay.put("CSE499", "Project / Internship (Phase I, to be completed in Level-4 Term-3");
+        coursesDay.put("CSE450", "Data Mining");
+
+        coursesDay.put("CSE444", "Introduction to Robotics");
         coursesDay.put("CSE498", "Social and Professional Issues in Computing");
+
+        coursesDay.put("CSE499", "Project / Internship (Phase I, to be completed in Level-4 Term-3");
 
         return coursesDay;
     }
@@ -641,23 +668,27 @@ public class HelperClass {
                 case "CSE112" :
                     return "Computer Fundamentals";
                 case "MAT111" :
-                    return "Mathematics-I: Differential and Integral Calculus";
+                    return "Basic Mathematics";
                 case "ENG113" :
                     return "Basic Functional English and English Spoken";
                 case "PHY113" :
-                    return "Physics-I: Mechanics, Heat and Thermodynamics,Waves and Oscillation, Optics";
+                    return "Basic Physics";
+                case "PHY114" :
+                    return "Basic Physics Lab";
+                case "GED111" :
+                    return "History of Bangladesh and Bangla Language";
                 case "MAT121" :
-                    return "Mathematics -II: Complex Variable, linear Algebra and Coordinate Geometry";
+                    return "Complex Variable, linear Algebra and Coordinate Geometry";
                 case "CSE122" :
                     return "Programming and Problem Solving";
                 case "CSE123" :
                     return "Problem Solving Lab";
-                case "PHY123" :
-                    return "Physics-II: Electricity, Magnetism and Modern Physics";
-                case "PHY124" :
-                    return "Physics-II Lab";
                 case "ENG123" :
                     return "Writing and Comprehension";
+                case "CSE124" :
+                    return "Business Application Design";
+                case "GED121" :
+                    return "Bangladesh Studies";
                 case "CSE131" :
                     return "Discrete Mathematics";
                 case "CSE132" :
@@ -668,20 +699,24 @@ public class HelperClass {
                     return "Data Structure";
                 case "CSE135" :
                     return "Data Structure Lab";
-                case "MAT131" :
-                    return "Ordinary and Partial Differential Equations";
+                case "CSE136" :
+                    return "Software Project I";
+                case "GED131" :
+                    return "Art of Living";
                 case "MAT211" :
                     return "Engineering Mathematics";
                 case "CSE212" :
-                    return "Digital Electronics";
+                    return "Basic Electronics";
                 case "CSE213" :
-                    return "Digital Electronics Lab";
-                case "CSE214" :
+                    return "Basic Electronics Lab";
+                case "CSE221-0" :
                     return "Object Oriented Programming";
-                case "CSE215" :
+                case "CSE222-0" :
                     return "Object Oriented Programming Lab";
-                case "GED201" :
-                    return "Bangladesh Studies";
+                case "CSE216" :
+                    return "Software Project II";
+                case "ACT211" :
+                    return "Financial and managerial Accounting ";
                 case "CSE221" :
                     return "Algorithms";
                 case "CSE222" :
@@ -710,8 +745,8 @@ public class HelperClass {
                     return "Computer Networks";
                 case "CSE314" :
                     return "Computer Networks Lab";
-                case "ECO314" :
-                    return "Economics";
+                case "GED321" :
+                    return "Art of Living";
                 case "CSE321" :
                     return "System Analysis and Design";
                 case "CSE322" :
@@ -720,8 +755,8 @@ public class HelperClass {
                     return "Operating Systems";
                 case "CSE324" :
                     return "Operating Systems Lab";
-                case "GED321" :
-                    return "Art of Living";
+                case "ECO314" :
+                    return "Economics";
                 case "CSE331" :
                     return "Compiler Design";
                 case "CSE332" :
@@ -731,7 +766,7 @@ public class HelperClass {
                 case "CSE334" :
                     return "Wireless Programming";
                 case "ACT301" :
-                    return "Financial and Managerial Accounting 2";
+                    return "Financial and Managerial Accounting";
                 case "CSE412" :
                     return "Artificial Intelligence";
                 case "CSE413" :
@@ -750,10 +785,14 @@ public class HelperClass {
                     return "Computer Graphics Lab";
                 case "CSE423" :
                     return "Embedded Systems";
-                case "CSE499" :
-                    return "Project / Internship (Phase I, to be completed in Level-4 Term-3";
+                case "CSE450" :
+                    return "Data Mining";
+                case "CSE444" :
+                    return "Introduction to Robotics";
                 case "CSE498" :
                     return "Social and Professional Issues in Computing";
+                case "CSE499" :
+                    return "Project / Internship (Phase I, to be completed in Level-4 Term-3";
             }
 
         } else if (shift.equals(SHIFT_EVENING)) {
