@@ -70,6 +70,11 @@
                     android:title="Grant Teacher Claim" />
 
                 <item
+                    android:id="@+id/add_non_empty_room"
+                    android:icon="@drawable/ic_add_file"
+                    android:title="Add Room (Non-Empty)"/>
+
+                <item
                     android:id="@+id/book_classes_for_others"
                     android:icon="@drawable/ic_menu_book_class"
                     android:title="Book Room (Admin)" />

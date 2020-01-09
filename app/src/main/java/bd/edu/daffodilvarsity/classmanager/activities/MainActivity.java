@@ -30,6 +30,7 @@ import java.util.List;
 
 import bd.edu.daffodilvarsity.classmanager.CustomRoutineSearch.CustomRoutineSearchTabHolder;
 import bd.edu.daffodilvarsity.classmanager.R;
+import bd.edu.daffodilvarsity.classmanager.fragments.AddNewClassDetails;
 import bd.edu.daffodilvarsity.classmanager.fragments.AddTeacherProfile;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookClassAdmin;
 import bd.edu.daffodilvarsity.classmanager.fragments.BookClasses;
@@ -290,6 +291,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.teacher_profiles_list:
                 mFragmentToLaunch = new TeacherProfileList();
                 enableToolbarScrolling(true);
+                break;
+            case R.id.add_non_empty_room:
+                mFragmentToLaunch = new AddNewClassDetails();
+                enableToolbarScrolling(false);
                 break;
             case R.id.book_classes_for_others:
                 mFragmentToLaunch = new BookClassAdmin();

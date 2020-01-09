@@ -7,18 +7,10 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
 import bd.edu.daffodilvarsity.classmanager.R;
@@ -28,8 +20,6 @@ import bd.edu.daffodilvarsity.classmanager.otherclasses.SharedPreferencesHelper;
 import timber.log.Timber;
 
 public class EditStudentProfile extends AppCompatActivity implements View.OnClickListener {
-
-    private SwipeRefreshLayout mPullToRefresh;
 
     private ProfileObjectStudent mUserProfile;
 
@@ -73,40 +63,6 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
         String profileJsonString = getIntent().getStringExtra("profileData");
         Gson gson = new Gson();
         mUserProfile = gson.fromJson(profileJsonString, ProfileObjectStudent.class);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadDataFromServer();
-            }
-        });
-    }
-
-    private void loadDataFromServer() {
-
-        DocumentReference profileRef = FirebaseFirestore.getInstance().document("/student_profiles/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        profileRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    mUserProfile = documentSnapshot.toObject(ProfileObjectStudent.class);
-                    initializeReceivedData();
-                    mPullToRefresh.setRefreshing(false);
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                makeToast(getString(R.string.load_data_error_for_internet));
-                mPullToRefresh.setRefreshing(false);
-            }
-        });
-
     }
 
     @Override
@@ -156,8 +112,6 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
         mLevel = findViewById(R.id.level);
         mTerm = findViewById(R.id.term);
         mSection = findViewById(R.id.section_spinner);
-
-        mPullToRefresh = findViewById(R.id.pull_to_refresh);
 
     }
 
