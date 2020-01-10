@@ -23,7 +23,7 @@ public class EditStudentProfile extends AppCompatActivity implements View.OnClic
 
     private ProfileObjectStudent mUserProfile;
 
-    ProfileObjectStudent mUpdatedProfile;
+    private ProfileObjectStudent mUpdatedProfile;
 
     private TextInputLayout mName;
 
