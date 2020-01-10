@@ -136,17 +136,17 @@ public class ParseTeacherProfiles extends Fragment implements View.OnClickListen
 
             while ((row = parser.nextRow()) != null) {
 
-                if(row.getField(1).isEmpty())  {
+                if(row.getField(1).isEmpty() || row.getField(1).equals("Email"))  {
                     continue;
                 }
 
                 ProfileObjectTeacher profile = new ProfileObjectTeacher(
-                        extractTeacherName(row.getField(1)),
-                        row.getField(5).trim(),
-                        extractTeacherInitial(row.getField(1)),
+                        row.getField(0).trim(),
+                        row.getField(1).trim(),
                         row.getField(2).trim(),
                         row.getField(3).trim(),
-                        row.getField(4).trim()
+                        row.getField(4).trim(),
+                        row.getField(5).trim()
                 );
 
                 teachersList.add(profile);
@@ -185,6 +185,7 @@ public class ParseTeacherProfiles extends Fragment implements View.OnClickListen
             public void onFailure(@NonNull Exception e) {
                 makeToast("Unsuccessful");
                 uploadAll.setEnabled(true);
+                Timber.e(e);
             }
         });
     }
