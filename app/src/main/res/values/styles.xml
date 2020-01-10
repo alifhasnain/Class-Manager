@@ -20,9 +20,11 @@
 
     <style name="AppTheme.NoActionbar.FullScreen" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/google_yellow</item>
-        <item name="colorPrimaryDark">@color/colorTransparent</item>
-        <item name="colorAccent">@color/white</item>
+        <item name="colorPrimary">#1c50a0</item>
+        <item name="colorPrimaryDark">#163f7f</item>
+        <item name="colorAccent">#3073db</item>
+
+        <item name="android:windowFullscreen">true</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
     </style>

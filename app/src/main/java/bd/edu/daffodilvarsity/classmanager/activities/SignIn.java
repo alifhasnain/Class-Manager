@@ -2,12 +2,11 @@ package bd.edu.daffodilvarsity.classmanager.activities;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.transition.Fade;
 import android.util.Pair;
 import android.util.Patterns;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -53,9 +52,9 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        startGradientAnimation();
-
         initializeVariables();
+
+        excludeAnimTargets();
 
         styleProgressBar();
 
@@ -64,6 +63,15 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         initializeOnClickListeners();
 
         checkIfUserIsSignedInStudent();
+
+    }
+
+    private void excludeAnimTargets() {
+
+        Fade fade = new Fade();
+        fade.excludeTarget(findViewById(R.id.root_layout), true);
+        fade.excludeTarget(findViewById(R.id.diu_logo), true);
+        getWindow().setEnterTransition(fade);
 
     }
 
@@ -135,7 +143,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
         mEmailEditText = findViewById(R.id.email);
 
-        mPasswordEditText = findViewById(R.id.pass);
+        mPasswordEditText = findViewById(R.id.password);
 
     }
 
@@ -154,7 +162,6 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         String email = SharedPreferencesHelper.getUserEmail(getApplicationContext());
         if (email != null) {
             mEmailEditText.getEditText().setText(email);
-            mPasswordEditText.getEditText().requestFocus();
         }
     }
 
@@ -213,10 +220,10 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
 
     }*/
     private void initializeOnClickListeners() {
-        findViewById(R.id.sign_in).setOnClickListener(this);
-        findViewById(R.id.sign_up).setOnClickListener(this);
-        findViewById(R.id.forgot_pass).setOnClickListener(this);
+        findViewById(R.id.sign_in_as_teacher).setOnClickListener(this);
         findViewById(R.id.sign_in_as_student).setOnClickListener(this);
+        findViewById(R.id.linear_layout_1).setOnClickListener(this);
+        findViewById(R.id.forgot_password).setOnClickListener(this);
     }
 
     private void completeProfileStudent() {
@@ -294,12 +301,12 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.sign_in:
+            case R.id.sign_in_as_teacher:
                 clearFocusAndErrorMsg();
                 checkCredentialAndSignIn();
                 break;
 
-            case R.id.sign_up:
+            case R.id.linear_layout_1:
                 startSignUpActivityWithTransition();
                 break;
 
@@ -307,7 +314,7 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
                 completeProfileStudent();
                 break;
 
-            case R.id.forgot_pass:
+            case R.id.forgot_password:
                 startActivity(new Intent(SignIn.this, ForgotPassword.class));
                 break;
 
@@ -423,26 +430,14 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         mPasswordEditText.setError(null);
     }
 
-    private void startGradientAnimation() {
-
-        //Hide Statusbar
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        AnimationDrawable gradientAnimation = (AnimationDrawable) findViewById(R.id.root_layout).getBackground();
-        gradientAnimation.setEnterFadeDuration(200);
-        gradientAnimation.setExitFadeDuration(3000);
-        gradientAnimation.start();
-
-    }
-
     private void startSignUpActivityWithTransition() {
 
         Intent intent = new Intent(SignIn.this, SignUp.class);
 
         Pair<View, String>[] pairs = new Pair[3];
-        pairs[0] = new Pair<>(findViewById(R.id.sign_in), "sign_in_transition");
+        pairs[0] = new Pair<>(findViewById(R.id.sign_in_as_teacher), "sign_in_transition");
         pairs[1] = new Pair<>(findViewById(R.id.sign_up), "sign_up_transition");
-        pairs[2] = new Pair<>(findViewById(R.id.forgot_pass), "text_view_transition");
+        pairs[2] = new Pair<>(findViewById(R.id.diu_logo),"logo_transition");
 
         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(SignIn.this, pairs);
         startActivity(intent, options.toBundle());

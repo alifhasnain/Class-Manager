@@ -1,11 +1,9 @@
 package bd.edu.daffodilvarsity.classmanager.activities;
 
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.transition.Fade;
 import android.util.Patterns;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -45,7 +43,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        startGradientAnimation();
+        excludeAnimTargets();
 
         initializeVariables();
 
@@ -56,7 +54,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
 
         mEmailEditText = findViewById(R.id.email);
 
-        mPasswordEditText = findViewById(R.id.pass);
+        mPasswordEditText = findViewById(R.id.password);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -166,20 +164,13 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
         });
     }
 
-    private void startGradientAnimation() {
-
-        //Hide Statusbar
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    private void excludeAnimTargets() {
 
         Fade fade = new Fade();
         fade.excludeTarget(findViewById(R.id.root_layout), true);
         fade.excludeTarget(findViewById(R.id.diu_logo), true);
+        fade.excludeTarget(findViewById(R.id.image_bg),true);
         getWindow().setEnterTransition(fade);
-
-        AnimationDrawable gradientAnimation = (AnimationDrawable) findViewById(R.id.root_layout).getBackground();
-        gradientAnimation.setEnterFadeDuration(200);
-        gradientAnimation.setExitFadeDuration(3000);
-        gradientAnimation.start();
 
     }
 

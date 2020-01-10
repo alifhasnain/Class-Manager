@@ -43,6 +43,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-functions:19.0.0'
     //Firebase Storage
     implementation 'com.google.firebase:firebase-storage:19.1.0'
+    //SDP
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
     //Firebase Push Notification
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
     //LifeCycle

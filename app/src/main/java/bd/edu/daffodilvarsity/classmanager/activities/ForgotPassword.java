@@ -1,9 +1,7 @@
 package bd.edu.daffodilvarsity.classmanager.activities;
 
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -25,9 +23,7 @@ public class ForgotPassword extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
-        startGradientAnimation();
-
-        findViewById(R.id.send_password_reset_email).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.send_verification_mail).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendPasswordResetMail();
@@ -76,17 +72,5 @@ public class ForgotPassword extends AppCompatActivity {
             progressBarHolder.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
         }
-    }
-
-    private void startGradientAnimation() {
-
-        //Hide Statusbar
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        AnimationDrawable gradientAnimation = (AnimationDrawable) findViewById(R.id.root_layout).getBackground();
-        gradientAnimation.setEnterFadeDuration(200);
-        gradientAnimation.setExitFadeDuration(3000);
-        gradientAnimation.start();
-
     }
 }
