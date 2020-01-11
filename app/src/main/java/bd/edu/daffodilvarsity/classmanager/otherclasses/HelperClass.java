@@ -379,7 +379,7 @@ public class HelperClass {
 
         ArrayList<String> courseCodes = new ArrayList<>();
 
-        courseCodes.add(" CSE322");
+        courseCodes.add("CSE322");
         courseCodes.add("CSE313");
         courseCodes.add("CSE313L");
         courseCodes.add("CSE311");
