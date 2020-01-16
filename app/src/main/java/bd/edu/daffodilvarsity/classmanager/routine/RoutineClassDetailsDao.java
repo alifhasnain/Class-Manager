@@ -34,29 +34,35 @@ public interface RoutineClassDetailsDao {
     @RawQuery
     List<RoutineClassDetails> getTodaysClassesStudent(SupportSQLiteQuery query);
 
+    //For getting student routine for custom search
     @Query("SELECT * FROM RoutineClassDetails WHERE shift=:shift AND section=:section AND courseCode IN (:courseCodes)")
-    List<RoutineClassDetails> getClassesStudent(String shift,String section,List<String> courseCodes);
+    List<RoutineClassDetails> getClassesStudent(String shift, String section, List<String> courseCodes);
 
     //For displaying notification
     @Query("SELECT * FROM RoutineClassDetails WHERE teacherInitial=:teacherInitial AND dayOfWeek=:dayOfWeek AND notificationEnabled=1")
-    List<RoutineClassDetails> getTodaysClassesTeacher(String teacherInitial,String dayOfWeek);
+    List<RoutineClassDetails> getTodaysClassesTeacher(String teacherInitial, String dayOfWeek);
 
     //Gets empty rooms
     @Query("SELECT * FROM RoutineClassDetails WHERE dayOfWeek=:dayOfWeek AND time=:time AND courseCode=:courseCode")
-    List<RoutineClassDetails> getEmptyRooms(String dayOfWeek,String time,String courseCode);
+    List<RoutineClassDetails> getEmptyRooms(String dayOfWeek, String time, String courseCode);
 
     //For custom query with teacher initial with day of week
     @Query("SELECT * FROM RoutineClassDetails WHERE teacherInitial=:teacherInitial AND dayOfWeek=:day AND courseCode<>'' ORDER BY priority ")
-    List<RoutineClassDetails> getClassesWithInitial(String teacherInitial , String day);
+    List<RoutineClassDetails> getClassesWithInitial(String teacherInitial, String day);
 
     //For custom query with teacher initial without day of week
     @Query("SELECT * FROM RoutineClassDetails WHERE teacherInitial=:teacherInitial AND courseCode<>'' ORDER BY priority ")
     List<RoutineClassDetails> getClassesWithInitial(String teacherInitial);
 
+    //Custom search with course code
+    @Query("SELECT * FROM RoutineClassDetails WHERE courseCode=:courseCode AND shift=:shift ORDER BY priority")
+    List<RoutineClassDetails> getClassesWithCourseCode(String courseCode, String shift);
+
     //For getting course list with teacher initial
     @Query("SELECT DISTINCT courseCode FROM RoutineClassDetails WHERE teacherInitial=:teacherInitial")
     List<String> getCoursesWithInitial(String teacherInitial);
 
+    //For getting teacher section list with initial
     @Query("SELECT DISTINCT section FROM RoutineClassDetails WHERE teacherInitial=:teacherInitial ORDER BY section")
     List<String> getTeacherSectionsWithInitial(String teacherInitial);
 

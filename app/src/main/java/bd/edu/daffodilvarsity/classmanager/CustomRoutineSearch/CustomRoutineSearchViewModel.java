@@ -8,8 +8,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import bd.edu.daffodilvarsity.classmanager.otherclasses.HelperClass;
 import bd.edu.daffodilvarsity.classmanager.routine.RoutineClassDetails;
@@ -22,6 +20,8 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
     private MutableLiveData<ArrayList<RoutineClassDetails>> teacherClassesLiveData = new MutableLiveData<>();
 
     private MutableLiveData<ArrayList<RoutineClassDetails>> studentClassesLiveData = new MutableLiveData<>();
+
+    private MutableLiveData<ArrayList<RoutineClassDetails>> courseCodeClassesLiveData = new MutableLiveData<>();
 
     private MutableLiveData<String> toast = new MutableLiveData<>();
 
@@ -70,6 +70,16 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
 
     }
 
+    public void loadRoutineWithCourseCode(final String courseCode, final String shift) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<RoutineClassDetails> classes = new ArrayList<>(allClassesDao.getClassesWithCourseCode(courseCode,shift));
+                courseCodeClassesLiveData.postValue(getSortedClassList(classes));
+            }
+        }).start();
+    }
+
     public LiveData<ArrayList<RoutineClassDetails>> getTeacherClasses() {
         return teacherClassesLiveData;
     }
@@ -78,14 +88,11 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
         return studentClassesLiveData;
     }
 
-    private ArrayList<RoutineClassDetails> getSortedClassList(ArrayList<RoutineClassDetails> classesList) {
+    public LiveData<ArrayList<RoutineClassDetails>> getClassesWithCourseCode() {
+        return courseCodeClassesLiveData;
+    }
 
-        Collections.sort(classesList, new Comparator<RoutineClassDetails>() {
-            @Override
-            public int compare(RoutineClassDetails t1, RoutineClassDetails t2) {
-                return Float.compare(t1.getPriority(), t2.getPriority());
-            }
-        });
+    private ArrayList<RoutineClassDetails> getSortedClassList(ArrayList<RoutineClassDetails> classesList) {
 
         ArrayList<RoutineClassDetails> modifiedList = new ArrayList<>();
 
@@ -121,6 +128,7 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
 
 
         if (saturday.size() > 0) {
+
             RoutineClassDetails routineClassDetails = new RoutineClassDetails();
             routineClassDetails.setPriority(1000f);
             routineClassDetails.setDayOfWeek("Saturday");
@@ -128,6 +136,7 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
             modifiedList.addAll(saturday);
         }
         if (sunday.size() > 0) {
+
             RoutineClassDetails routineClassDetails = new RoutineClassDetails();
             routineClassDetails.setPriority(1000f);
             routineClassDetails.setDayOfWeek("Sunday");
@@ -135,6 +144,7 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
             modifiedList.addAll(sunday);
         }
         if (monday.size() > 0) {
+
             RoutineClassDetails routineClassDetails = new RoutineClassDetails();
             routineClassDetails.setPriority(1000f);
             routineClassDetails.setDayOfWeek("Monday");
@@ -142,6 +152,7 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
             modifiedList.addAll(monday);
         }
         if (tuesday.size() > 0) {
+
             RoutineClassDetails routineClassDetails = new RoutineClassDetails();
             routineClassDetails.setPriority(1000f);
             routineClassDetails.setDayOfWeek("Tuesday");
@@ -149,6 +160,7 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
             modifiedList.addAll(tuesday);
         }
         if (wednesday.size() > 0) {
+
             RoutineClassDetails routineClassDetails = new RoutineClassDetails();
             routineClassDetails.setPriority(1000f);
             routineClassDetails.setDayOfWeek("Wednesday");
@@ -156,6 +168,7 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
             modifiedList.addAll(wednesday);
         }
         if (thursday.size() > 0) {
+
             RoutineClassDetails routineClassDetails = new RoutineClassDetails();
             routineClassDetails.setPriority(1000f);
             routineClassDetails.setDayOfWeek("Thursday");

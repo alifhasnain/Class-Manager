@@ -87,7 +87,7 @@ public class CourseAndSectionSelectorDialog extends AppCompatDialogFragment {
 
     private void initializeSectionSpinner() {
 
-        String[] sections = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U"};
+        String[] sections = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U" , "R1" , "R2" , "R3" , "R4"};
 
         ArrayAdapter<String> sectionSelectorAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_items, sections);
 

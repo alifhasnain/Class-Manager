@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="3dp"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:background="@color/grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/time" />
+
+        <TextView
+            android:id="@+id/course_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view" />
+
+        <TextView
+            android:id="@+id/course_code"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/semi_transparent_black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/course_name" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_35"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".35" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".70" />
+
+        <TextView
+            android:id="@+id/text_view_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Initial"
+            android:textColor="@color/text_color_black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_35"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/course_code" />
+
+        <TextView
+            android:id="@+id/text_view_2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Room"
+            android:textColor="@color/text_color_black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_70"
+            app:layout_constraintStart_toEndOf="@id/guideline_35"
+            app:layout_constraintTop_toBottomOf="@id/course_code" />
+
+        <TextView
+            android:id="@+id/text_view_3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Section"
+            android:textColor="@color/text_color_black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline_70"
+            app:layout_constraintTop_toBottomOf="@id/course_code" />
+
+        <TextView
+            android:id="@+id/teacher_initial"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/semi_transparent_black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@id/guideline_35"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_view_1" />
+
+        <TextView
+            android:id="@+id/room_no"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/semi_transparent_black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@id/guideline_70"
+            app:layout_constraintStart_toEndOf="@id/guideline_35"
+            app:layout_constraintTop_toBottomOf="@id/text_view_2" />
+
+        <TextView
+            android:id="@+id/section"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/semi_transparent_black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline_70"
+            app:layout_constraintTop_toBottomOf="@id/text_view_3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

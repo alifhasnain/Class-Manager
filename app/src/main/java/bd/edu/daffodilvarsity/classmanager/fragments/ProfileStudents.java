@@ -45,8 +45,6 @@ import timber.log.Timber;
  */
 public class ProfileStudents extends Fragment implements View.OnClickListener {
 
-    private static final String TAG = "ProfileStudents";
-
     private ProfileObjectStudent mUserProfile;
 
     private SwipeRefreshLayout pullToRefresh;

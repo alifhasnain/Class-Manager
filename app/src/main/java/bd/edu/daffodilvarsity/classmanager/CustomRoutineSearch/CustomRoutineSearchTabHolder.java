@@ -44,6 +44,7 @@ public class CustomRoutineSearchTabHolder extends Fragment {
         CustomRoutineSearchPagerAdapter adapter = new CustomRoutineSearchPagerAdapter(getChildFragmentManager());
         adapter.addFragment(new CustomRoutineSearchTeacher(),"Teacher Routine");
         adapter.addFragment(new CustomRoutineSearchStudent(),"Student Routine");
+        adapter.addFragment(new CustomRoutineSearchWithCourseCode(),"Course Code");
         mViewPager.setAdapter(adapter);
     }
 
