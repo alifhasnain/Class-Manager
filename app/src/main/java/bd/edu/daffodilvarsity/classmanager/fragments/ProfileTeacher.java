@@ -39,8 +39,6 @@ import timber.log.Timber;
  */
 public class ProfileTeacher extends Fragment {
 
-    private static final String TAG = "ProfileTeacher";
-
     private FirebaseAuth mAuth;
 
     private FirebaseFirestore db;
@@ -80,8 +78,6 @@ public class ProfileTeacher extends Fragment {
 
         initializeVariables(view);
 
-        loadProfileInfo();
-
         return view;
     }
 
@@ -94,6 +90,7 @@ public class ProfileTeacher extends Fragment {
                 loadProfileInfo();
             }
         });
+        loadProfileInfo();
     }
 
     private void initializeVariables(View view) {

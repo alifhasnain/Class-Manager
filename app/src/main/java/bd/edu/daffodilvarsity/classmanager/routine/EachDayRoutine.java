@@ -159,6 +159,8 @@ public class EachDayRoutine extends Fragment {
             mViewModel.loadClassesTeacher(profile.getTeacherInitial(), mDayOfWeek);
             initializeViewModelObserver();
             showProgressbar(false);
+        } else {
+            makeToast("Profile is not initialized");
         }
 
     }
