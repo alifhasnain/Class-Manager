@@ -89,9 +89,9 @@ public class EmptyRooms extends Fragment implements View.OnClickListener {
 
         timeSelector.setAdapter(timesAdapter);
 
-        String[] days = new String[HelperClass.getSevenDaysOfWeek().size()];
+        String[] days = new String[HelperClass.getSixDaysOfWeek().size()];
 
-        days = HelperClass.getSevenDaysOfWeek().toArray(days);
+        days = HelperClass.getSixDaysOfWeek().toArray(days);
 
         ArrayAdapter<String> dayAdapter = new ArrayAdapter<>(getContext(),R.layout.spinner_items,days);
 

@@ -459,6 +459,21 @@ public class HelperClass {
         return classTimes;
     }
 
+    public static ArrayList<String> getSixDaysOfWeek() {
+
+        ArrayList<String> daysOfWeek = new ArrayList<>();
+
+        daysOfWeek.add("Saturday");
+        daysOfWeek.add("Sunday");
+        daysOfWeek.add("Monday");
+        daysOfWeek.add("Tuesday");
+        daysOfWeek.add("Wednesday");
+        daysOfWeek.add("Thursday");
+        daysOfWeek.add("Friday");
+
+        return daysOfWeek;
+    }
+
     public static ArrayList<String> getSevenDaysOfWeek() {
 
         ArrayList<String> daysOfWeek = new ArrayList<>();
@@ -469,6 +484,7 @@ public class HelperClass {
         daysOfWeek.add("Tuesday");
         daysOfWeek.add("Wednesday");
         daysOfWeek.add("Thursday");
+        daysOfWeek.add("Friday");
 
         return daysOfWeek;
     }

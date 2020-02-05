@@ -106,7 +106,7 @@ public class AddNewClassDetails extends Fragment implements View.OnClickListener
     private void initializeSpinners() {
         String[] shift = new String[]{"Day","Evening"};
         String[] section = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "R1", "R2", "R3", "R4"};
-        String[] dayOfWeek = HelperClass.getSevenDaysOfWeek().toArray(new String[HelperClass.getSevenDaysOfWeek().size()]);
+        String[] dayOfWeek = HelperClass.getSevenDaysOfWeek().toArray(new String[HelperClass.getSixDaysOfWeek().size()]);
 
         ArrayAdapter shiftAdapter = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item,shift);
         ArrayAdapter sectionAdapter = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item,section);

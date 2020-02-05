@@ -102,6 +102,7 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
         ArrayList<RoutineClassDetails> tuesday = new ArrayList<>();
         ArrayList<RoutineClassDetails> wednesday = new ArrayList<>();
         ArrayList<RoutineClassDetails> thursday = new ArrayList<>();
+        ArrayList<RoutineClassDetails> friday = new ArrayList<>();
 
         for (RoutineClassDetails rcd : classesList) {
             switch (rcd.getDayOfWeek()) {
@@ -122,6 +123,9 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
                     break;
                 case "Thursday":
                     thursday.add(rcd);
+                    break;
+                case "Friday":
+                    friday.add(rcd);
                     break;
             }
         }
@@ -174,6 +178,13 @@ public class CustomRoutineSearchViewModel extends AndroidViewModel {
             routineClassDetails.setDayOfWeek("Thursday");
             thursday.add(0, routineClassDetails);
             modifiedList.addAll(thursday);
+        }
+        if (friday.size() > 0) {
+            RoutineClassDetails routineClassDetails = new RoutineClassDetails();
+            routineClassDetails.setPriority(1000f);
+            routineClassDetails.setDayOfWeek("Friday");
+            friday.add(0,routineClassDetails);
+            modifiedList.addAll(friday);
         }
 
         return modifiedList;

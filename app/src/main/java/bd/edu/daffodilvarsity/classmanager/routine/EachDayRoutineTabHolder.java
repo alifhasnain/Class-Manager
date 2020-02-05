@@ -210,49 +210,46 @@ public class EachDayRoutineTabHolder extends Fragment {
 
         LinkedHashMap<String, EachDayRoutine> allDays = new LinkedHashMap<>();
 
-        Bundle bundle1 = new Bundle();
-        Bundle bundle2 = new Bundle();
-        Bundle bundle3 = new Bundle();
-        Bundle bundle4 = new Bundle();
-        Bundle bundle5 = new Bundle();
-        Bundle bundle6 = new Bundle();
-
         EachDayRoutine saturday = new EachDayRoutine();
-        bundle1.putString("dayOfWeek", "Saturday");
-        saturday.setArguments(bundle1);
+        saturday.setArguments(getBundleWithDayOfWeekAttached("Saturday"));
         allDays.put("Saturday", saturday);
 
         EachDayRoutine sunday = new EachDayRoutine();
-        bundle2.putString("dayOfWeek", "Sunday");
-        sunday.setArguments(bundle2);
+        sunday.setArguments(getBundleWithDayOfWeekAttached("Sunday"));
         allDays.put("Sunday", sunday);
 
 
         EachDayRoutine monday = new EachDayRoutine();
-        bundle3.putString("dayOfWeek", "Monday");
-        monday.setArguments(bundle3);
+        monday.setArguments(getBundleWithDayOfWeekAttached("Monday"));
         allDays.put("Monday", monday);
 
 
         EachDayRoutine tuesday = new EachDayRoutine();
-        bundle4.putString("dayOfWeek", "Tuesday");
-        tuesday.setArguments(bundle4);
+        tuesday.setArguments(getBundleWithDayOfWeekAttached("Tuesday"));
         allDays.put("Tuesday", tuesday);
 
 
         EachDayRoutine wednesday = new EachDayRoutine();
-        bundle5.putString("dayOfWeek", "Wednesday");
-        wednesday.setArguments(bundle5);
+        wednesday.setArguments(getBundleWithDayOfWeekAttached("Wednesday"));
         allDays.put("Wednesday", wednesday);
 
 
         EachDayRoutine thursday = new EachDayRoutine();
-        bundle6.putString("dayOfWeek", "Thursday");
-        thursday.setArguments(bundle6);
+        thursday.setArguments(getBundleWithDayOfWeekAttached("Thursday"));
         allDays.put("Thursday", thursday);
+
+        EachDayRoutine friday = new EachDayRoutine();
+        friday.setArguments(getBundleWithDayOfWeekAttached("Friday"));
+        allDays.put("Friday", friday);
 
         return allDays;
 
+    }
+
+    private Bundle getBundleWithDayOfWeekAttached(String dayOfWeek) {
+        Bundle bundle = new Bundle();
+        bundle.putString("dayOfWeek",dayOfWeek);
+        return bundle;
     }
 
 }

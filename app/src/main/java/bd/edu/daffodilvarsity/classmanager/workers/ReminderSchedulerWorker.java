@@ -180,6 +180,21 @@ public class ReminderSchedulerWorker extends Worker {
             case "8.0":
                 routineTime = getParsedDate("7:30PM");
                 break;
+            case "1.2":
+                routineTime = getParsedDate("9:00AM");
+                break;
+            case "2.2":
+                routineTime = getParsedDate("10:30AM");
+                break;
+            case "4.2":
+                routineTime = getParsedDate("2:30PM");
+                break;
+            case "5.2":
+                routineTime = getParsedDate("4:00PM");
+                break;
+            case "6.5":
+                routineTime = getParsedDate("5:30PM");
+                break;
             default:
                 routineTime = null;
                 break;
