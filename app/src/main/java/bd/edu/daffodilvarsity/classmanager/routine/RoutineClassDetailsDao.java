@@ -35,7 +35,7 @@ public interface RoutineClassDetailsDao {
     List<RoutineClassDetails> getTodaysClassesStudent(SupportSQLiteQuery query);
 
     //For getting student routine for custom search
-    @Query("SELECT * FROM RoutineClassDetails WHERE shift=:shift AND section=:section AND courseCode IN (:courseCodes)")
+    @Query("SELECT * FROM RoutineClassDetails WHERE shift=:shift AND section=:section AND courseCode IN (:courseCodes) ORDER BY priority")
     List<RoutineClassDetails> getClassesStudent(String shift, String section, List<String> courseCodes);
 
     //For displaying notification
