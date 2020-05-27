@@ -117,7 +117,7 @@ public class CustomRoutineSearchStudent extends Fragment implements View.OnClick
 
         String[] term = new String[]{"Term 1", "Term 2", "Term 3"};
 
-        String[] section = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U" , "R1" , "R2" , "R3" , "R4"};
+        String[] section = HelperClass.getAllSections();
 
         final String[] shift = new String[] {HelperClass.SHIFT_DAY , HelperClass.SHIFT_EVENING};
 

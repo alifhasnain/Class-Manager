@@ -211,8 +211,8 @@ public class HelperClass {
         courseCodes.add("MAT211");
         courseCodes.add("CSE212");
         courseCodes.add("CSE213");
-        courseCodes.add("CSE221-0");
-        courseCodes.add("CSE222-0");
+        courseCodes.add("CSE221");
+        courseCodes.add("CSE222");
         courseCodes.add("CSE216");
         courseCodes.add("ACT211");
 
@@ -223,11 +223,13 @@ public class HelperClass {
 
         ArrayList<String> courseCodes = new ArrayList<>();
 
-        courseCodes.add("CSE221");
-        courseCodes.add("CSE222");
-        courseCodes.add("STA133");
+        courseCodes.add("CSE214");
+        courseCodes.add("CSE215");
+        courseCodes.add("STA221");
+        courseCodes.add("CSE223");
         courseCodes.add("CSE224");
         courseCodes.add("CSE225");
+        courseCodes.add("CSE226");
 
         return courseCodes;
     }
@@ -426,7 +428,6 @@ public class HelperClass {
         courseCodes.add("CSE412L");
         courseCodes.add("CSE411");
         courseCodes.add("CSE332");
-        courseCodes.add("CSE499");
 
 
         return courseCodes;
@@ -438,7 +439,6 @@ public class HelperClass {
 
         courseCodes.add("CSE333");
         courseCodes.add("CSE432");
-        courseCodes.add("CSE499");
 
 
         return courseCodes;
@@ -519,16 +519,18 @@ public class HelperClass {
         coursesDay.put("MAT211", "Engineering Mathematics");
         coursesDay.put("CSE212", "Basic Electronics");
         coursesDay.put("CSE213", "Basic Electronics Lab");
-        coursesDay.put("CSE221-0", "Object Oriented Programming");
-        coursesDay.put("CSE222-0", "Object Oriented Programming Lab");
+        coursesDay.put("CSE221", "Object Oriented Programming");
+        coursesDay.put("CSE222", "Object Oriented Programming Lab");
         coursesDay.put("CSE216", "Software Project II");
         coursesDay.put("ACT211", "Financial and managerial Accounting ");
 
-        coursesDay.put("CSE221", "Algorithms");
-        coursesDay.put("CSE222", "Algorithms Lab");
-        coursesDay.put("STA133", "Statistics and Probability");
-        coursesDay.put("CSE224", "Electronic Devices and Circuits");
-        coursesDay.put("CSE225", "Electronic Devices and Circuits Lab");
+        coursesDay.put("CSE214", "Algorithms");
+        coursesDay.put("CSE215", "Algorithms Lab");
+        coursesDay.put("STA221", "Statistics and Probability");
+        coursesDay.put("CSE223", "Digital Electronics");
+        coursesDay.put("CSE224", "Digital Electronics Lab");
+        coursesDay.put("CSE225", "Data Communication");
+        coursesDay.put("CSE226", "Software Project III");
 
         coursesDay.put("CSE231", "Microprocessor and Assembly Language");
         coursesDay.put("CSE232", "Microprocessor and Assembly Language Lab");
@@ -568,7 +570,6 @@ public class HelperClass {
 
         coursesDay.put("CSE444", "Introduction to Robotics");
         coursesDay.put("CSE498", "Social and Professional Issues in Computing");
-
         coursesDay.put("CSE499", "Project / Internship (Phase I, to be completed in Level-4 Term-3");
 
         return coursesDay;
@@ -583,44 +584,52 @@ public class HelperClass {
         coursesEveningBsc.put("ENG113", "English Language-I");
         coursesEveningBsc.put("PHY123", "Physics- II: Electricity, Magnetism and Modern Physics");
         coursesEveningBsc.put("PHY123L", "Physics-II Lab");
+
         coursesEveningBsc.put("CSE213", "Algorithms");
         coursesEveningBsc.put("CSE213L", "Algorithm Lab");
         coursesEveningBsc.put("ACC214", "Accounting");
         coursesEveningBsc.put("ECO314", "Economics");
         coursesEveningBsc.put("MAT134", "Mathematics III : Ordinary and PartialDifferential Equations");
+
         coursesEveningBsc.put("CSE221", "Theory of Computing");
         coursesEveningBsc.put("CSE222", "Object Oriented Programming");
         coursesEveningBsc.put("CSE222L", "Object Oriented Programming Lab");
         coursesEveningBsc.put("MAT211", "Mathematics-IV : Engineering Mathematics");
         coursesEveningBsc.put("STA223", "Statistics");
+
         coursesEveningBsc.put("CSE231", "Microprocessor and Assembly Language");
         coursesEveningBsc.put("CSE231L", "Microprocessor and assembly Language Lab");
         coursesEveningBsc.put("CSE224", " Electronic Devices and Circuits");
         coursesEveningBsc.put("CSE224L", "Electronic Devices and Circuits Lab");
         coursesEveningBsc.put("CSE232", "Instrumentation and Control");
         coursesEveningBsc.put("CSE233", "Data Communication");
+
         coursesEveningBsc.put("CSE322", "Computer Architecture and Organization");
         coursesEveningBsc.put("CSE313", "Computer Networks");
         coursesEveningBsc.put("CSE313L", "Computer Networks Lab");
         coursesEveningBsc.put("CSE311", "Database Management System");
         coursesEveningBsc.put("CSE311L", "Database Management System Lab");
         coursesEveningBsc.put("CSE312", "Numerical Methods");
+
         coursesEveningBsc.put("CSE331", "Compiler Design");
         coursesEveningBsc.put("CSE331L", "Compiler Design Lab");
         coursesEveningBsc.put("CSE413", "Simulation and Modeling");
         coursesEveningBsc.put("CSE413L", "Simulation and Modeling Lab");
         coursesEveningBsc.put("CSE323", "Operating System");
         coursesEveningBsc.put("CSE323L", "Operating System Lab");
+
         coursesEveningBsc.put("CSE321", "System Analysis and Design");
         coursesEveningBsc.put("CSE321L", "System Analysis and Design Lab");
         coursesEveningBsc.put("CSE421", "Computer Graphics");
         coursesEveningBsc.put("CSE421L", "Computer Graphics Lab");
         coursesEveningBsc.put("CSE431", "E-Commerce & Web Application");
         coursesEveningBsc.put("MGT414", "Industrial Management");
+
         coursesEveningBsc.put("CSE412", "Artificial Intelligence");
         coursesEveningBsc.put("CSE412L", "Artificial Intelligence Lab");
         coursesEveningBsc.put("CSE411", "Communication Engineering");
         coursesEveningBsc.put("CSE332", "Software Engineering");
+
         coursesEveningBsc.put("CSE333", "Peripherals & Interfacing");
         coursesEveningBsc.put("CSE432", "Computer and Network Security");
 
@@ -678,8 +687,14 @@ public class HelperClass {
     public static String getCourseNameFromCourseCode(String shift, String courseCode) {
 
         if (shift.equals(SHIFT_DAY)) {
+            String course = getCoursesDay().get(courseCode);
+            if(course != null) {
+                return course;
+            } else {
+                return "";
+            }
 
-            switch (courseCode)
+            /*switch (courseCode)
             {
                 case "CSE112" :
                     return "Computer Fundamentals";
@@ -809,11 +824,17 @@ public class HelperClass {
                     return "Social and Professional Issues in Computing";
                 case "CSE499" :
                     return "Project / Internship (Phase I, to be completed in Level-4 Term-3";
-            }
+            }*/
 
         } else if (shift.equals(SHIFT_EVENING)) {
 
-            switch (courseCode) {
+            String course = getCoursesEveningBsc().get(courseCode);
+            if(course != null) {
+                return course;
+            } else {
+                return "";
+            }
+            /*switch (courseCode) {
                 case "MAT121":
                     return "Mathematics II: Linear algebraand Coordinate Geometry";
                 case "CSE131":
@@ -904,9 +925,16 @@ public class HelperClass {
                     return "Peripherals & Interfacing";
                 case "CSE432":
                     return "Computer and Network Security";
-            }
+            }*/
         }
         return "";
+    }
+
+    public static String[] getAllSections() {
+        return new String[]{"A", "B", "C", "D", "E", "F", "G", "H",
+                "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
+                "T", "U", "R1", "R2", "R3", "R4","O0","O1","O2","O3","O4","O5","O6",
+                "O7","O8","O9","O10","O11","O12","O13","O14","O15","O16","O17","O18","O19"};
     }
 
 }
