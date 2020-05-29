@@ -493,6 +493,7 @@ public class HelperClass {
 
         LinkedHashMap<String, String> coursesDay = new LinkedHashMap<>();
 
+        //L1T1
         coursesDay.put("CSE112", "Computer Fundamentals");
         coursesDay.put("MAT111", "Basic Mathematics");
         coursesDay.put("ENG113", "Basic Functional English and English Spoken");
@@ -500,6 +501,7 @@ public class HelperClass {
         coursesDay.put("PHY114", "Basic Physics Lab");
         coursesDay.put("GED111", "History of Bangladesh and Bangla Language");
 
+        //L1T2
         coursesDay.put("MAT121", "Complex Variable, linear Algebra and Coordinate Geometry");
         coursesDay.put("CSE122", "Programming and Problem Solving");
         coursesDay.put("CSE123", "Problem Solving Lab");
@@ -507,6 +509,7 @@ public class HelperClass {
         coursesDay.put("CSE124", "Business Application Design");
         coursesDay.put("GED121", "Bangladesh Studies");
 
+        //L1T3
         coursesDay.put("CSE131", "Discrete Mathematics");
         coursesDay.put("CSE132", "Electrical Circuits");
         coursesDay.put("CSE133", "Electrical Circuits Lab");
@@ -516,6 +519,7 @@ public class HelperClass {
         coursesDay.put("GED131", "Art of Living");
 
 
+        //L2T1
         coursesDay.put("MAT211", "Engineering Mathematics");
         coursesDay.put("CSE212", "Basic Electronics");
         coursesDay.put("CSE213", "Basic Electronics Lab");
@@ -524,6 +528,7 @@ public class HelperClass {
         coursesDay.put("CSE216", "Software Project II");
         coursesDay.put("ACT211", "Financial and managerial Accounting ");
 
+        //L2T2
         coursesDay.put("CSE214", "Algorithms");
         coursesDay.put("CSE215", "Algorithms Lab");
         coursesDay.put("STA221", "Statistics and Probability");
@@ -532,30 +537,35 @@ public class HelperClass {
         coursesDay.put("CSE225", "Data Communication");
         coursesDay.put("CSE226", "Software Project III");
 
+        //L2T3
         coursesDay.put("CSE231", "Microprocessor and Assembly Language");
         coursesDay.put("CSE232", "Microprocessor and Assembly Language Lab");
         coursesDay.put("CSE233", "Data Communication");
         coursesDay.put("CSE234", "Numerical Methods");
         coursesDay.put("CSE235", "Introduction to Bio-Informatics");
 
+        //L3T1
         coursesDay.put("CSE311", "Database Management System");
         coursesDay.put("CSE312", "Database Management System Lab");
         coursesDay.put("CSE313", "Computer Networks");
         coursesDay.put("CSE314", "Computer Networks Lab");
         coursesDay.put("GED321", "Art of Living");
 
+        //L3T2
         coursesDay.put("CSE321", "System Analysis and Design");
         coursesDay.put("CSE322", "Computer Architecture and Organization");
         coursesDay.put("CSE323", "Operating Systems");
         coursesDay.put("CSE324", "Operating Systems Lab");
         coursesDay.put("ECO314", "Economics");
 
+        //L3T3
         coursesDay.put("CSE331", "Compiler Design");
         coursesDay.put("CSE332", "Compiler Design Lab");
         coursesDay.put("CSE333", "Software Engineering");
         coursesDay.put("CSE334", "Wireless Programming");
         coursesDay.put("ACT301", "Financial and Managerial Accounting");
 
+        //L3T1
         coursesDay.put("CSE412", "Artificial Intelligence");
         coursesDay.put("CSE413", "Artificial Intelligence Lab");
         coursesDay.put("CSE414", "Simulation and Modelling");
@@ -563,11 +573,13 @@ public class HelperClass {
         coursesDay.put("CSE417", "Web Engineering");
         coursesDay.put("CSE418", "Web Engineering Lab");
 
+        //L4T2
         coursesDay.put("CSE421", "Computer Graphics");
         coursesDay.put("CSE422", "Computer Graphics Lab");
         coursesDay.put("CSE423", "Embedded Systems");
         coursesDay.put("CSE450", "Data Mining");
 
+        //L4T3
         coursesDay.put("CSE444", "Introduction to Robotics");
         coursesDay.put("CSE498", "Social and Professional Issues in Computing");
         coursesDay.put("CSE499", "Project / Internship (Phase I, to be completed in Level-4 Term-3");
