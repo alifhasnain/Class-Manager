@@ -575,7 +575,7 @@ public class HelperClass {
         coursesDay.put("CSE334", "Wireless Programming");
         coursesDay.put("ACT301", "Financial and Managerial Accounting");
 
-        //L3T1
+        //L4T1
         coursesDay.put("CSE412", "Artificial Intelligence");
         coursesDay.put("CSE413", "Artificial Intelligence Lab");
         coursesDay.put("CSE414", "Simulation and Modelling");
