@@ -257,7 +257,9 @@ public class HelperClass {
         courseCodes.add("CSE312");
         courseCodes.add("CSE313");
         courseCodes.add("CSE314");
-        courseCodes.add("GED321");
+        courseCodes.add("CSE315");
+        courseCodes.add("CSE316");
+        courseCodes.add("CSE317");
 
         return courseCodes;
     }
@@ -497,14 +499,14 @@ public class HelperClass {
 
         //L1T1
         coursesDay.put("CSE112", "Computer Fundamentals");
-        coursesDay.put("MAT111", "Basic Mathematics");
+        coursesDay.put("MAT111", "Mathematics-I: Basic Mathematics");
         coursesDay.put("ENG113", "Basic Functional English and English Spoken");
         coursesDay.put("PHY113", "Basic Physics");
         coursesDay.put("PHY114", "Basic Physics Lab");
         coursesDay.put("GED111", "History of Bangladesh and Bangla Language");
 
         //L1T2
-        coursesDay.put("MAT121", "Complex Variable, linear Algebra and Coordinate Geometry");
+        coursesDay.put("MAT121", "Mathematics-II: Calculus, Complex Variables and Linear Algebra");
         coursesDay.put("CSE122", "Programming and Problem Solving");
         coursesDay.put("CSE123", "Problem Solving Lab");
         coursesDay.put("ENG123", "Writing and Comprehension");
@@ -522,7 +524,7 @@ public class HelperClass {
 
 
         //L2T1
-        coursesDay.put("MAT211", "Engineering Mathematics");
+        coursesDay.put("MAT211", "Mathematics-IV: Engineering Mathematics");
         coursesDay.put("CSE212", "Basic Electronics");
         coursesDay.put("CSE213", "Basic Electronics Lab");
         coursesDay.put("CSE221", "Object Oriented Programming");
@@ -540,12 +542,6 @@ public class HelperClass {
         coursesDay.put("CSE226", "Software Project III");
 
         //L2T3
-/*        coursesDay.put("CSE231", "Microprocessor and Assembly Language");
-        coursesDay.put("CSE232", "Microprocessor and Assembly Language Lab");
-        coursesDay.put("CSE233", "Data Communication");
-        coursesDay.put("CSE234", "Numerical Methods");
-        coursesDay.put("CSE235", "Introduction to Bio-Informatics");*/
-        //L2T3 new
         coursesDay.put("CSE231", "Microprocessor, Embedded Systems and IoT");
         coursesDay.put("CSE232", "Microprocessor, Embedded Systems and IoT Lab");
         coursesDay.put("CSE233", "Object Oriented Programming II");
@@ -559,7 +555,9 @@ public class HelperClass {
         coursesDay.put("CSE312", "Database Management System Lab");
         coursesDay.put("CSE313", "Computer Networks");
         coursesDay.put("CSE314", "Computer Networks Lab");
-        coursesDay.put("GED321", "Art of Living");
+        coursesDay.put("CSE315", "Artificial Intelligence");
+        coursesDay.put("CSE316", "Artificial Intelligence Lab");
+        coursesDay.put("CSE317", "Software Project V");
 
         //L3T2
         coursesDay.put("CSE321", "System Analysis and Design");
