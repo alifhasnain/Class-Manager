@@ -1,6 +1,9 @@
 
 
-## [**Class Manager**](https://play.google.com/store/apps/details?id=bd.edu.daffodilvarsity.classmanager&hl=en&gl=US)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+
+## [**Class Manager**](https://play.google.com/store/apps/details?id=bd.edu.daffodilvarsity.classmanager&hl=en&gl=US) 
 
 This is the old java version of Class Manager app which uses Firebase Firestore in backend. This application was developed for DIU to view students' and teachers' routines and room booking. Besides its main purpose, there are a lot of features available for both students and teachers. [**Play Store Link**](https://play.google.com/store/apps/details?id=bd.edu.daffodilvarsity.classmanager&hl=en&gl=US)
 
